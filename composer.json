@@ -1,0 +1,32 @@
+{
+  "name": "farayaz/larapay",
+  "description": "iranian online payment gateways",
+  "type": "project",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "Farayaz\\Larapay\\": "src/"
+    }
+  },
+  "authors": [
+    {
+      "name": "Mehrdad Motaghifar",
+      "email": "mehrdad.motaghifar@gmail.com"
+    }
+  ],
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Farayaz\\Larapay\\LarapayServiceProvider"
+      ],
+      "aliases": {
+        "Larapay": "Farayaz\\Larapay\\LarapayFacade"
+      }
+    }
+  },
+  "minimum-stability": "dev",
+  "require": {
+    "illuminate/support": "^10.0",
+    "guzzlehttp/guzzle": "^7.7"
+  }
+}
