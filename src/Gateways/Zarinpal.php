@@ -32,6 +32,7 @@ final class Zarinpal extends GatewayAbstract
         -54 => 'اتوریتی نامerrorsعتبر است',
         101 => 'تراکنش وریفای شده',
 
+        'NOK' => 'پرداخت ناموفق NOK',
         'token-mismatch' => 'عدم تطبیق توکن',
     ];
 
@@ -51,7 +52,7 @@ final class Zarinpal extends GatewayAbstract
         ];
 
         $result = $this->_request($url, $params);
-        return ['token' => $result['data']['authority']];
+        return ['token' => $result['authority']];
     }
 
     function redirect($id, $token)
@@ -74,12 +75,11 @@ final class Zarinpal extends GatewayAbstract
             throw new GatewayException($this->translateStatus($params['Status']));
         }
 
-
         $url = 'https://api.zarinpal.com/pg/v4/payment/verify.json';
         $params = [
             'merchant_id' => $this->config['merchant_id'],
             'amount' => $amount,
-            'token' => $token,
+            'authority' => $token,
         ];
         $result = $this->_request($url, $params);
 
@@ -88,7 +88,8 @@ final class Zarinpal extends GatewayAbstract
             'card' => $result['card_pan'],
             'tracking_code' => $result['ref_id'],
             'reference_id' => $result['ref_id'],
-            // TODO fee
+            // 'fee_type' => 'Merchant' | 'Payer',
+            // 'fee' => 1500,
         ];
     }
 
