@@ -90,10 +90,10 @@ class Behpardakht extends GatewayAbstract
 
         $result = explode(',', $response->return);
         if ($result[0] != '0') {
-            throw new GatewayException($result[0] . __METHOD__ . __LINE__);
+            throw new GatewayException($this->translateStatus($result[0]));
         }
 
-        return $result[1];
+        return ['token' => $result[1]];
     }
 
     function redirect($id, $token)
@@ -116,12 +116,11 @@ class Behpardakht extends GatewayAbstract
         ];
         $params = array_merge($default, $params);
 
-        if ($params['ResCode'] != '0') {
-            throw new GatewayException($this->translateStatus($params['ResCode']));
-        }
-
         if ($params['RefId'] != $token) {
             throw new GatewayException('token-mismatch');
+        }
+        if ($params['ResCode'] != '0') {
+            throw new GatewayException($this->translateStatus($params['ResCode']));
         }
 
         $tmp = [

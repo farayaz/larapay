@@ -50,8 +50,8 @@ final class Zarinpal extends GatewayAbstract
             'callback_url' => $callback,
         ];
 
-        $result = ['data' => ['authority' => 'test']]; // $this->_request($url, $params);
-        return $result['data']["authority"];
+        $result = $this->_request($url, $params);
+        return ['token' => $result['data']['authority']];
     }
 
     function redirect($id, $token)
@@ -67,12 +67,13 @@ final class Zarinpal extends GatewayAbstract
         ];
         $params = array_merge($default, $params);
 
-        if ($params['Status'] != 'OK') {
-            throw new GatewayException($this->translateStatus($params['Status']));
-        }
         if ($params['Authority'] != $token) {
             throw new GatewayException($this->translateStatus('token-mismatch'));
         }
+        if ($params['Status'] != 'OK') {
+            throw new GatewayException($this->translateStatus($params['Status']));
+        }
+
 
         $url = 'https://api.zarinpal.com/pg/v4/payment/verify.json';
         $params = [
@@ -112,8 +113,9 @@ final class Zarinpal extends GatewayAbstract
             $result = json_decode($response->getBody(), true);
 
             if (!empty($result['errors'])) {
-                $message = $result['errors']['code'] . ' - ' . $result['errors']['message'];
-                throw new GatewayException($message);
+                throw new GatewayException(
+                    $this->translateStatus($result['errors']['code'])
+                );
             }
 
             if ($result['data']['code'] != 100) {
@@ -130,12 +132,10 @@ final class Zarinpal extends GatewayAbstract
             ) {
                 $result = json_decode($e->getResponse()->getBody(), true);
                 if (!empty($result['errors'])) {
-                    $message = $result['errors']['code'] . ' - ' . $result['errors']['message'];
+                    $message = $this->translateStatus($result['errors']['code']);
                 }
             }
             throw new GatewayException($message);
-        } catch (Exception $e) { // TODO improve exceptions
-            throw new GatewayException($e->getMessage());
         }
     }
 }
