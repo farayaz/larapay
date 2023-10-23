@@ -83,13 +83,13 @@ final class Zarinpal extends GatewayAbstract
         ];
         $result = $this->_request($url, $params);
 
+        $fee = ($result['fee_type'] == 'Merchant' ? $result['fee'] : 0);
         return [
-            'result' => $result['message'],
-            'card' => $result['card_pan'],
+            'result'        => $result['message'],
+            'card'          => $result['card_pan'],
             'tracking_code' => $result['ref_id'],
-            'reference_id' => $result['ref_id'],
-            // 'fee_type' => 'Merchant' | 'Payer',
-            // 'fee' => 1500,
+            'reference_id'  => $result['ref_id'],
+            'fee'           => $fee
         ];
     }
 

@@ -16,6 +16,12 @@ abstract class GatewayAbstract
         $this->requirements();
     }
 
+    abstract function request($id, $amount, $callback);
+
+    abstract function verify($id, $amount, $token, array $params = []);
+
+    abstract function redirect($id, $token);
+
     protected function requirements()
     {
         if (!Arr::has($this->config, $this->requirements)) {
@@ -28,9 +34,13 @@ abstract class GatewayAbstract
         return $this->statuses[$code] ?? $code;
     }
 
-    abstract function request($id, $amount, $callback);
-
-    abstract function verify($id, $amount, $token, array $params = []);
-
-    abstract function redirect($id, $token);
+    public function fee($amount)
+    {
+        $fee = 1_200;
+        if ($amount >= 6_000_000) {
+            // TODO check round
+            $fee = min(40_000, round($amount * 0.0002));
+        }
+        return $fee;
+    }
 }

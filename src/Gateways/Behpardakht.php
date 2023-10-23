@@ -2,7 +2,6 @@
 
 namespace Farayaz\Larapay\Gateways;
 
-use Exception;
 use Farayaz\Larapay\Exceptions\GatewayException;
 use Farayaz\Larapay\Gateways\GatewayAbstract;
 use Illuminate\Support\Facades\Date;
@@ -155,8 +154,14 @@ class Behpardakht extends GatewayAbstract
         }
 
         if ($response->return == '0' || $response->return == '45') {
-            return true;
+            return [
+                'card'          => $params['CardHolderPan'],
+                'tracking_code' => $params['SaleReferenceId'],
+                'reference_id'  => $params['SaleReferenceId'],
+                'result'        => $params['ResCode'],
+                'fee'           => $this->fee($amount),
+            ];
         }
-        throw new Exception($this->translateStatus($response->return));
+        throw new GatewayException($this->translateStatus($response->return));
     }
 }

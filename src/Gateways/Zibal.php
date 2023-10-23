@@ -93,10 +93,11 @@ final class Zibal extends GatewayAbstract
         $result = $this->_request($url, $params);
 
         return [
-            'result' => $this->translateStatus($result['status']),
-            'card' => $result['cardNumber'],
+            'result'        => $this->translateStatus($result['status']),
+            'card'          => $result['cardNumber'],
             'tracking_code' => $result['refNumber'],
-            'reference_id' => $result['refNumber'],
+            'reference_id'  => $result['refNumber'],
+            'fee'           => $this->fee($amount),
         ];
     }
 
