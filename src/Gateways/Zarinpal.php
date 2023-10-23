@@ -52,7 +52,11 @@ final class Zarinpal extends GatewayAbstract
         ];
 
         $result = $this->_request($url, $params);
-        return ['token' => $result['authority']];
+        $fee = ($result['fee_type'] == 'Merchant' ? $result['fee'] : 0);
+        return [
+            'token' => $result['authority'],
+            'fee'   => $fee,
+        ];
     }
 
     function redirect($id, $token)

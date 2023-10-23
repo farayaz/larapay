@@ -58,9 +58,11 @@ final class Zibal extends GatewayAbstract
             'sms' => null,
         ];
 
-        // $result = ['data' => ['authority' => 'test']]; // $this->_request($url, $params);
         $result = $this->_request($url, $params);
-        return ['token' => $result['trackId']];
+        return [
+            'token' => $result['trackId'],
+            'fee' => $this->fee($amount),
+        ];
     }
 
     function redirect($id, $token)
@@ -127,17 +129,7 @@ final class Zibal extends GatewayAbstract
 
             return $result;
         } catch (BadResponseException $e) {
-            $message = $e->getMessage();
-            if (
-                $e->hasResponse() &&
-                $e->getResponse()->getStatusCode() == 400
-            ) {
-                $result = json_decode($e->getResponse()->getBody(), true);
-                if (!empty($result['errors'])) {
-                    $message = $this->translateStatus($result['errors']['code']);
-                }
-            }
-            throw new GatewayException($message);
+            throw new GatewayException($e->getMessage());
         }
     }
 }

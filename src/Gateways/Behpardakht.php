@@ -63,7 +63,6 @@ class Behpardakht extends GatewayAbstract
 
     public function request($id, $amount, $callback)
     {
-
         $params = [
             'bpPayRequest' =>
             [
@@ -92,7 +91,10 @@ class Behpardakht extends GatewayAbstract
             throw new GatewayException($this->translateStatus($result[0]));
         }
 
-        return ['token' => $result[1]];
+        return [
+            'token' => $result[1],
+            'fee'   => $this->fee($amount),
+        ];
     }
 
     function redirect($id, $token)
