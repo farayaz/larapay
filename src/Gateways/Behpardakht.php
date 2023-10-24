@@ -10,6 +10,8 @@ use SoapFault;
 
 class Behpardakht extends GatewayAbstract
 {
+    protected $url = 'https://bpm.shaparak.ir/pgwchannel/services/pgw?wsdl';
+
     protected $statuses = [
         11 => 'شماره کارت نامعتبر است',
         12 => 'موجودی کافی نیست',
@@ -58,8 +60,8 @@ class Behpardakht extends GatewayAbstract
 
         'token-mismatch' => 'عدم تطبیق توکن',
     ];
+
     protected $requirements = ['terminalId', 'username', 'password'];
-    protected $url = 'https://bpm.shaparak.ir/pgwchannel/services/pgw?wsdl';
 
     public function request($id, $amount, $callback)
     {

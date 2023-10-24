@@ -10,6 +10,8 @@ use Illuminate\Support\Arr;
 
 final class Zibal extends GatewayAbstract
 {
+    protected $url = 'https://gateway.zibal.ir/';
+
     protected $statuses = [
         '-1' => 'در انتظار پردخت',
         '-2' => 'خطای داخلی',
@@ -44,7 +46,7 @@ final class Zibal extends GatewayAbstract
 
     function request($id, $amount, $callback)
     {
-        $url = 'https://gateway.zibal.ir/v1/request';
+        $url = $this->url . 'v1/request';
         $params = [
             'merchant' => $this->config['merchant'],
             'amount' => $amount,
@@ -67,7 +69,7 @@ final class Zibal extends GatewayAbstract
 
     function redirect($id, $token)
     {
-        return redirect('https://gateway.zibal.ir/start/' . $token);
+        return redirect($this->url . 'start/' . $token);
     }
 
     function verify($id, $amount, $token, array $params = [])
@@ -87,12 +89,12 @@ final class Zibal extends GatewayAbstract
             throw new GatewayException($this->translateStatus($params['status']));
         }
 
-        $url = 'https://gateway.zibal.ir/v1/verify';
-        $params = [
+        $url = $this->url . 'v1/verify';
+        $data = [
             'merchant' => $this->config['merchant'],
             'trackId' => $token,
         ];
-        $result = $this->_request($url, $params);
+        $result = $this->_request($url, $data);
 
         return [
             'result'        => $this->translateStatus($result['status']),

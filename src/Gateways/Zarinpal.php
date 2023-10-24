@@ -80,12 +80,12 @@ final class Zarinpal extends GatewayAbstract
         }
 
         $url = 'https://api.zarinpal.com/pg/v4/payment/verify.json';
-        $params = [
+        $data = [
             'merchant_id' => $this->config['merchant_id'],
             'amount' => $amount,
             'authority' => $token,
         ];
-        $result = $this->_request($url, $params);
+        $result = $this->_request($url, $data);
 
         $fee = ($result['fee_type'] == 'Merchant' ? $result['fee'] : 0);
         return [
