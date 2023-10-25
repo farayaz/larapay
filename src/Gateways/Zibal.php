@@ -111,7 +111,7 @@ final class Zibal extends GatewayAbstract
 
         try {
             $response = $client->request(
-                "POST",
+                'POST',
                 $url,
                 [
                     'headers'   => [

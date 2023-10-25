@@ -168,7 +168,7 @@ final class IranKish extends GatewayAbstract
 
         try {
             $response = $client->request(
-                "POST",
+                'POST',
                 $url,
                 [
                     'headers'   => [

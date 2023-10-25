@@ -45,7 +45,7 @@ final class Sepehrpay extends GatewayAbstract
 
     function redirect($id, $token)
     {
-        $action = "https://mabna.shaparak.ir:8080";
+        $action = 'https://mabna.shaparak.ir:8080';
         $fields = [
             'token'         => $token,
             'terminalID'    => $this->config['terminalId'],
@@ -107,7 +107,7 @@ final class Sepehrpay extends GatewayAbstract
 
         try {
             $response = $client->request(
-                "POST",
+                'POST',
                 $url,
                 [
                     'headers'   => [
