@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Date;
 use SoapClient;
 use SoapFault;
 
-class Behpardakht extends GatewayAbstract
+class BehPardakht extends GatewayAbstract
 {
     protected $url = 'https://bpm.shaparak.ir/pgwchannel/services/pgw?wsdl';
 
@@ -101,7 +101,7 @@ class Behpardakht extends GatewayAbstract
 
     function redirect($id, $token)
     {
-        $action = "https://bpm.shaparak.ir/pgwchannel/startpay.mellat";
+        $action = 'https://bpm.shaparak.ir/pgwchannel/startpay.mellat';
         $fields = [
             'RefId' => $token,
         ];
@@ -134,7 +134,7 @@ class Behpardakht extends GatewayAbstract
             'saleOrderId'       => $id,
             'saleReferenceId'   => $params['SaleReferenceId']
         ];
-        ini_set("default_socket_timeout", 10);
+        ini_set('default_socket_timeout', 10);
         try {
             $soap = new SoapClient($this->url);
             $response = $soap->bpVerifyRequest($tmp);

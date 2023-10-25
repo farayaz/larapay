@@ -139,7 +139,7 @@ final class Sep extends GatewayAbstract
 
         try {
             $response = $client->request(
-                "POST",
+                'POST',
                 $url,
                 [
                     'headers'   => [

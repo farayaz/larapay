@@ -2,13 +2,11 @@
 
 namespace Farayaz\Larapay\Gateways;
 
-use Exception;
 use Farayaz\Larapay\Exceptions\GatewayException;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\BadResponseException;
-use Illuminate\Support\Arr;
 
-final class Zarinpal extends GatewayAbstract
+final class ZarinPal extends GatewayAbstract
 {
     protected $statuses = [
         -9 => 'خطای اعتبار سنجی',
@@ -103,7 +101,7 @@ final class Zarinpal extends GatewayAbstract
 
         try {
             $response = $client->request(
-                "POST",
+                'POST',
                 $url,
                 [
                     'headers'   => [
