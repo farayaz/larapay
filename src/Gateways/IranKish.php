@@ -79,10 +79,10 @@ final class IranKish extends GatewayAbstract
     ];
 
     function request(
-        $id,
-        $amount,
-        $callback
-    ) {
+        int $id,
+        int $amount,
+        string $callback
+    ): array {
         $url = $this->url . 'api/v3/tokenization/make';
         $encrypted = $this->_encrypt(
             $this->config['pubKey'],
@@ -116,7 +116,7 @@ final class IranKish extends GatewayAbstract
         ];
     }
 
-    function redirect($id, $token)
+    function redirect(int $id, string $token)
     {
         $action = $this->url . 'iuiv3/IPG/Index/';
         $fields = [
@@ -125,8 +125,12 @@ final class IranKish extends GatewayAbstract
         return view('larapay::redirector', compact('action', 'fields'));
     }
 
-    function verify($id, $amount, $token, array $params = [])
-    {
+    function verify(
+        int $id,
+        int $amount,
+        string $token,
+        array $params = []
+    ): array {
         $default = [
             'responseCode'              => null,
             'retrievalReferenceNumber'  => null,
@@ -162,7 +166,7 @@ final class IranKish extends GatewayAbstract
         ];
     }
 
-    private function _request($url, $data)
+    private function _request(string $url, array $data)
     {
         $client = new Client();
 
@@ -185,9 +189,9 @@ final class IranKish extends GatewayAbstract
         }
     }
 
-    private function _encrypt($pubKey, $terminalId, $password, $amount)
+    private function _encrypt(string $pubKey, string $terminalId, string $password, int $amount): array
     {
-        $data = $terminalId . $password . str_pad($amount, 12, '0', STR_PAD_LEFT) . '00';
+        $data = $terminalId . $password . str_pad((string) $amount, 12, '0', STR_PAD_LEFT) . '00';
         $data = hex2bin($data);
         $aesSecretKey = openssl_random_pseudo_bytes(16);
         $ivlen = openssl_cipher_iv_length($cipher = 'AES-128-CBC');

@@ -37,10 +37,10 @@ final class ZarinPal extends GatewayAbstract
     protected $requirements = ['merchant_id'];
 
     function request(
-        $id,
-        $amount,
-        $callback
-    ) {
+        int $id,
+        int $amount,
+        string $callback
+    ): array {
         $url = 'https://api.zarinpal.com/pg/v4/payment/request.json';
         $params = [
             'merchant_id' => $this->config['merchant_id'],
@@ -57,13 +57,17 @@ final class ZarinPal extends GatewayAbstract
         ];
     }
 
-    function redirect($id, $token)
+    function redirect(int $id, string $token)
     {
         return redirect('https://www.zarinpal.com/pg/StartPay/' . $token);
     }
 
-    function verify($id, $amount, $token, array $params = [])
-    {
+    function verify(
+        int $id,
+        int $amount,
+        string $token,
+        array $params = []
+    ): array {
         $default = [
             'Authority' => null,
             'Status' => null,
@@ -95,7 +99,7 @@ final class ZarinPal extends GatewayAbstract
         ];
     }
 
-    private function _request($url, $data)
+    private function _request(string $url, array $data)
     {
         $client = new Client();
 
