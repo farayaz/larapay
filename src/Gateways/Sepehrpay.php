@@ -8,7 +8,7 @@ use GuzzleHttp\Exception\BadResponseException;
 
 final class Sepehrpay extends GatewayAbstract
 {
-    private $url = 'https://mabna.shaparak.ir:8081/V1/PeymentApi/';
+    private $url = 'https://mabna.shaparak.ir';
 
     protected $statuses = [
         '0' => '0',
@@ -18,13 +18,15 @@ final class Sepehrpay extends GatewayAbstract
         '-4' => 'امکان درخواست برای این تراکنش وجود ندارد.',
         '-5' => 'آدرس IP نامعتبر می‌باشد.',
         '-6' => 'عدم فعال بودن سرویس برگشت تراکنش برای پذیرنده',
+
+        'token-mismatch' => 'عدم تطبیق توکن',
     ];
 
     protected $requirements = ['terminalId'];
 
     function request($id, $amount, $callback)
     {
-        $url = $this->url . 'GetToken';
+        $url = $this->url . ':8081/V1/PeymentApi/GetToken';
         $params = [
             'Amount'        => $amount,
             'callbackURL'   => $callback,
@@ -45,7 +47,7 @@ final class Sepehrpay extends GatewayAbstract
 
     function redirect($id, $token)
     {
-        $action = 'https://mabna.shaparak.ir:8080';
+        $action = $this->url . ':8080';
         $fields = [
             'token'         => $token,
             'terminalID'    => $this->config['terminalId'],
@@ -82,7 +84,7 @@ final class Sepehrpay extends GatewayAbstract
             throw new GatewayException($this->translateStatus('token-mismatch'));
         }
 
-        $url = $this->url . 'Advice';
+        $url = $this->url . ':8081/V1/PeymentApi/Advice';
         $data = [
             'Tid'               => $this->config['terminalId'],
             'digitalreceipt'    => $params['digitalreceipt'],
