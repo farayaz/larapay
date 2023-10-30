@@ -1,5 +1,4 @@
 
-
 <h1 align="center">Larapay | لاراپِی</h1>
 <p align="center">
     <a href="https://github.com/farayaz/larapay"><img src="https://img.shields.io/github/stars/farayaz/larapay" alt="GitHub Repo stars"></a>
@@ -12,6 +11,7 @@ Larapay is a Laravel package for integrating Iranian payment gateways.
 لاراپی یک پکیج لاراول برای اتصال به درگاه‌های پرداختی ایرانی است.
 
 ## Gateways | درگاه‌ها
+
 |Class|Name (en)|Name (fa)|Requirements|
 |--|--|--|--|
 |**BehPardakht**|Beh Pardakht Mellat|به‌پرداخت ملت|`terminalId`, `username`, `password`|
@@ -27,8 +27,14 @@ If you don't find the gate you want, let us know or contribute to add it
 
 اگر درگاه مورد نظر خود را پیدا نکردید، به ما اطلاع دهید یا در اضافه کردن آن مشارکت کنید
 
+## Benefits | مزایا
+
+- Simple | ساده
+- Flexibility | انعطاف‌پذیری
+- Fee Calculation | محاسبه هزینه تراکنش
 
 ## Install | نصب
+
 You can install the package via composer:
 
 شما می‌توانید با استفاده از composer پکیج را نصب کنید
@@ -38,10 +44,13 @@ composer require farayaz/larapay
 ```
 
 ## Usage | استفاده
+
 To make the payment, 3 steps must be done:
 
 برای انجام پرداخت ۳ مرحله می‌بایست انجام شود:
+
 ### Step 1: get token | مرحله ۱: دریافت توکن
+
 ```php
 use Farayaz\Larapay\Exceptions\GatewayException;
 use Larapay;
@@ -72,9 +81,11 @@ $result['fee'];
 ```
 
 ### Step 2: redirect | مرحله ۲: ریدایرکت
+
 Transfer the user to gateway with the received token:
 
 انتقال کاربر به درگاه با توکن دریافت شده:
+
 ```php
 try {
     return Larapay::gateway($gatewayClass, $gatewayConfig)
@@ -85,9 +96,11 @@ try {
 ```
 
 ### Step 3: verify | مرحله ۳: تایید
+
 Checking the payment status after the user returns from the gateway:
 
 بررسی وضعیت پرداخت پس از بازگشت کاربر از درگاه:
+
 ```php
 $params = $request->all();
 try {
