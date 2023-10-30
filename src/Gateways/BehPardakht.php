@@ -63,8 +63,11 @@ class BehPardakht extends GatewayAbstract
 
     protected $requirements = ['terminalId', 'username', 'password'];
 
-    public function request($id, $amount, $callback)
-    {
+    public function request(
+        int $id,
+        int $amount,
+        string $callback
+    ): array {
         $params = [
             'bpPayRequest' =>
             [
@@ -99,7 +102,7 @@ class BehPardakht extends GatewayAbstract
         ];
     }
 
-    function redirect($id, $token)
+    function redirect(int $id, string $token)
     {
         $action = 'https://bpm.shaparak.ir/pgwchannel/startpay.mellat';
         $fields = [
@@ -108,8 +111,12 @@ class BehPardakht extends GatewayAbstract
         return view('larapay::redirector', compact('action', 'fields'));
     }
 
-    function verify($id, $amount, $token, array $params = [])
-    {
+    function verify(
+        int $id,
+        int $amount,
+        string $token,
+        array $params = []
+    ): array {
 
         $default = [
             'ResCode' => null,

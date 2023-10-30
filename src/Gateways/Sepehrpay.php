@@ -22,7 +22,7 @@ final class Sepehrpay extends GatewayAbstract
 
     protected $requirements = ['terminalId'];
 
-    function request($id, $amount, $callback)
+    function request(int $id, int $amount, string $callback): array
     {
         $url = $this->url . 'GetToken';
         $params = [
@@ -43,7 +43,7 @@ final class Sepehrpay extends GatewayAbstract
         ];
     }
 
-    function redirect($id, $token)
+    function redirect(int $id, string $token)
     {
         $action = 'https://mabna.shaparak.ir:8080';
         $fields = [
@@ -53,8 +53,12 @@ final class Sepehrpay extends GatewayAbstract
         return view('larapay::redirector', compact('action', 'fields'));
     }
 
-    function verify($id, $amount, $token, array $params = [])
-    {
+    function verify(
+        int $id,
+        int $amount,
+        string $token,
+        array $params = []
+    ): array {
         $default = [
             'respcode'          => null,
             'cardnumber'        => null,
@@ -101,7 +105,7 @@ final class Sepehrpay extends GatewayAbstract
         throw new GatewayException($this->translateStatus($result['Status']));
     }
 
-    private function _request($url, $data)
+    private function _request(string $url, array $data)
     {
         $client = new Client();
 

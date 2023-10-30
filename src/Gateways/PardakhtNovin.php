@@ -25,10 +25,10 @@ final class PardakhtNovin extends GatewayAbstract
     ];
 
     function request(
-        $id,
-        $amount,
-        $callback
-    ) {
+        int $id,
+        int $amount,
+        string $callback
+    ): array {
         $url = $this->url . 'ref-payment2/RestServices/mts/generateTokenWithNoSign/';
         $params = [
             'WSContext'     => [
@@ -53,7 +53,7 @@ final class PardakhtNovin extends GatewayAbstract
         ];
     }
 
-    function redirect($id, $token)
+    function redirect(int $id, string $token)
     {
         $action = $this->url . '_ipgw_/payment/';
         $fields = [
@@ -62,8 +62,12 @@ final class PardakhtNovin extends GatewayAbstract
         return view('larapay::redirector', compact('action', 'fields'));
     }
 
-    function verify($id, $amount, $token, array $params = [])
-    {
+    function verify(
+        int $id,
+        int $amount,
+        string $token,
+        array $params = []
+    ): array {
         $default = [
             'State'             => null,
             'token'             => null,
@@ -106,7 +110,7 @@ final class PardakhtNovin extends GatewayAbstract
         ];
     }
 
-    private function _request($url, $data)
+    private function _request(string $url, array $data)
     {
         $client = new Client();
         try {

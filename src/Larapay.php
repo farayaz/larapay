@@ -19,21 +19,21 @@ final class Larapay
         return $this;
     }
 
-    function request($id, $amount, $callback)
+    function request(int $id, int $amount, string $callback)
     {
         $this->_check();
 
         return $this->gateway->request($id, $amount, $callback);
     }
 
-    function verify($id, $amount, $token, array $params = [])
+    function verify(int $id, int $amount, string $token, array $params = [])
     {
         $this->_check();
 
         return $this->gateway->verify($id, $amount, $token, $params);
     }
 
-    function redirect($id, $token)
+    function redirect(int $id, string $token)
     {
         $this->_check();
 

@@ -51,10 +51,10 @@ final class Sep extends GatewayAbstract
     protected $requirements = ['terminalId'];
 
     function request(
-        $id,
-        $amount,
-        $callback
-    ) {
+        int $id,
+        int $amount,
+        string $callback
+    ): array {
         $url = $this->url . 'OnlinePG/OnlinePG';
         $params = [
             'action'        => 'token',
@@ -75,7 +75,7 @@ final class Sep extends GatewayAbstract
         ];
     }
 
-    function redirect($id, $token)
+    function redirect(int $id, string $token)
     {
         $action = $this->url . 'OnlinePG/OnlinePG';
         $fields = [
@@ -85,8 +85,12 @@ final class Sep extends GatewayAbstract
         return view('larapay::redirector', compact('action', 'fields'));
     }
 
-    function verify($id, $amount, $token, array $params = [])
-    {
+    function verify(
+        int $id,
+        int $amount,
+        string $token,
+        array $params = []
+    ): array {
         $default = [
             'MID'               => null,
             'TerminalId'        => null,
@@ -133,7 +137,7 @@ final class Sep extends GatewayAbstract
         ];
     }
 
-    private function _request($url, $data)
+    private function _request(string $url, array $data)
     {
         $client = new Client();
 

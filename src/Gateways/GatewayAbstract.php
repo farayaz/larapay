@@ -16,11 +16,11 @@ abstract class GatewayAbstract
         $this->requirements();
     }
 
-    abstract function request($id, $amount, $callback);
+    abstract function request(int $id, int $amount, string $callback): array;
 
-    abstract function verify($id, $amount, $token, array $params = []);
+    abstract function verify(int $id, int $amount, string $token, array $params = []): array;
 
-    abstract function redirect($id, $token);
+    abstract function redirect(int $id, string $token);
 
     protected function requirements()
     {
@@ -29,18 +29,19 @@ abstract class GatewayAbstract
         }
     }
 
-    protected function translateStatus($code)
+    protected function translateStatus(int | string $code)
     {
         return $this->statuses[$code] ?? $code;
     }
 
-    public function fee($amount)
+    public function fee(int $amount): int
     {
         $fee = 1_200;
         if ($amount >= 6_000_000) {
             // TODO check round
             $fee = min(40_000, round($amount * 0.0002));
         }
+
         return $fee;
     }
 }

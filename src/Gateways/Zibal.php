@@ -44,7 +44,7 @@ final class Zibal extends GatewayAbstract
 
     protected $requirements = ['merchant'];
 
-    function request($id, $amount, $callback)
+    function request(int $id, int $amount, string $callback): array
     {
         $url = $this->url . 'v1/request';
         $params = [
@@ -67,13 +67,17 @@ final class Zibal extends GatewayAbstract
         ];
     }
 
-    function redirect($id, $token)
+    function redirect(int $id, string $token)
     {
         return redirect($this->url . 'start/' . $token);
     }
 
-    function verify($id, $amount, $token, array $params = [])
-    {
+    function verify(
+        int $id,
+        int $amount,
+        string $token,
+        array $params = []
+    ): array {
         $default = [
             'success' => null,
             'trackId' => null,
@@ -105,7 +109,7 @@ final class Zibal extends GatewayAbstract
         ];
     }
 
-    private function _request($url, $data)
+    private function _request(string $url, array $data)
     {
         $client = new Client();
 
