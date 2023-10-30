@@ -26,6 +26,9 @@
   },
   "minimum-stability": "dev",
   "require": {
+    "php": "^8.0",
+    "illuminate/container": "^10.0",
+    "illuminate/contracts": "^10.0",
     "illuminate/support": "^10.0",
     "guzzlehttp/guzzle": "^7.7"
   }
