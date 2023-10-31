@@ -3,7 +3,6 @@
 namespace Farayaz\Larapay\Gateways;
 
 use Farayaz\Larapay\Exceptions\GatewayException;
-use Farayaz\Larapay\Gateways\GatewayAbstract;
 use Illuminate\Support\Facades\Date;
 use SoapClient;
 use SoapFault;
@@ -69,18 +68,17 @@ class BehPardakht extends GatewayAbstract
         string $callback
     ): array {
         $params = [
-            'bpPayRequest' =>
-            [
-                'terminalId'        => $this->config['terminalId'],
-                'userName'          => $this->config['username'],
-                'userPassword'      => $this->config['password'],
-                'orderId'           => $id,
-                'amount'            => $amount,
-                'localDate'         => Date::now()->format('Ymd'),
-                'localTime'         => Date::now()->format('His'),
-                'additionalData'    => '',
-                'callBackUrl'       => $callback,
-            ]
+            'bpPayRequest' => [
+                'terminalId' => $this->config['terminalId'],
+                'userName' => $this->config['username'],
+                'userPassword' => $this->config['password'],
+                'orderId' => $id,
+                'amount' => $amount,
+                'localDate' => Date::now()->format('Ymd'),
+                'localTime' => Date::now()->format('His'),
+                'additionalData' => '',
+                'callBackUrl' => $callback,
+            ],
         ];
 
         ini_set('default_socket_timeout', 10);
@@ -98,20 +96,21 @@ class BehPardakht extends GatewayAbstract
 
         return [
             'token' => $result[1],
-            'fee'   => $this->fee($amount),
+            'fee' => $this->fee($amount),
         ];
     }
 
-    function redirect(int $id, string $token)
+    public function redirect(int $id, string $token)
     {
         $action = 'https://bpm.shaparak.ir/pgwchannel/startpay.mellat';
         $fields = [
             'RefId' => $token,
         ];
+
         return view('larapay::redirector', compact('action', 'fields'));
     }
 
-    function verify(
+    public function verify(
         int $id,
         int $amount,
         string $token,
@@ -134,12 +133,12 @@ class BehPardakht extends GatewayAbstract
         }
 
         $tmp = [
-            'terminalId'        => $this->config['terminalId'],
-            'userName'          => $this->config['username'],
-            'userPassword'      => $this->config['password'],
-            'orderId'           => $id,
-            'saleOrderId'       => $id,
-            'saleReferenceId'   => $params['SaleReferenceId']
+            'terminalId' => $this->config['terminalId'],
+            'userName' => $this->config['username'],
+            'userPassword' => $this->config['password'],
+            'orderId' => $id,
+            'saleOrderId' => $id,
+            'saleReferenceId' => $params['SaleReferenceId'],
         ];
         ini_set('default_socket_timeout', 10);
         try {
@@ -150,12 +149,12 @@ class BehPardakht extends GatewayAbstract
         }
 
         $tmp = [
-            'terminalId'        => $this->config['terminalId'],
-            'userName'          => $this->config['username'],
-            'userPassword'      => $this->config['password'],
-            'orderId'           => $id,
-            'saleOrderId'       => $id,
-            'saleReferenceId'   => $params['SaleReferenceId']
+            'terminalId' => $this->config['terminalId'],
+            'userName' => $this->config['username'],
+            'userPassword' => $this->config['password'],
+            'orderId' => $id,
+            'saleOrderId' => $id,
+            'saleReferenceId' => $params['SaleReferenceId'],
         ];
         try {
             $soap = new SoapClient($this->url);
@@ -166,11 +165,11 @@ class BehPardakht extends GatewayAbstract
 
         if ($response->return == '0' || $response->return == '45') {
             return [
-                'card'          => $params['CardHolderPan'],
+                'card' => $params['CardHolderPan'],
                 'tracking_code' => $params['SaleReferenceId'],
-                'reference_id'  => $params['SaleReferenceId'],
-                'result'        => $params['ResCode'],
-                'fee'           => $this->fee($amount),
+                'reference_id' => $params['SaleReferenceId'],
+                'result' => $params['ResCode'],
+                'fee' => $this->fee($amount),
             ];
         }
         throw new GatewayException($this->translateStatus($response->return));

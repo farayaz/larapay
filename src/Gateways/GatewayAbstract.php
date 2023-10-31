@@ -11,25 +11,25 @@ abstract class GatewayAbstract
 
     protected $requirements = [];
 
-    function __construct(protected array $config = [])
+    public function __construct(protected array $config = [])
     {
         $this->requirements();
     }
 
-    abstract function request(int $id, int $amount, string $callback): array;
+    abstract public function request(int $id, int $amount, string $callback): array;
 
-    abstract function verify(int $id, int $amount, string $token, array $params = []): array;
+    abstract public function verify(int $id, int $amount, string $token, array $params = []): array;
 
-    abstract function redirect(int $id, string $token);
+    abstract public function redirect(int $id, string $token);
 
     protected function requirements()
     {
-        if (!Arr::has($this->config, $this->requirements)) {
+        if (! Arr::has($this->config, $this->requirements)) {
             throw new GatewayException(implode(', ', $this->requirements) . ' is required.');
         }
     }
 
-    protected function translateStatus(int | string $code)
+    protected function translateStatus(int|string $code)
     {
         return $this->statuses[$code] ?? $code;
     }

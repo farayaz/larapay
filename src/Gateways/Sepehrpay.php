@@ -14,7 +14,7 @@ final class Sepehrpay extends GatewayAbstract
         '0' => '0',
         '-1' => 'تراکنش پیدا نشد.',
         '-2' => 'عدم تطابق ip / تراکنش قبلا Reserve شده است.',
-        '-3' => 'ها Exception خطای – عمومی خطای Total Error',
+        '-3' => 'Exception خطای - عمومی خطای Total Error',
         '-4' => 'امکان درخواست برای این تراکنش وجود ندارد.',
         '-5' => 'آدرس IP نامعتبر می‌باشد.',
         '-6' => 'عدم فعال بودن سرویس برگشت تراکنش برای پذیرنده',
@@ -24,14 +24,14 @@ final class Sepehrpay extends GatewayAbstract
 
     protected $requirements = ['terminalId'];
 
-    function request(int $id, int $amount, string $callback): array
+    public function request(int $id, int $amount, string $callback): array
     {
         $url = $this->url . ':8081/V1/PeymentApi/GetToken';
         $params = [
-            'Amount'        => $amount,
-            'callbackURL'   => $callback,
-            'invoiceID'     => $id,
-            'terminalID'    => $this->config['terminalId'],
+            'Amount' => $amount,
+            'callbackURL' => $callback,
+            'invoiceID' => $id,
+            'terminalID' => $this->config['terminalId'],
         ];
 
         $result = $this->_request($url, $params);
@@ -45,31 +45,32 @@ final class Sepehrpay extends GatewayAbstract
         ];
     }
 
-    function redirect(int $id, string $token)
+    public function redirect(int $id, string $token)
     {
         $action = $this->url . ':8080';
         $fields = [
-            'token'         => $token,
-            'terminalID'    => $this->config['terminalId'],
+            'token' => $token,
+            'terminalID' => $this->config['terminalId'],
         ];
+
         return view('larapay::redirector', compact('action', 'fields'));
     }
 
-    function verify(
+    public function verify(
         int $id,
         int $amount,
         string $token,
         array $params = []
     ): array {
         $default = [
-            'respcode'          => null,
-            'cardnumber'        => null,
-            'rrn'               => null,
-            'tracenumber'       => null,
-            'amount'            => null,
-            'invoiceid'         => null,
-            'terminalid'        => null,
-            'digitalreceipt'    => null,
+            'respcode' => null,
+            'cardnumber' => null,
+            'rrn' => null,
+            'tracenumber' => null,
+            'amount' => null,
+            'invoiceid' => null,
+            'terminalid' => null,
+            'digitalreceipt' => null,
         ];
         $params = array_merge($default, $params);
 
@@ -81,27 +82,25 @@ final class Sepehrpay extends GatewayAbstract
         }
 
         if (
-            $amount != $params['amount'] ||
-            $id != $params['invoiceid'] ||
-            $this->config['terminalId'] != $params['terminalid']
+            $amount != $params['amount'] || $id != $params['invoiceid'] || $this->config['terminalId'] != $params['terminalid']
         ) {
             throw new GatewayException($this->translateStatus('token-mismatch'));
         }
 
         $url = $this->url . ':8081/V1/PeymentApi/Advice';
         $data = [
-            'Tid'               => $this->config['terminalId'],
-            'digitalreceipt'    => $params['digitalreceipt'],
+            'Tid' => $this->config['terminalId'],
+            'digitalreceipt' => $params['digitalreceipt'],
         ];
         $result = $this->_request($url, $data);
 
-        if ($result['Status'] == 'Ok' &&  $result['ReturnId'] == $amount) {
+        if ($result['Status'] == 'Ok' && $result['ReturnId'] == $amount) {
             return [
-                'result'        => $params['respcode'] . ' - ' . $result['Status'],
-                'card'          => $params['cardnumber'],
-                'reference_id'  => $params['rrn'],
+                'result' => $params['respcode'] . ' - ' . $result['Status'],
+                'card' => $params['cardnumber'],
+                'reference_id' => $params['rrn'],
                 'tracking_code' => $params['tracenumber'],
-                'fee'           => $this->fee($amount),
+                'fee' => $this->fee($amount),
             ];
         }
         throw new GatewayException($this->translateStatus($result['Status']));
@@ -109,21 +108,22 @@ final class Sepehrpay extends GatewayAbstract
 
     private function _request(string $url, array $data)
     {
-        $client = new Client();
+        $client = new Client;
 
         try {
             $response = $client->request(
                 'POST',
                 $url,
                 [
-                    'headers'   => [
-                        'Content-Type'  => 'application/json',
-                        'Accept'        => 'application/json',
+                    'headers' => [
+                        'Content-Type' => 'application/json',
+                        'Accept' => 'application/json',
                     ],
-                    'json'      => $data,
-                    'timeout'   => 10,
+                    'json' => $data,
+                    'timeout' => 10,
                 ]
             );
+
             return json_decode($response->getBody(), true);
         } catch (BadResponseException $e) {
             throw new GatewayException($e->getMessage());

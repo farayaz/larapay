@@ -6,11 +6,10 @@ use Illuminate\Support\ServiceProvider;
 
 class LarapayServiceProvider extends ServiceProvider
 {
-
-    function register()
+    public function register()
     {
         $this->app->bind('larapay', function ($app) {
-            return new Larapay();
+            return new Larapay;
         });
     }
 
