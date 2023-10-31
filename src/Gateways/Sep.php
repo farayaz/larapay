@@ -11,9 +11,9 @@ final class Sep extends GatewayAbstract
     protected $url = 'https://sep.shaparak.ir/';
 
     protected $statuses = [
-        '1'  => 'لغو شده توسط مشتری',
-        '2'  => 'پرداخت با موفقیت انجام شد',
-        '3'  => 'پرداخت انجام نشد',
+        '1' => 'لغو شده توسط مشتری',
+        '2' => 'پرداخت با موفقیت انجام شد',
+        '3' => 'پرداخت انجام نشد',
         '4' => 'کاربر در بازه زمان تعیین شده پاسخی ارسال نکرده است.',
         '5' => 'پارامترهای ارسالی نامعتر است',
         '8' => 'آدرس سرور پذیرنده نا معتبر است.',
@@ -44,24 +44,24 @@ final class Sep extends GatewayAbstract
         '-117' => 'ارسال توکن یا شناسه خرید برای استعلام الزامی است',
         '-118' => 'قبضی با این مشخصات یافت نشد.',
 
-        'token-mismatch'    => 'مغایرت توکن بازگشتی',
-        'amount-mismatch'   => 'مغایرت مبلغ پرداختی',
+        'token-mismatch' => 'مغایرت توکن بازگشتی',
+        'amount-mismatch' => 'مغایرت مبلغ پرداختی',
     ];
 
     protected $requirements = ['terminalId'];
 
-    function request(
-        $id,
-        $amount,
-        $callback
-    ) {
+    public function request(
+        int $id,
+        int $amount,
+        string $callback
+    ): array {
         $url = $this->url . 'OnlinePG/OnlinePG';
         $params = [
-            'action'        => 'token',
-            'TerminalId'    => $this->config['terminalId'],
-            'ResNum'        => $id,
-            'Amount'        => $amount,
-            'RedirectUrl'   => $callback,
+            'action' => 'token',
+            'TerminalId' => $this->config['terminalId'],
+            'ResNum' => $id,
+            'Amount' => $amount,
+            'RedirectUrl' => $callback,
         ];
         $result = $this->_request($url, $params);
 
@@ -71,37 +71,42 @@ final class Sep extends GatewayAbstract
 
         return [
             'token' => $result['token'],
-            'fee'   => $this->fee($amount),
+            'fee' => $this->fee($amount),
         ];
     }
 
-    function redirect($id, $token)
+    public function redirect(int $id, string $token)
     {
         $action = $this->url . 'OnlinePG/OnlinePG';
         $fields = [
             'token' => $token,
             'language' => 'fa',
         ];
+
         return view('larapay::redirector', compact('action', 'fields'));
     }
 
-    function verify($id, $amount, $token, array $params = [])
-    {
+    public function verify(
+        int $id,
+        int $amount,
+        string $token,
+        array $params = []
+    ): array {
         $default = [
-            'MID'               => null,
-            'TerminalId'        => null,
-            'RefNum'            => null,
-            'ResNum'            => null,
-            'State'             => null,
-            'TraceNo'           => null,
-            'Amount'            => null,
-            'AffectiveAmount'   => null,
-            'Wage'              => null,
-            'Rrn'               => null,
-            'SecurePan'         => null,
-            'Status'            => null,
-            'Token'             => null,
-            'HashedCardNumber'  => null,
+            'MID' => null,
+            'TerminalId' => null,
+            'RefNum' => null,
+            'ResNum' => null,
+            'State' => null,
+            'TraceNo' => null,
+            'Amount' => null,
+            'AffectiveAmount' => null,
+            'Wage' => null,
+            'Rrn' => null,
+            'SecurePan' => null,
+            'Status' => null,
+            'Token' => null,
+            'HashedCardNumber' => null,
         ];
         $params = array_merge($default, $params);
 
@@ -111,8 +116,8 @@ final class Sep extends GatewayAbstract
 
         $url = $this->url . 'verifyTxnRandomSessionkey/ipg/VerifyTransaction';
         $data = [
-            'RefNum'            => $params['RefNum'],
-            'TerminalNumber'    => $id,
+            'RefNum' => $params['RefNum'],
+            'TerminalNumber' => $id,
         ];
         $result = $this->_request($url, $data);
 
@@ -125,31 +130,32 @@ final class Sep extends GatewayAbstract
         }
 
         return [
-            'card'          => $params['SecurePan'],
+            'card' => $params['SecurePan'],
             'tracking_code' => $params['ResNum'],
-            'reference_id'  => $params['Rrn'],
-            'result'        => $params['State'],
-            'fee'           => $this->fee($amount),
+            'reference_id' => $params['Rrn'],
+            'result' => $params['State'],
+            'fee' => $this->fee($amount),
         ];
     }
 
-    private function _request($url, $data)
+    private function _request(string $url, array $data)
     {
-        $client = new Client();
+        $client = new Client;
 
         try {
             $response = $client->request(
                 'POST',
                 $url,
                 [
-                    'headers'   => [
-                        'Content-Type'  => 'application/json',
-                        'Accept'        => 'application/json',
+                    'headers' => [
+                        'Content-Type' => 'application/json',
+                        'Accept' => 'application/json',
                     ],
-                    'json'      => $data,
-                    'timeout'   => 10,
+                    'json' => $data,
+                    'timeout' => 10,
                 ]
             );
+
             return json_decode($response->getBody(), true);
         } catch (BadResponseException $e) {
             throw new GatewayException($e->getMessage());

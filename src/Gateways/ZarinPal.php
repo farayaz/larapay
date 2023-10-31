@@ -27,7 +27,7 @@ final class ZarinPal extends GatewayAbstract
         -51 => 'پرداخت ناموفق',
         -52 => 'خطای غیر منتظره با پشتیبانی تماس بگیرید',
         -53 => 'اتوریتی برای این مرچنت کد نیست',
-        -54 => 'اتوریتی نامerrorsعتبر است',
+        -54 => 'اتوریتی نام errors عتبر است',
         101 => 'تراکنش وریفای شده',
 
         'NOK' => 'پرداخت ناموفق NOK',
@@ -36,11 +36,11 @@ final class ZarinPal extends GatewayAbstract
 
     protected $requirements = ['merchant_id'];
 
-    function request(
-        $id,
-        $amount,
-        $callback
-    ) {
+    public function request(
+        int $id,
+        int $amount,
+        string $callback
+    ): array {
         $url = 'https://api.zarinpal.com/pg/v4/payment/request.json';
         $params = [
             'merchant_id' => $this->config['merchant_id'],
@@ -51,19 +51,24 @@ final class ZarinPal extends GatewayAbstract
 
         $result = $this->_request($url, $params);
         $fee = ($result['fee_type'] == 'Merchant' ? $result['fee'] : 0);
+
         return [
             'token' => $result['authority'],
-            'fee'   => $fee,
+            'fee' => $fee,
         ];
     }
 
-    function redirect($id, $token)
+    public function redirect(int $id, string $token)
     {
         return redirect('https://www.zarinpal.com/pg/StartPay/' . $token);
     }
 
-    function verify($id, $amount, $token, array $params = [])
-    {
+    public function verify(
+        int $id,
+        int $amount,
+        string $token,
+        array $params = []
+    ): array {
         $default = [
             'Authority' => null,
             'Status' => null,
@@ -86,36 +91,37 @@ final class ZarinPal extends GatewayAbstract
         $result = $this->_request($url, $data);
 
         $fee = ($result['fee_type'] == 'Merchant' ? $result['fee'] : 0);
+
         return [
-            'result'        => $result['message'],
-            'card'          => $result['card_pan'],
+            'result' => $result['message'],
+            'card' => $result['card_pan'],
             'tracking_code' => $result['ref_id'],
-            'reference_id'  => $result['ref_id'],
-            'fee'           => $fee
+            'reference_id' => $result['ref_id'],
+            'fee' => $fee,
         ];
     }
 
-    private function _request($url, $data)
+    private function _request(string $url, array $data)
     {
-        $client = new Client();
+        $client = new Client;
 
         try {
             $response = $client->request(
                 'POST',
                 $url,
                 [
-                    'headers'   => [
-                        'Content-Type'  => 'application/json',
-                        'Accept'        => 'application/json',
+                    'headers' => [
+                        'Content-Type' => 'application/json',
+                        'Accept' => 'application/json',
                     ],
-                    'json'      => $data,
-                    'timeout'   => 10,
+                    'json' => $data,
+                    'timeout' => 10,
                 ]
             );
 
             $result = json_decode($response->getBody(), true);
 
-            if (!empty($result['errors'])) {
+            if (! empty($result['errors'])) {
                 throw new GatewayException(
                     $this->translateStatus($result['errors']['code'])
                 );
@@ -130,11 +136,10 @@ final class ZarinPal extends GatewayAbstract
         } catch (BadResponseException $e) {
             $message = $e->getMessage();
             if (
-                $e->hasResponse() &&
-                $e->getResponse()->getStatusCode() == 400
+                $e->hasResponse() && $e->getResponse()->getStatusCode() == 400
             ) {
                 $result = json_decode($e->getResponse()->getBody(), true);
-                if (!empty($result['errors'])) {
+                if (! empty($result['errors'])) {
                     $message = $this->translateStatus($result['errors']['code']);
                 }
             }

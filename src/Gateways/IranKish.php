@@ -11,36 +11,36 @@ final class IranKish extends GatewayAbstract
     protected $url = 'https://ikc.shaparak.ir/';
 
     protected $statuses = [
-        3   => 'از انجام تراکنش صرف نظر شد',
-        5   => 'پذیرنده فروشگاهی نامعتبر است',
-        64  => 'مبلغ تراکنش نادرست است،جمع مبالغ تقسیم وجوه برابر مبلغ کل تراکنش نمی باشد',
-        94  => 'تراکنش تکراری است',
-        25  => 'تراکنش اصلی یافت نشد',
-        77  => 'روز مالی تراکنش نا معتبر است',
-        63  => 'کد اعتبار سنجی پیام نا معتبر است',
-        97  => 'کد تولید کد اعتبار سنجی نا معتبر است',
-        30  => 'فرمت پیام نادرست است',
-        86  => 'شتاب در حال Sign Off  است',
-        55  => 'رمز کارت نادرست است',
-        40  => 'عمل درخواستی پشتیبانی نمی شود',
-        57  => 'انجام تراکنش مورد درخواست توسط پایانه انجام دهنده مجاز نمی باشد',
-        58  => 'انجام تراکنش مورد درخواست توسط پایانه انجام دهنده مجاز نمی باشد',
-        63  => 'تمهیدات امنیتی نقض گردیده است',
-        96  => 'قوانین سامانه نقض گردیده است ، خطای داخلی سامانه',
-        2   => 'تراکنش قبلا برگشت شده است',
-        54  => 'تاریخ انقضا کارت سررسید شده است',
-        62  => 'کارت محدود شده است',
-        75  => 'تعداد دفعات ورود رمز اشتباه از حد مجاز فراتر رفته است',
-        14  => 'اطلاعات کارت صحیح نمی باشد',
-        51  => 'موجودی حساب کافی نمی باشد',
-        56  => 'اطلاعات کارت یافت نشد',
-        61  => 'مبلغ تراکنش بیش از حد مجاز است',
-        65  => 'تعداد دفعات انجام تراکنش بیش از حد مجاز است',
-        78  => 'کارت فعال نیست',
-        79  => 'حساب متصل به کارت بسته یا دارای اشکال است',
-        42  => 'کارت یا حساب مبدا (مقصد) در وضعیت پذیرش نمی باشد',
-        31  => 'عدم تطابق کد ملی خریدار با دارنده کارت',
-        98  => 'سقف استفاده از رمز دوم ایستا به پایان رسیده است',
+        3 => 'از انجام تراکنش صرف نظر شد',
+        5 => 'پذیرنده فروشگاهی نامعتبر است',
+        64 => 'مبلغ تراکنش نادرست است،جمع مبالغ تقسیم وجوه برابر مبلغ کل تراکنش نمی باشد',
+        94 => 'تراکنش تکراری است',
+        25 => 'تراکنش اصلی یافت نشد',
+        77 => 'روز مالی تراکنش نا معتبر است',
+        63 => 'کد اعتبار سنجی پیام نا معتبر است',
+        97 => 'کد تولید کد اعتبار سنجی نا معتبر است',
+        30 => 'فرمت پیام نادرست است',
+        86 => 'شتاب در حال Sign Off  است',
+        55 => 'رمز کارت نادرست است',
+        40 => 'عمل درخواستی پشتیبانی نمی شود',
+        57 => 'انجام تراکنش مورد درخواست توسط پایانه انجام دهنده مجاز نمی باشد',
+        58 => 'انجام تراکنش مورد درخواست توسط پایانه انجام دهنده مجاز نمی باشد',
+        63 => 'تمهیدات امنیتی نقض گردیده است',
+        96 => 'قوانین سامانه نقض گردیده است ، خطای داخلی سامانه',
+        2 => 'تراکنش قبلا برگشت شده است',
+        54 => 'تاریخ انقضا کارت سررسید شده است',
+        62 => 'کارت محدود شده است',
+        75 => 'تعداد دفعات ورود رمز اشتباه از حد مجاز فراتر رفته است',
+        14 => 'اطلاعات کارت صحیح نمی باشد',
+        51 => 'موجودی حساب کافی نمی باشد',
+        56 => 'اطلاعات کارت یافت نشد',
+        61 => 'مبلغ تراکنش بیش از حد مجاز است',
+        65 => 'تعداد دفعات انجام تراکنش بیش از حد مجاز است',
+        78 => 'کارت فعال نیست',
+        79 => 'حساب متصل به کارت بسته یا دارای اشکال است',
+        42 => 'کارت یا حساب مبدا (مقصد) در وضعیت پذیرش نمی باشد',
+        31 => 'عدم تطابق کد ملی خریدار با دارنده کارت',
+        98 => 'سقف استفاده از رمز دوم ایستا به پایان رسیده است',
         901 => 'درخواست نا معتبر است (Tokenization)',
         902 => 'پارامترهای اضافی درخواست نامعتبر می باشد (Tokenization)',
         903 => 'شناسه پرداخت نامعتبر می باشد (Tokenization)',
@@ -67,8 +67,8 @@ final class IranKish extends GatewayAbstract
         929 => 'شناسه پرداخت ارائه شده با توجه به الگوریتم متناظر نا معتبر می باشد(Tokenization)',
         930 => 'کد ملی ارائه شده نا معتبر می باشد(Tokenization)',
 
-        'token-mismatch'    => 'مغایرت توکن بازگشتی',
-        'amount-mismatch'   => 'مغایرت مبلغ پرداختی',
+        'token-mismatch' => 'مغایرت توکن بازگشتی',
+        'amount-mismatch' => 'مغایرت مبلغ پرداختی',
     ];
 
     protected $requirements = [
@@ -78,11 +78,11 @@ final class IranKish extends GatewayAbstract
         'pubKey',
     ];
 
-    function request(
-        $id,
-        $amount,
-        $callback
-    ) {
+    public function request(
+        int $id,
+        int $amount,
+        string $callback
+    ): array {
         $url = $this->url . 'api/v3/tokenization/make';
         $encrypted = $this->_encrypt(
             $this->config['pubKey'],
@@ -92,15 +92,15 @@ final class IranKish extends GatewayAbstract
         );
         $params = [
             'request' => [
-                'acceptorId'        => $this->config['acceptorId'],
-                'amount'            => $amount,
-                'billInfo'          => null,
-                'paymentId'         => $id,
-                'requestId'         => $id,
-                'requestTimestamp'  => time(),
-                'revertUri'         => $callback,
-                'terminalId'        => $this->config['terminalId'],
-                'transactionType'   => 'Purchase'
+                'acceptorId' => $this->config['acceptorId'],
+                'amount' => $amount,
+                'billInfo' => null,
+                'paymentId' => $id,
+                'requestId' => $id,
+                'requestTimestamp' => time(),
+                'revertUri' => $callback,
+                'terminalId' => $this->config['terminalId'],
+                'transactionType' => 'Purchase',
             ],
             'authenticationEnvelope' => $encrypted,
         ];
@@ -112,26 +112,31 @@ final class IranKish extends GatewayAbstract
 
         return [
             'token' => $result['result']['token'],
-            'fee'   => $this->fee($amount),
+            'fee' => $this->fee($amount),
         ];
     }
 
-    function redirect($id, $token)
+    public function redirect(int $id, string $token)
     {
         $action = $this->url . 'iuiv3/IPG/Index/';
         $fields = [
             'tokenIdentity' => $token,
         ];
+
         return view('larapay::redirector', compact('action', 'fields'));
     }
 
-    function verify($id, $amount, $token, array $params = [])
-    {
+    public function verify(
+        int $id,
+        int $amount,
+        string $token,
+        array $params = []
+    ): array {
         $default = [
-            'responseCode'              => null,
-            'retrievalReferenceNumber'  => null,
-            'systemTraceAuditNumber'    => null,
-            'token'                     => null,
+            'responseCode' => null,
+            'retrievalReferenceNumber' => null,
+            'systemTraceAuditNumber' => null,
+            'token' => null,
         ];
         $params = array_merge($default, $params);
 
@@ -141,10 +146,10 @@ final class IranKish extends GatewayAbstract
 
         $url = $this->url . 'api/v3/confirmation/purchase';
         $data = [
-            'terminalId'                => $this->config['terminalId'],
-            'retrievalReferenceNumber'  => $params['retrievalReferenceNumber'],
-            'systemTraceAuditNumber'    => $params['systemTraceAuditNumber'],
-            'tokenIdentity'             => $params['token'],
+            'terminalId' => $this->config['terminalId'],
+            'retrievalReferenceNumber' => $params['retrievalReferenceNumber'],
+            'systemTraceAuditNumber' => $params['systemTraceAuditNumber'],
+            'tokenIdentity' => $params['token'],
         ];
         $result = $this->_request($url, $data);
 
@@ -155,39 +160,40 @@ final class IranKish extends GatewayAbstract
         return [
             //TODO
             // 'card'           => null,
-            'tracking_code'     => $result['result']['systemTraceAuditNumber'],
-            'reference_id'      => $result['result']['retrievalReferenceNumber'],
-            'result'            => $result['result']['responseCode'],
-            'fee'               => $this->fee($amount),
+            'tracking_code' => $result['result']['systemTraceAuditNumber'],
+            'reference_id' => $result['result']['retrievalReferenceNumber'],
+            'result' => $result['result']['responseCode'],
+            'fee' => $this->fee($amount),
         ];
     }
 
-    private function _request($url, $data)
+    private function _request(string $url, array $data)
     {
-        $client = new Client();
+        $client = new Client;
 
         try {
             $response = $client->request(
                 'POST',
                 $url,
                 [
-                    'headers'   => [
-                        'Content-Type'  => 'application/json',
-                        'Accept'        => 'application/json',
+                    'headers' => [
+                        'Content-Type' => 'application/json',
+                        'Accept' => 'application/json',
                     ],
-                    'json'      => $data,
-                    'timeout'   => 10,
+                    'json' => $data,
+                    'timeout' => 10,
                 ]
             );
+
             return json_decode($response->getBody(), true);
         } catch (BadResponseException $e) {
             throw new GatewayException($e->getMessage());
         }
     }
 
-    private function _encrypt($pubKey, $terminalId, $password, $amount)
+    private function _encrypt(string $pubKey, string $terminalId, string $password, int $amount): array
     {
-        $data = $terminalId . $password . str_pad($amount, 12, '0', STR_PAD_LEFT) . '00';
+        $data = $terminalId . $password . str_pad((string) $amount, 12, '0', STR_PAD_LEFT) . '00';
         $data = hex2bin($data);
         $aesSecretKey = openssl_random_pseudo_bytes(16);
         $ivlen = openssl_cipher_iv_length($cipher = 'AES-128-CBC');

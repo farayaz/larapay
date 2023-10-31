@@ -2,11 +2,9 @@
 
 namespace Farayaz\Larapay\Gateways;
 
-use Exception;
 use Farayaz\Larapay\Exceptions\GatewayException;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\BadResponseException;
-use Illuminate\Support\Arr;
 
 final class Zibal extends GatewayAbstract
 {
@@ -36,15 +34,14 @@ final class Zibal extends GatewayAbstract
         '113' => 'amount مبلغ تراکنش از سقف میزان تراکنش بیشتر است.',
         '201' => 'قبلا تایید شده',
         '202' => 'سفارش پرداخت نشده یا ناموفق بوده است.',
-        '203' => 'trackIdنامعتبر می‌باشد.',
-
+        '203' => 'trackId نامعتبر می‌باشد.',
 
         'token-mismatch' => 'عدم تطبیق توکن',
     ];
 
     protected $requirements = ['merchant'];
 
-    function request($id, $amount, $callback)
+    public function request(int $id, int $amount, string $callback): array
     {
         $url = $this->url . 'v1/request';
         $params = [
@@ -61,19 +58,24 @@ final class Zibal extends GatewayAbstract
         ];
 
         $result = $this->_request($url, $params);
+
         return [
             'token' => $result['trackId'],
             'fee' => $this->fee($amount),
         ];
     }
 
-    function redirect($id, $token)
+    public function redirect(int $id, string $token)
     {
         return redirect($this->url . 'start/' . $token);
     }
 
-    function verify($id, $amount, $token, array $params = [])
-    {
+    public function verify(
+        int $id,
+        int $amount,
+        string $token,
+        array $params = []
+    ): array {
         $default = [
             'success' => null,
             'trackId' => null,
@@ -97,29 +99,29 @@ final class Zibal extends GatewayAbstract
         $result = $this->_request($url, $data);
 
         return [
-            'result'        => $this->translateStatus($result['status']),
-            'card'          => $result['cardNumber'],
+            'result' => $this->translateStatus($result['status']),
+            'card' => $result['cardNumber'],
             'tracking_code' => $result['refNumber'],
-            'reference_id'  => $result['refNumber'],
-            'fee'           => $this->fee($amount),
+            'reference_id' => $result['refNumber'],
+            'fee' => $this->fee($amount),
         ];
     }
 
-    private function _request($url, $data)
+    private function _request(string $url, array $data)
     {
-        $client = new Client();
+        $client = new Client;
 
         try {
             $response = $client->request(
                 'POST',
                 $url,
                 [
-                    'headers'   => [
-                        'Content-Type'  => 'application/json',
-                        'Accept'        => 'application/json',
+                    'headers' => [
+                        'Content-Type' => 'application/json',
+                        'Accept' => 'application/json',
                     ],
-                    'json'      => $data,
-                    'timeout'   => 10,
+                    'json' => $data,
+                    'timeout' => 10,
                 ]
             );
 
