@@ -18,6 +18,8 @@ final class Sepehrpay extends GatewayAbstract
         '-4' => 'امکان درخواست برای این تراکنش وجود ندارد.',
         '-5' => 'آدرس IP نامعتبر می‌باشد.',
         '-6' => 'عدم فعال بودن سرویس برگشت تراکنش برای پذیرنده',
+
+        'token-mismatch' => 'مغایرت توکن بازگشتی',
     ];
 
     protected $requirements = ['terminalId'];
