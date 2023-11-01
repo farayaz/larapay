@@ -59,14 +59,14 @@ final class IdPay extends GatewayAbstract
         $url = $this->url . '/v1.1/payment';
 
         $params = [
-            'order_id'  => $id,
-            'amount'    => $amount,
-            'callback'  => $callback,
-            'name'      => null,
-            'phone'     => null,
-            'mail'      => null,
-            'desc'      => null,
-            'reseller'  => null,
+            'order_id' => $id,
+            'amount' => $amount,
+            'callback' => $callback,
+            'name' => null,
+            'phone' => null,
+            'mail' => null,
+            'desc' => null,
+            'reseller' => null,
         ];
 
         $result = $this->_request($url, $params);
@@ -77,7 +77,7 @@ final class IdPay extends GatewayAbstract
 
         return [
             'token' => $result['id'],
-            'fee'   => $this->fee($amount),
+            'fee' => $this->fee($amount),
         ];
     }
 
@@ -88,14 +88,14 @@ final class IdPay extends GatewayAbstract
         array $params = []
     ): array {
         $default = [
-            'id'                => null,
-            'date'              => null,
-            'amount'            => null,
-            'status'            => null,
-            'card_no'           => null,
-            'track_id'          => null,
-            'order_id'          => null,
-            'hashed_card_no'    => null,
+            'id' => null,
+            'date' => null,
+            'amount' => null,
+            'status' => null,
+            'card_no' => null,
+            'track_id' => null,
+            'order_id' => null,
+            'hashed_card_no' => null,
         ];
         $params = array_merge($default, $params);
 
@@ -105,8 +105,8 @@ final class IdPay extends GatewayAbstract
 
         $url = $this->url . '/v1.1/payment/verify';
         $data = [
-            'id'        => $params['id'],
-            'order_id'  => $params['order_id'],
+            'id' => $params['id'],
+            'order_id' => $params['order_id'],
         ];
 
         $result = $this->_request($url, $data);
@@ -116,9 +116,9 @@ final class IdPay extends GatewayAbstract
         }
 
         return [
-            'fee'           => $this->fee($amount),
-            'result'        => $result['status'],
-            'reference_id'  => $result['track_id'],
+            'fee' => $this->fee($amount),
+            'result' => $result['status'],
+            'reference_id' => $result['track_id'],
             'tracking_code' => $result['payment']['track_id'],
         ];
     }
@@ -140,14 +140,14 @@ final class IdPay extends GatewayAbstract
                 'POST',
                 $url,
                 [
-                    'headers'   => [
-                        'X-API-KEY'     => $this->config['apiKey'],
-                        'X-SANDBOX'     => 0, // set zero to use production gateway
-                        'Content-Type'  => 'application/json',
-                        'Accept'        => 'application/json',
+                    'headers' => [
+                        'X-API-KEY' => $this->config['apiKey'],
+                        'X-SANDBOX' => 0, // set zero to use production gateway
+                        'Content-Type' => 'application/json',
+                        'Accept' => 'application/json',
                     ],
-                    'json'      => $data,
-                    'timeout'   => 10,
+                    'json' => $data,
+                    'timeout' => 10,
                 ]
             );
 
