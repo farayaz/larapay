@@ -1,7 +1,6 @@
 {
   "name": "farayaz/larapay",
   "description": "iranian online payment gateways",
-  "type": "project",
   "license": "MIT",
   "autoload": {
     "psr-4": {
