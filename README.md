@@ -19,6 +19,7 @@ Larapay is a Laravel package for integrating Iranian payment gateways.
 |**IranKish**|[Iran Kish](https://www.irankish.com/ "Iran Kish")| ایران کیش|`terminalId`, `password`, `acceptorId`, `pubKey`|
 |**PardakhtNovin**|[Pardakht Novin](https://pna.co.ir/ "Pardakht Novin")|پرداخت نوین|`userId`, `password`, `terminalId`|
 |**Payir**|[Pay.ir](https://www.pay.ir/ "Pay.ir")|پی.آی‌آر|`api`|
+|**PayPing**|[PayPing](https://payping.ir/ "PayPing")|پی پینگ|`token`|
 |**Polam**|[Polam(Poolam)](https://polam.io/ "Polam(Poolam)")|پولام|`api_key`|
 |**Sep**|[Saman Electronic Payment](https://www.sep.ir/ "Saman Electronic Payment")| پرداخت الکترونیک سامان (سپ)|`terminalId`|
 |**SepehrPay**|[Sepehr Pay](https://www.sepehrpay.com/ "Sepehr Pay")|پرداخت الکترونیک سپهر (مبنا)|`terminalId`|
