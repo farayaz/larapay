@@ -1,15 +1,36 @@
+name: Automatic Releases
+
 on:
   push:
     tags:
       - 'v*.*.*'
+
 jobs:
   release:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-suggest
+
+      # - name: Build package
+      #   run: |
+      #     # Add commands to build your Laravel package here
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+
+      - name: Run tests
+        run: |
+          # Add commands to run your package tests here
+
       - name: Create release
+        id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
