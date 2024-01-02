@@ -29,7 +29,8 @@
     "illuminate/container": "^10.0",
     "illuminate/contracts": "^10.0",
     "illuminate/support": "^10.0",
-    "guzzlehttp/guzzle": "^7.7"
+    "guzzlehttp/guzzle": "^7.7",
+    "morilog/jalali": "3.*"
   },
   "require-dev": {
     "laravel/pint": "^1.0"
