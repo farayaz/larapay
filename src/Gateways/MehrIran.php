@@ -8,7 +8,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\BadResponseException;
 use Morilog\Jalali\Jalalian;
 
-final class QMB extends GatewayAbstract
+final class MehrIran extends GatewayAbstract
 {
     protected $url = 'https://kalayeiranipg.qmb.ir/pg/';
 
