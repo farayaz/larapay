@@ -67,7 +67,7 @@ $gatewayConfig = [ // gateway config | تنظیمات درگاه
 
 $amount = 10000;
 $id = 1230; // transaction id | شماره تراکنش
-$callback = route('api.transactions.verify', $id);
+$callbackUrl = route('api.transactions.verify', $id);
 $nationalId = '1234567890';
 $mobile = '09131234567';
 
@@ -76,7 +76,7 @@ try {
         ->request(
             id: $id,
             amount: $amount,
-            callback: $callback,
+            callbackUrl: $callbackUrl,
             nationalId: $nationalId,
             mobile: $mobile
         );
@@ -98,7 +98,7 @@ Transfer the user to gateway with the received token:
 ```php
 try {
     return Larapay::gateway($gatewayClass, $gatewayConfig)
-        ->redirect($id, $token);
+        ->redirect($id, $token, $callbackUrl);
 } catch (LarapayException $e) {
     throw $e;
 }

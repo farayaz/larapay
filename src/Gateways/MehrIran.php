@@ -66,9 +66,9 @@ final class MehrIran extends GatewayAbstract
     public function request(
         int $id,
         int $amount,
-        string $callbackUrl,
         string $nationalId,
-        string $mobile
+        string $mobile,
+        string $callbackUrl
     ): array {
         $url = $this->url . 'service/vpos/trxReq';
         $params = [
@@ -109,8 +109,14 @@ final class MehrIran extends GatewayAbstract
         return View::make('larapay::redirector', compact('action', 'fields'));
     }
 
-    public function verify(int $id, int $amount, string $token, array $params = []): array
-    {
+    public function verify(
+        int $id,
+        int $amount,
+        string $nationalId,
+        string $mobile,
+        string $token,
+        array $params
+    ): array {
         $default = [
             'resp-code' => 'null',
             'transaction-id' => null,

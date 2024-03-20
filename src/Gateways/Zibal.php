@@ -45,9 +45,9 @@ final class Zibal extends GatewayAbstract
     public function request(
         int $id,
         int $amount,
-        string $callbackUrl,
         string $nationalId,
-        string $mobile
+        string $mobile,
+        string $callbackUrl
     ): array {
         $url = $this->url . 'v1/request';
         $params = [
@@ -71,7 +71,7 @@ final class Zibal extends GatewayAbstract
         ];
     }
 
-    public function redirect(int $id, string $token)
+    public function redirect(int $id, string $token, string $callbackUrl)
     {
         return Redirect::to($this->url . 'start/' . $token);
     }
@@ -79,8 +79,10 @@ final class Zibal extends GatewayAbstract
     public function verify(
         int $id,
         int $amount,
+        string $nationalId,
+        string $mobile,
         string $token,
-        array $params = []
+        array $params
     ): array {
         $default = [
             'success' => null,

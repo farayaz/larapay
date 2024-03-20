@@ -29,9 +29,9 @@ final class PayPing extends GatewayAbstract
     public function request(
         int $id,
         int $amount,
-        string $callbackUrl,
         string $nationalId,
-        string $mobile
+        string $mobile,
+        string $callbackUrl
     ): array {
         $url = $this->url . 'pay';
         $data = [
@@ -55,8 +55,14 @@ final class PayPing extends GatewayAbstract
         return Redirect::to($this->url . 'pay/gotoipg/' . $token);
     }
 
-    public function verify(int $id, int $amount, string $token, array $params = []): array
-    {
+    public function verify(
+        int $id,
+        int $amount,
+        string $nationalId,
+        string $mobile,
+        string $token,
+        array $params
+    ): array {
         $default = [
             'code' => null,
             'refid' => null,

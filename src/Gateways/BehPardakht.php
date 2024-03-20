@@ -66,9 +66,9 @@ class BehPardakht extends GatewayAbstract
     public function request(
         int $id,
         int $amount,
-        string $callbackUrl,
         string $nationalId,
-        string $mobile
+        string $mobile,
+        string $callbackUrl
     ): array {
         $params = [
             'bpPayRequest' => [
@@ -103,7 +103,7 @@ class BehPardakht extends GatewayAbstract
         ];
     }
 
-    public function redirect(int $id, string $token)
+    public function redirect(int $id, string $token, string $callbackUrl)
     {
         $action = 'https://bpm.shaparak.ir/pgwchannel/startpay.mellat';
         $fields = [
@@ -116,10 +116,11 @@ class BehPardakht extends GatewayAbstract
     public function verify(
         int $id,
         int $amount,
+        string $nationalId,
+        string $mobile,
         string $token,
-        array $params = []
+        array $params
     ): array {
-
         $default = [
             'ResCode' => null,
             'RefId' => null,

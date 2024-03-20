@@ -27,9 +27,9 @@ final class Digipay extends GatewayAbstract
     public function request(
         int $id,
         int $amount,
-        string $callbackUrl,
         string $nationalId,
-        string $mobile
+        string $mobile,
+        string $callbackUrl
     ): array {
         $url = $this->url . 'businesses/ticket?type=0';
         $data = [
@@ -60,8 +60,14 @@ final class Digipay extends GatewayAbstract
         return Redirect::to($this->url . 'purchases/ipg/pay/' . $token);
     }
 
-    public function verify(int $id, int $amount, string $token, array $params = []): array
-    {
+    public function verify(
+        int $id,
+        int $amount,
+        string $nationalId,
+        string $mobile,
+        string $token,
+        array $params
+    ): array {
         $default = [
             'amount' => null,
             'providerId' => null,

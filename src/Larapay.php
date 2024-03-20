@@ -19,25 +19,36 @@ final class Larapay
         return $this;
     }
 
-    public function request(int $id, int $amount, string $callback)
-    {
+    public function request(
+        int $id,
+        int $amount,
+        string $nationalId,
+        string $mobile,
+        string $callbackUrl
+    ) {
         $this->_check();
 
-        return $this->gateway->request($id, $amount, $callback);
+        return $this->gateway->request($id, $amount, $nationalId, $mobile, $callbackUrl);
     }
 
-    public function verify(int $id, int $amount, string $token, array $params = [])
-    {
+    public function verify(
+        int $id,
+        int $amount,
+        string $nationalId,
+        string $mobile,
+        string $token,
+        array $params
+    ) {
         $this->_check();
 
-        return $this->gateway->verify($id, $amount, $token, $params);
+        return $this->gateway->verify($id, $amount, $nationalId, $mobile, $token, $params);
     }
 
-    public function redirect(int $id, string $token)
+    public function redirect(int $id, string $token, string $callbackUrl)
     {
         $this->_check();
 
-        return $this->gateway->redirect($id, $token);
+        return $this->gateway->redirect($id, $token, $callbackUrl);
     }
 
     private function _check()
