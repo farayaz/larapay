@@ -2,10 +2,11 @@
 
 namespace Farayaz\Larapay\Gateways;
 
-use Farayaz\Larapay\Exceptions\GatewayException;
+use Farayaz\Larapay\Exceptions\LarapayException;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\BadResponseException;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Redirect;
 
 final class Digipay extends GatewayAbstract
 {
@@ -23,14 +24,19 @@ final class Digipay extends GatewayAbstract
         'client_secret',
     ];
 
-    public function request(int $id, int $amount, string $callback): array
-    {
+    public function request(
+        int $id,
+        int $amount,
+        string $callbackUrl,
+        string $nationalId,
+        string $mobile
+    ): array {
         $url = $this->url . 'businesses/ticket?type=0';
         $data = [
             'amount' => $amount,
             'cellNumber' => null,
             'providerId' => $id,
-            'redirectUrl' => $callback,
+            'redirectUrl' => $callbackUrl,
             'userType' => 2,
         ];
         $headers = [
@@ -40,7 +46,7 @@ final class Digipay extends GatewayAbstract
 
         if (($result['result']['status'] ?? -1) != 0) {
             $message = $data['result']['message'] ?? 'unknown error';
-            throw new GatewayException($message);
+            throw new LarapayException($message);
         }
 
         return [
@@ -51,7 +57,7 @@ final class Digipay extends GatewayAbstract
 
     public function redirect($id, $token)
     {
-        return redirect($this->url . 'purchases/ipg/pay/' . $token);
+        return Redirect::to($this->url . 'purchases/ipg/pay/' . $token);
     }
 
     public function verify(int $id, int $amount, string $token, array $params = []): array
@@ -70,18 +76,18 @@ final class Digipay extends GatewayAbstract
         $params = array_merge($default, $params);
 
         if ($params['providerId'] != $id) {
-            throw new GatewayException($this->translateStatus('id-mismatch'));
+            throw new LarapayException($this->translateStatus('id-mismatch'));
         }
 
         $url = $this->url . 'purchases/verify/' . $params['trackingCode'];
         $headers = [
             'Authorization' => 'Bearer ' . $this->authenticate(),
         ];
-        $result = $this->_request($url, $data, $headers);
+        $result = $this->_request($url, [], $headers);
 
         if (($result['result']['status'] ?? -1) != 0) {
             $message = $result['result']['message'] ?? 'unknown error';
-            throw new GatewayException($message);
+            throw new LarapayException($message);
         }
 
         return [
@@ -144,7 +150,7 @@ final class Digipay extends GatewayAbstract
                     $message = $this->translateStatus('401-authenticate');
                 }
             }
-            throw new GatewayException($message);
+            throw new LarapayException($message);
         }
     }
 }

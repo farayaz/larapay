@@ -2,9 +2,10 @@
 
 namespace Farayaz\Larapay\Gateways;
 
-use Farayaz\Larapay\Exceptions\GatewayException;
+use Farayaz\Larapay\Exceptions\LarapayException;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\BadResponseException;
+use Illuminate\Support\Facades\Redirect;
 
 final class Zibal extends GatewayAbstract
 {
@@ -41,13 +42,18 @@ final class Zibal extends GatewayAbstract
 
     protected $requirements = ['merchant'];
 
-    public function request(int $id, int $amount, string $callback): array
-    {
+    public function request(
+        int $id,
+        int $amount,
+        string $callbackUrl,
+        string $nationalId,
+        string $mobile
+    ): array {
         $url = $this->url . 'v1/request';
         $params = [
             'merchant' => $this->config['merchant'],
             'amount' => $amount,
-            'callbackUrl' => $callback,
+            'callbackUrl' => $callbackUrl,
             'description' => null,
             'orderId' => $id,
             'mobile' => null,
@@ -67,7 +73,7 @@ final class Zibal extends GatewayAbstract
 
     public function redirect(int $id, string $token)
     {
-        return redirect($this->url . 'start/' . $token);
+        return Redirect::to($this->url . 'start/' . $token);
     }
 
     public function verify(
@@ -85,10 +91,10 @@ final class Zibal extends GatewayAbstract
         $params = array_merge($default, $params);
 
         if ($params['trackId'] != $token) {
-            throw new GatewayException($this->translateStatus('token-mismatch'));
+            throw new LarapayException($this->translateStatus('token-mismatch'));
         }
         if ($params['success'] != 1) {
-            throw new GatewayException($this->translateStatus($params['status']));
+            throw new LarapayException($this->translateStatus($params['status']));
         }
 
         $url = $this->url . 'v1/verify';
@@ -128,12 +134,12 @@ final class Zibal extends GatewayAbstract
             $result = json_decode($response->getBody(), true);
 
             if ($result['result'] != 100) {
-                throw new GatewayException($this->translateStatus($result['result']));
+                throw new LarapayException($this->translateStatus($result['result']));
             }
 
             return $result;
         } catch (BadResponseException $e) {
-            throw new GatewayException($e->getMessage());
+            throw new LarapayException($e->getMessage());
         }
     }
 }

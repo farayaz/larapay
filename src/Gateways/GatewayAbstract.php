@@ -2,7 +2,7 @@
 
 namespace Farayaz\Larapay\Gateways;
 
-use Farayaz\Larapay\Exceptions\GatewayException;
+use Farayaz\Larapay\Exceptions\LarapayException;
 use Illuminate\Support\Arr;
 
 abstract class GatewayAbstract
@@ -16,7 +16,13 @@ abstract class GatewayAbstract
         $this->requirements();
     }
 
-    abstract public function request(int $id, int $amount, string $callback): array;
+    abstract public function request(
+        int $id,
+        int $amount,
+        string $callbackUrl,
+        string $nationalId,
+        string $mobile
+    ): array;
 
     abstract public function verify(int $id, int $amount, string $token, array $params = []): array;
 
@@ -25,11 +31,11 @@ abstract class GatewayAbstract
     protected function requirements()
     {
         if (! Arr::has($this->config, $this->requirements)) {
-            throw new GatewayException(implode(', ', $this->requirements) . ' is required.');
+            throw new LarapayException(implode(', ', $this->requirements) . ' is required.');
         }
     }
 
-    protected function translateStatus(int|string $code)
+    protected function translateStatus(int|string $code = null)
     {
         return $this->statuses[$code] ?? $code;
     }

@@ -2,9 +2,10 @@
 
 namespace Farayaz\Larapay\Gateways;
 
-use Farayaz\Larapay\Exceptions\GatewayException;
+use Farayaz\Larapay\Exceptions\LarapayException;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\BadResponseException;
+use Illuminate\Support\Facades\View;
 
 final class PardakhtNovin extends GatewayAbstract
 {
@@ -27,7 +28,9 @@ final class PardakhtNovin extends GatewayAbstract
     public function request(
         int $id,
         int $amount,
-        string $callback
+        string $callbackUrl,
+        string $nationalId,
+        string $mobile
     ): array {
         $url = $this->url . 'ref-payment2/RestServices/mts/generateTokenWithNoSign/';
         $params = [
@@ -39,12 +42,12 @@ final class PardakhtNovin extends GatewayAbstract
             'ReserveNum' => $id,
             'Amount' => $amount,
             'TerminalId' => $this->config['terminalId'],
-            'RedirectUrl' => $callback,
+            'RedirectUrl' => $callbackUrl,
         ];
         $result = $this->_request($url, $params);
 
         if ($result['Result'] != 'erSucceed') {
-            throw new GatewayException($this->translateStatus($result['Result']));
+            throw new LarapayException($this->translateStatus($result['Result']));
         }
 
         return [
@@ -60,7 +63,7 @@ final class PardakhtNovin extends GatewayAbstract
             'token' => $token,
         ];
 
-        return view('larapay::redirector', compact('action', 'fields'));
+        return View::make('larapay::redirector', compact('action', 'fields'));
     }
 
     public function verify(
@@ -80,11 +83,11 @@ final class PardakhtNovin extends GatewayAbstract
         $params = array_merge($default, $params);
 
         if ($params['State'] != 'OK') {
-            throw new GatewayException($this->translateStatus($params['State']));
+            throw new LarapayException($this->translateStatus($params['State']));
         }
 
         if ($params['token'] != $token) {
-            throw new GatewayException($this->translateStatus('token-mismatch'));
+            throw new LarapayException($this->translateStatus('token-mismatch'));
         }
 
         $url = $this->url . 'ref-payment2/RestServices/mts/verifyMerchantTrans/';
@@ -99,7 +102,7 @@ final class PardakhtNovin extends GatewayAbstract
         $result = $this->_request($url, $data);
 
         if ($result['Result'] != 'erSucceed') {
-            throw new GatewayException($this->translateStatus($result['Result']));
+            throw new LarapayException($this->translateStatus($result['Result']));
         }
 
         return [
@@ -130,7 +133,7 @@ final class PardakhtNovin extends GatewayAbstract
 
             return json_decode($response->getBody(), true);
         } catch (BadResponseException $e) {
-            throw new GatewayException($e->getMessage());
+            throw new LarapayException($e->getMessage());
         }
     }
 }

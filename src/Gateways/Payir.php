@@ -2,9 +2,10 @@
 
 namespace Farayaz\Larapay\Gateways;
 
-use Farayaz\Larapay\Exceptions\GatewayException;
+use Farayaz\Larapay\Exceptions\LarapayException;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\BadResponseException;
+use Illuminate\Support\Facades\Redirect;
 
 final class Payir extends GatewayAbstract
 {
@@ -46,13 +47,18 @@ final class Payir extends GatewayAbstract
 
     protected $requirements = ['api'];
 
-    public function request(int $id, int $amount, string $callback): array
-    {
+    public function request(
+        int $id,
+        int $amount,
+        string $callbackUrl,
+        string $nationalId,
+        string $mobile
+    ): array {
         $url = $this->url . 'send';
         $params = [
             'api' => $this->config['api'],
             'amount' => $amount,
-            'redirect' => $callback,
+            'redirect' => $callbackUrl,
             'mobile' => '',
             'factorNumber' => $id,
             'description' => $id,
@@ -69,7 +75,7 @@ final class Payir extends GatewayAbstract
 
     public function redirect(int $id, string $token)
     {
-        return redirect($this->url . $token);
+        return Redirect::to($this->url . $token);
     }
 
     public function verify(
@@ -85,10 +91,10 @@ final class Payir extends GatewayAbstract
         $params = array_merge($default, $params);
 
         if ($params['token'] != $token) {
-            throw new GatewayException($this->translateStatus('token-mismatch'));
+            throw new LarapayException($this->translateStatus('token-mismatch'));
         }
         if ($params['status'] != 1) {
-            throw new GatewayException($this->translateStatus($params['status']));
+            throw new LarapayException($this->translateStatus($params['status']));
         }
 
         $url = $this->url . 'verify';
@@ -134,7 +140,7 @@ final class Payir extends GatewayAbstract
                 $result = json_decode($e->getResponse()->getBody(), true);
                 $message = $result['errorCode'] . ' - ' . $result['errorMessage'];
             }
-            throw new GatewayException($message);
+            throw new LarapayException($message);
         }
     }
 

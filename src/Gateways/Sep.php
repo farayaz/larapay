@@ -2,9 +2,10 @@
 
 namespace Farayaz\Larapay\Gateways;
 
-use Farayaz\Larapay\Exceptions\GatewayException;
+use Farayaz\Larapay\Exceptions\LarapayException;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\BadResponseException;
+use Illuminate\Support\Facades\View;
 
 final class Sep extends GatewayAbstract
 {
@@ -53,7 +54,9 @@ final class Sep extends GatewayAbstract
     public function request(
         int $id,
         int $amount,
-        string $callback
+        string $callbackUrl,
+        string $nationalId,
+        string $mobile
     ): array {
         $url = $this->url . 'OnlinePG/OnlinePG';
         $params = [
@@ -61,12 +64,12 @@ final class Sep extends GatewayAbstract
             'TerminalId' => $this->config['terminalId'],
             'ResNum' => $id,
             'Amount' => $amount,
-            'RedirectUrl' => $callback,
+            'RedirectUrl' => $callbackUrl,
         ];
         $result = $this->_request($url, $params);
 
         if ($result['status'] != 1) {
-            throw new GatewayException($this->translateStatus($result['errorDesc']));
+            throw new LarapayException($this->translateStatus($result['errorDesc']));
         }
 
         return [
@@ -83,7 +86,7 @@ final class Sep extends GatewayAbstract
             'language' => 'fa',
         ];
 
-        return view('larapay::redirector', compact('action', 'fields'));
+        return View::make('larapay::redirector', compact('action', 'fields'));
     }
 
     public function verify(
@@ -111,7 +114,7 @@ final class Sep extends GatewayAbstract
         $params = array_merge($default, $params);
 
         if ($params['Status'] != '2') {
-            throw new GatewayException($this->translateStatus($params['Status']));
+            throw new LarapayException($this->translateStatus($params['Status']));
         }
 
         $url = $this->url . 'verifyTxnRandomSessionkey/ipg/VerifyTransaction';
@@ -122,11 +125,11 @@ final class Sep extends GatewayAbstract
         $result = $this->_request($url, $data);
 
         if ($result['ResultCode'] == 0) {
-            throw new GatewayException($this->translateStatus($result['ResultCode']));
+            throw new LarapayException($this->translateStatus($result['ResultCode']));
         }
 
         if ($amount != $result['TransactionDetail']['OrginalAmount']) {
-            throw new GatewayException($this->translateStatus('amount-mismatch'));
+            throw new LarapayException($this->translateStatus('amount-mismatch'));
         }
 
         return [
@@ -158,7 +161,7 @@ final class Sep extends GatewayAbstract
 
             return json_decode($response->getBody(), true);
         } catch (BadResponseException $e) {
-            throw new GatewayException($e->getMessage());
+            throw new LarapayException($e->getMessage());
         }
     }
 }

@@ -2,9 +2,10 @@
 
 namespace Farayaz\Larapay\Gateways;
 
-use Farayaz\Larapay\Exceptions\GatewayException;
+use Farayaz\Larapay\Exceptions\LarapayException;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\BadResponseException;
+use Illuminate\Support\Facades\View;
 
 final class IranKish extends GatewayAbstract
 {
@@ -81,7 +82,9 @@ final class IranKish extends GatewayAbstract
     public function request(
         int $id,
         int $amount,
-        string $callback
+        string $callbackUrl,
+        string $nationalId,
+        string $mobile
     ): array {
         $url = $this->url . 'api/v3/tokenization/make';
         $encrypted = $this->_encrypt(
@@ -98,7 +101,7 @@ final class IranKish extends GatewayAbstract
                 'paymentId' => $id,
                 'requestId' => $id,
                 'requestTimestamp' => time(),
-                'revertUri' => $callback,
+                'revertUri' => $callbackUrl,
                 'terminalId' => $this->config['terminalId'],
                 'transactionType' => 'Purchase',
             ],
@@ -107,7 +110,7 @@ final class IranKish extends GatewayAbstract
         $result = $this->_request($url, $params);
 
         if ($result['responseCode'] != '00') {
-            throw new GatewayException($result['description']);
+            throw new LarapayException($result['description']);
         }
 
         return [
@@ -123,7 +126,7 @@ final class IranKish extends GatewayAbstract
             'tokenIdentity' => $token,
         ];
 
-        return view('larapay::redirector', compact('action', 'fields'));
+        return View::make('larapay::redirector', compact('action', 'fields'));
     }
 
     public function verify(
@@ -141,7 +144,7 @@ final class IranKish extends GatewayAbstract
         $params = array_merge($default, $params);
 
         if ($params['responseCode'] != '00') {
-            throw new GatewayException($this->translateStatus($params['responseCode']));
+            throw new LarapayException($this->translateStatus($params['responseCode']));
         }
 
         $url = $this->url . 'api/v3/confirmation/purchase';
@@ -154,7 +157,7 @@ final class IranKish extends GatewayAbstract
         $result = $this->_request($url, $data);
 
         if ($result['result']['responseCode'] != '00') {
-            throw new GatewayException($this->translateStatus($params['result']['responseCode']));
+            throw new LarapayException($this->translateStatus($params['result']['responseCode']));
         }
 
         return [
@@ -187,7 +190,7 @@ final class IranKish extends GatewayAbstract
 
             return json_decode($response->getBody(), true);
         } catch (BadResponseException $e) {
-            throw new GatewayException($e->getMessage());
+            throw new LarapayException($e->getMessage());
         }
     }
 

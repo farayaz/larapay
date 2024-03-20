@@ -2,9 +2,10 @@
 
 namespace Farayaz\Larapay\Gateways;
 
-use Farayaz\Larapay\Exceptions\GatewayException;
+use Farayaz\Larapay\Exceptions\LarapayException;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\BadResponseException;
+use Illuminate\Support\Facades\Redirect;
 
 final class PayPing extends GatewayAbstract
 {
@@ -25,15 +26,20 @@ final class PayPing extends GatewayAbstract
         'token',
     ];
 
-    public function request(int $id, int $amount, string $callback): array
-    {
+    public function request(
+        int $id,
+        int $amount,
+        string $callbackUrl,
+        string $nationalId,
+        string $mobile
+    ): array {
         $url = $this->url . 'pay';
         $data = [
             'amount' => $amount / 10,
             'payerIdentity' => null,
             'payerName' => null,
             'description' => $id,
-            'returnUrl' => $callback,
+            'returnUrl' => $callbackUrl,
             'clientRefId' => $id,
         ];
         $result = $this->_request($url, $data);
@@ -46,7 +52,7 @@ final class PayPing extends GatewayAbstract
 
     public function redirect($id, $token)
     {
-        return redirect($this->url . 'pay/gotoipg/' . $token);
+        return Redirect::to($this->url . 'pay/gotoipg/' . $token);
     }
 
     public function verify(int $id, int $amount, string $token, array $params = []): array
@@ -61,11 +67,11 @@ final class PayPing extends GatewayAbstract
         $params = array_merge($default, $params);
 
         if ($params['code'] != $token) {
-            throw new GatewayException($this->translateStatus('token-mismatch'));
+            throw new LarapayException($this->translateStatus('token-mismatch'));
         }
 
         if ($params['clientrefid'] != $id) {
-            throw new GatewayException($this->translateStatus('id-mismatch'));
+            throw new LarapayException($this->translateStatus('id-mismatch'));
         }
 
         $url = $this->url . 'pay/verify';
@@ -114,7 +120,7 @@ final class PayPing extends GatewayAbstract
                     $message = implode(', ', array_values($result));
                 }
             }
-            throw new GatewayException($message);
+            throw new LarapayException($message);
         }
     }
 }
