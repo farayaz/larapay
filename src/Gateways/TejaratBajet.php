@@ -31,17 +31,17 @@ final class TejaratBajet extends GatewayAbstract
         ];
 
         $url = $this->_url('/customers/' . $nationalId . '/balance');
-        // $result = $this->_request('GET', $url, [], $headers);
-        // if ($result['result']['balance'] < $amount) {
-        //     throw new LarapayException('عدم موجودی کافی: ' . number_format($result['result']['balance']));
-        // }
+        $result = $this->_request('GET', $url, [], $headers);
+        if ($result['result']['balance'] < $amount) {
+            throw new LarapayException('عدم موجودی کافی: ' . number_format($result['result']['balance']));
+        }
 
         $url = $this->_url('/customers/' . $nationalId . '/purchases/authorization?trackId=' . $id);
         $data = [
             'amount' => $amount,
             'description' => $id,
         ];
-        // $this->_request('POST', $url, $data, $headers);
+        $this->_request('POST', $url, $data, $headers);
 
         return [
             'token' => $id,
