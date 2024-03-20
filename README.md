@@ -57,7 +57,7 @@ To make the payment, 3 steps must be done:
 ### Step 1: get token | مرحله ۱: دریافت توکن
 
 ```php
-use Farayaz\Larapay\Exceptions\GatewayException;
+use Farayaz\Larapay\Exceptions\LarapayException;
 use Larapay;
 
 $gatewayClass = 'ZarinPal';
@@ -68,15 +68,19 @@ $gatewayConfig = [ // gateway config | تنظیمات درگاه
 $amount = 10000;
 $id = 1230; // transaction id | شماره تراکنش
 $callback = route('api.transactions.verify', $id);
+$nationalId = '1234567890';
+$mobile = '09131234567';
 
 try {
     $result = Larapay::gateway($gatewayClass, $gatewayConfig)
         ->request(
             id: $id,
             amount: $amount,
-            callback: $callback
+            callback: $callback,
+            nationalId: $nationalId,
+            mobile: $mobile
         );
-} catch (GatewayException $e) {
+} catch (LarapayException $e) {
     throw $e;
 }
 
@@ -95,7 +99,7 @@ Transfer the user to gateway with the received token:
 try {
     return Larapay::gateway($gatewayClass, $gatewayConfig)
         ->redirect($id, $token);
-} catch (GatewayException $e) {
+} catch (LarapayException $e) {
     throw $e;
 }
 ```
@@ -116,7 +120,7 @@ try {
             token: $token,
             params: $params
         );
-} catch (GatewayException $e) {
+} catch (LarapayException $e) {
     // transaction failed | تراکنش ناموفق
     throw $e;
 }

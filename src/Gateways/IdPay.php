@@ -2,9 +2,10 @@
 
 namespace Farayaz\Larapay\Gateways;
 
-use Farayaz\Larapay\Exceptions\GatewayException;
+use Farayaz\Larapay\Exceptions\LarapayException;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\BadResponseException;
+use Illuminate\Support\Facades\Redirect;
 
 final class IdPay extends GatewayAbstract
 {
@@ -29,14 +30,19 @@ final class IdPay extends GatewayAbstract
 
     protected $requirements = ['apiKey', 'sandbox'];
 
-    public function request(int $id, int $amount, string $callback): array
-    {
+    public function request(
+        int $id,
+        int $amount,
+        string $callbackUrl,
+        string $nationalId,
+        string $mobile
+    ): array {
         $url = $this->url . '/v1.1/payment';
 
         $params = [
             'order_id' => $id,
             'amount' => $amount,
-            'callback' => $callback,
+            'callback' => $callbackUrl,
             'name' => null,
             'phone' => null,
             'mail' => null,
@@ -70,10 +76,10 @@ final class IdPay extends GatewayAbstract
         ];
         $params = array_merge($default, $params);
         if ($params['status'] != '10') {
-            throw new GatewayException($this->translateStatus($params['status']));
+            throw new LarapayException($this->translateStatus($params['status']));
         }
         if ($params['id'] != $token) {
-            throw new GatewayException($this->translateStatus('token-mismatch'));
+            throw new LarapayException($this->translateStatus('token-mismatch'));
         }
 
         $url = $this->url . '/v1.1/payment/verify';
@@ -83,7 +89,7 @@ final class IdPay extends GatewayAbstract
         ];
         $result = $this->_request($url, $data);
         if ($result['status'] != '100') {
-            throw new GatewayException($this->translateStatus($result['status']));
+            throw new LarapayException($this->translateStatus($result['status']));
         }
 
         return [
@@ -98,7 +104,8 @@ final class IdPay extends GatewayAbstract
     public function redirect(int $id, string $token)
     {
         $url = 'https://idpay.ir/p/ws' . ($this->config['sandbox'] ? '-sandbox' : '') . '/' . $token;
-        return redirect($url);
+
+        return Redirect::to($url);
     }
 
     private function _request(string $url, array $data)
@@ -119,6 +126,7 @@ final class IdPay extends GatewayAbstract
                     'timeout' => 10,
                 ]
             );
+
             return json_decode($response->getBody()->getContents(), true);
         } catch (BadResponseException $e) {
             $message = $e->getMessage();
@@ -126,7 +134,7 @@ final class IdPay extends GatewayAbstract
                 $result = json_decode($e->getResponse()->getBody(), 1);
                 $message = $this->translateStatus($result['error_message'] ?? 'unknown error');
             }
-            throw new GatewayException($message);
+            throw new LarapayException($message);
         }
     }
 }

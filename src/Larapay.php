@@ -2,7 +2,7 @@
 
 namespace Farayaz\Larapay;
 
-use Farayaz\Larapay\Exceptions\GatewayException;
+use Farayaz\Larapay\Exceptions\LarapayException;
 
 final class Larapay
 {
@@ -12,7 +12,7 @@ final class Larapay
     {
         $gatewayClass = __NAMESPACE__ . '\Gateways\\' . $gateway;
         if (! class_exists($gatewayClass)) {
-            throw new GatewayException('gateway "' . $gateway . '" doesnt exists');
+            throw new LarapayException('gateway "' . $gateway . '" doesnt exists');
         }
         $this->gateway = new $gatewayClass($config);
 
@@ -43,7 +43,7 @@ final class Larapay
     private function _check()
     {
         if (empty($this->gateway)) {
-            throw new GatewayException(__METHOD__ . __LINE__);
+            throw new LarapayException(__METHOD__ . __LINE__);
         }
     }
 }

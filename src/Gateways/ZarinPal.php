@@ -2,9 +2,10 @@
 
 namespace Farayaz\Larapay\Gateways;
 
-use Farayaz\Larapay\Exceptions\GatewayException;
+use Farayaz\Larapay\Exceptions\LarapayException;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\BadResponseException;
+use Illuminate\Support\Facades\Redirect;
 
 final class ZarinPal extends GatewayAbstract
 {
@@ -39,14 +40,16 @@ final class ZarinPal extends GatewayAbstract
     public function request(
         int $id,
         int $amount,
-        string $callback
+        string $callbackUrl,
+        string $nationalId,
+        string $mobile
     ): array {
         $url = 'https://api.zarinpal.com/pg/v4/payment/request.json';
         $params = [
             'merchant_id' => $this->config['merchant_id'],
             'amount' => $amount,
             'description' => $id . '-' . $amount,
-            'callback_url' => $callback,
+            'callback_url' => $callbackUrl,
         ];
 
         $result = $this->_request($url, $params);
@@ -60,7 +63,7 @@ final class ZarinPal extends GatewayAbstract
 
     public function redirect(int $id, string $token)
     {
-        return redirect('https://www.zarinpal.com/pg/StartPay/' . $token);
+        return Redirect::to('https://www.zarinpal.com/pg/StartPay/' . $token);
     }
 
     public function verify(
@@ -76,10 +79,10 @@ final class ZarinPal extends GatewayAbstract
         $params = array_merge($default, $params);
 
         if ($params['Authority'] != $token) {
-            throw new GatewayException($this->translateStatus('token-mismatch'));
+            throw new LarapayException($this->translateStatus('token-mismatch'));
         }
         if ($params['Status'] != 'OK') {
-            throw new GatewayException($this->translateStatus($params['Status']));
+            throw new LarapayException($this->translateStatus($params['Status']));
         }
 
         $url = 'https://api.zarinpal.com/pg/v4/payment/verify.json';
@@ -122,14 +125,14 @@ final class ZarinPal extends GatewayAbstract
             $result = json_decode($response->getBody(), true);
 
             if (! empty($result['errors'])) {
-                throw new GatewayException(
+                throw new LarapayException(
                     $this->translateStatus($result['errors']['code'])
                 );
             }
 
             if ($result['data']['code'] != 100) {
                 $message = $result['data']['code'];
-                throw new GatewayException($message);
+                throw new LarapayException($message);
             }
 
             return $result['data'];
@@ -143,7 +146,7 @@ final class ZarinPal extends GatewayAbstract
                     $message = $this->translateStatus($result['errors']['code']);
                 }
             }
-            throw new GatewayException($message);
+            throw new LarapayException($message);
         }
     }
 }

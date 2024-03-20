@@ -2,9 +2,10 @@
 
 namespace Farayaz\Larapay\Gateways;
 
-use Farayaz\Larapay\Exceptions\GatewayException;
+use Farayaz\Larapay\Exceptions\LarapayException;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\BadResponseException;
+use Illuminate\Support\Facades\Redirect;
 
 final class Polam extends GatewayAbstract
 {
@@ -28,17 +29,22 @@ final class Polam extends GatewayAbstract
 
     protected $requirements = ['api_key'];
 
-    public function request(int $id, int $amount, string $callback): array
-    {
+    public function request(
+        int $id,
+        int $amount,
+        string $callbackUrl,
+        string $nationalId,
+        string $mobile
+    ): array {
         $url = $this->url . 'request';
         $params = [
             'api_key' => $this->config['api_key'],
             'amount' => $amount,
-            'return_url' => $callback,
+            'return_url' => $callbackUrl,
         ];
         $result = $this->_request($url, $params);
         if ($result['status'] != 1) {
-            throw new GatewayException($this->translateStatus($result['errorCode']));
+            throw new LarapayException($this->translateStatus($result['errorCode']));
         }
 
         return [
@@ -49,7 +55,7 @@ final class Polam extends GatewayAbstract
 
     public function redirect(int $id, string $token)
     {
-        return redirect($this->url . 'pay/' . $token);
+        return Redirect::to($this->url . 'pay/' . $token);
     }
 
     public function verify(
@@ -64,7 +70,7 @@ final class Polam extends GatewayAbstract
         $params = array_merge($default, $params);
 
         if ($params['invoice_key'] != $token) {
-            throw new GatewayException($this->translateStatus('token-mismatch'));
+            throw new LarapayException($this->translateStatus('token-mismatch'));
         }
 
         $url = $this->url . 'check/' . $token;
@@ -73,7 +79,7 @@ final class Polam extends GatewayAbstract
         ];
         $result = $this->_request($url, $data);
         if ($result['status'] != 1) {
-            throw new GatewayException($this->translateStatus($result['errorCode']));
+            throw new LarapayException($this->translateStatus($result['errorCode']));
         }
 
         return [
@@ -108,7 +114,7 @@ final class Polam extends GatewayAbstract
             return $result;
         } catch (BadResponseException $e) {
             $message = $e->getMessage();
-            throw new GatewayException($message);
+            throw new LarapayException($message);
         }
     }
 

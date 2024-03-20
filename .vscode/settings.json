@@ -1,0 +1,11 @@
+{
+  "laravel-pint.enable": true,
+  "editor.formatOnSave": true,
+  "[php]": {
+    "editor.defaultFormatter": "open-southeners.laravel-pint"
+  },
+  "editor.defaultFormatter": "EditorConfig.EditorConfig",
+  "[blade]": {
+    "editor.defaultFormatter": "shufo.vscode-blade-formatter"
+  }
+}

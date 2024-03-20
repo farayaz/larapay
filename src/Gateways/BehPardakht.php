@@ -2,8 +2,9 @@
 
 namespace Farayaz\Larapay\Gateways;
 
-use Farayaz\Larapay\Exceptions\GatewayException;
+use Farayaz\Larapay\Exceptions\LarapayException;
 use Illuminate\Support\Facades\Date;
+use Illuminate\Support\Facades\View;
 use SoapClient;
 use SoapFault;
 
@@ -65,7 +66,9 @@ class BehPardakht extends GatewayAbstract
     public function request(
         int $id,
         int $amount,
-        string $callback
+        string $callbackUrl,
+        string $nationalId,
+        string $mobile
     ): array {
         $params = [
             'bpPayRequest' => [
@@ -77,7 +80,7 @@ class BehPardakht extends GatewayAbstract
                 'localDate' => Date::now()->format('Ymd'),
                 'localTime' => Date::now()->format('His'),
                 'additionalData' => '',
-                'callBackUrl' => $callback,
+                'callBackUrl' => $callbackUrl,
             ],
         ];
 
@@ -86,12 +89,12 @@ class BehPardakht extends GatewayAbstract
             $soap = new SoapClient($this->url);
             $response = $soap->__soapCall('bpPayRequest', $params);
         } catch (SoapFault $e) {
-            throw new GatewayException($e->getMessage());
+            throw new LarapayException($e->getMessage());
         }
 
         $result = explode(',', $response->return);
         if ($result[0] != '0') {
-            throw new GatewayException($this->translateStatus($result[0]));
+            throw new LarapayException($this->translateStatus($result[0]));
         }
 
         return [
@@ -107,7 +110,7 @@ class BehPardakht extends GatewayAbstract
             'RefId' => $token,
         ];
 
-        return view('larapay::redirector', compact('action', 'fields'));
+        return View::make('larapay::redirector', compact('action', 'fields'));
     }
 
     public function verify(
@@ -126,10 +129,10 @@ class BehPardakht extends GatewayAbstract
         $params = array_merge($default, $params);
 
         if ($params['RefId'] != $token) {
-            throw new GatewayException('token-mismatch');
+            throw new LarapayException('token-mismatch');
         }
         if ($params['ResCode'] != '0') {
-            throw new GatewayException($this->translateStatus($params['ResCode']));
+            throw new LarapayException($this->translateStatus($params['ResCode']));
         }
 
         $tmp = [
@@ -145,7 +148,7 @@ class BehPardakht extends GatewayAbstract
             $soap = new SoapClient($this->url);
             $response = $soap->bpVerifyRequest($tmp);
         } catch (SoapFault $e) {
-            throw new GatewayException($e->getMessage());
+            throw new LarapayException($e->getMessage());
         }
 
         $tmp = [
@@ -160,7 +163,7 @@ class BehPardakht extends GatewayAbstract
             $soap = new SoapClient($this->url);
             $response = $soap->bpSettleRequest($tmp);
         } catch (SoapFault $e) {
-            throw new GatewayException($e->getMessage());
+            throw new LarapayException($e->getMessage());
         }
 
         if ($response->return == '0' || $response->return == '45') {
@@ -172,6 +175,6 @@ class BehPardakht extends GatewayAbstract
                 'fee' => $this->fee($amount),
             ];
         }
-        throw new GatewayException($this->translateStatus($response->return));
+        throw new LarapayException($this->translateStatus($response->return));
     }
 }

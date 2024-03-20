@@ -2,9 +2,10 @@
 
 namespace Farayaz\Larapay\Gateways;
 
-use Farayaz\Larapay\Exceptions\GatewayException;
+use Farayaz\Larapay\Exceptions\LarapayException;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\BadResponseException;
+use Illuminate\Support\Facades\View;
 
 final class Sepehrpay extends GatewayAbstract
 {
@@ -22,19 +23,24 @@ final class Sepehrpay extends GatewayAbstract
 
     protected $requirements = ['terminalId'];
 
-    public function request(int $id, int $amount, string $callback): array
-    {
+    public function request(
+        int $id,
+        int $amount,
+        string $callbackUrl,
+        string $nationalId,
+        string $mobile
+    ): array {
         $url = $this->url . 'GetToken';
         $params = [
             'Amount' => $amount,
-            'callbackURL' => $callback,
+            'callbackURL' => $callbackUrl,
             'invoiceID' => $id,
             'terminalID' => $this->config['terminalId'],
         ];
 
         $result = $this->_request($url, $params);
         if ($result['Status'] != 0) {
-            throw new GatewayException($this->translateStatus($result['Status']));
+            throw new LarapayException($this->translateStatus($result['Status']));
         }
 
         return [
@@ -51,7 +57,7 @@ final class Sepehrpay extends GatewayAbstract
             'terminalID' => $this->config['terminalId'],
         ];
 
-        return view('larapay::redirector', compact('action', 'fields'));
+        return View::make('larapay::redirector', compact('action', 'fields'));
     }
 
     public function verify(
@@ -73,16 +79,16 @@ final class Sepehrpay extends GatewayAbstract
         $params = array_merge($default, $params);
 
         if ($params['trackId'] != $token) {
-            throw new GatewayException($this->translateStatus('token-mismatch'));
+            throw new LarapayException($this->translateStatus('token-mismatch'));
         }
         if ($params['respcode'] != 0) {
-            throw new GatewayException($this->translateStatus($params['respcode']));
+            throw new LarapayException($this->translateStatus($params['respcode']));
         }
 
         if (
             $amount != $params['amount'] || $id != $params['invoiceid'] || $this->config['terminalId'] != $params['terminalid']
         ) {
-            throw new GatewayException($this->translateStatus('token-mismatch'));
+            throw new LarapayException($this->translateStatus('token-mismatch'));
         }
 
         $url = $this->url . 'Advice';
@@ -101,7 +107,7 @@ final class Sepehrpay extends GatewayAbstract
                 'fee' => $this->fee($amount),
             ];
         }
-        throw new GatewayException($this->translateStatus($result['Status']));
+        throw new LarapayException($this->translateStatus($result['Status']));
     }
 
     private function _request(string $url, array $data)
@@ -124,7 +130,7 @@ final class Sepehrpay extends GatewayAbstract
 
             return json_decode($response->getBody(), true);
         } catch (BadResponseException $e) {
-            throw new GatewayException($e->getMessage());
+            throw new LarapayException($e->getMessage());
         }
     }
 }

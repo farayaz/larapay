@@ -3,9 +3,10 @@
 namespace Farayaz\Larapay\Gateways;
 
 use Exception;
-use Farayaz\Larapay\Exceptions\GatewayException;
+use Farayaz\Larapay\Exceptions\LarapayException;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\BadResponseException;
+use Illuminate\Support\Facades\View;
 use Morilog\Jalali\Jalalian;
 
 final class MehrIran extends GatewayAbstract
@@ -62,14 +63,19 @@ final class MehrIran extends GatewayAbstract
         'encrypt_key',
     ];
 
-    public function request(int $id, int $amount, string $callback): array
-    {
+    public function request(
+        int $id,
+        int $amount,
+        string $callbackUrl,
+        string $nationalId,
+        string $mobile
+    ): array {
         $url = $this->url . 'service/vpos/trxReq';
         $params = [
             'terminal-id' => $this->config['terminal_id'],
             'merchant-nid' => $this->config['merchant_nid'],
             'order-id' => $id,
-            'revert-url' => $callback,
+            'revert-url' => $callbackUrl,
             'trxtype' => 'sale',
             'amount' => $amount,
             'date' => Jalalian::now()->format('Y/m/d H:i'),
@@ -79,11 +85,11 @@ final class MehrIran extends GatewayAbstract
         try {
             $result = $this->_request($url, $params);
         } catch (Exception $e) {
-            throw new GatewayException($e->getMessage());
+            throw new LarapayException($e->getMessage());
         }
 
         if ($result['resp-code'] != '00') {
-            throw new GatewayException($this->translateStatus($result['resp-code']));
+            throw new LarapayException($this->translateStatus($result['resp-code']));
         }
 
         return [
@@ -100,7 +106,7 @@ final class MehrIran extends GatewayAbstract
             'sign' => $this->sign([$token]),
         ];
 
-        return view('larapay::redirector', compact('action', 'fields'));
+        return View::make('larapay::redirector', compact('action', 'fields'));
     }
 
     public function verify(int $id, int $amount, string $token, array $params = []): array
@@ -114,11 +120,11 @@ final class MehrIran extends GatewayAbstract
         $params = array_merge($default, $params);
 
         if ($params['resp-code'] != '00') {
-            throw new GatewayException($this->translateStatus($params['resp-code']));
+            throw new LarapayException($this->translateStatus($params['resp-code']));
         }
 
         if ($params['transaction-id'] != $token) {
-            throw new GatewayException($this->translateStatus('id-missmatch'));
+            throw new LarapayException($this->translateStatus('id-missmatch'));
         }
 
         $url = $this->config['url'] . 'service/vpos/trxConfirm';
@@ -130,14 +136,14 @@ final class MehrIran extends GatewayAbstract
         try {
             $result = $this->_request($url, $params);
         } catch (Exception $e) {
-            throw new GatewayException($e->getMessage());
+            throw new LarapayException($e->getMessage());
         }
 
         if ($result['resp-code'] != '00') {
-            throw new GatewayException($this->translateStatus($result['resp-code']));
+            throw new LarapayException($this->translateStatus($result['resp-code']));
         }
         if ($result['transaction-id'] != $token) {
-            throw new GatewayException($this->translateStatus('token-missmatch'));
+            throw new LarapayException($this->translateStatus('token-missmatch'));
         }
 
         return [
@@ -169,7 +175,7 @@ final class MehrIran extends GatewayAbstract
 
             return json_decode($response->getBody(), true);
         } catch (BadResponseException $e) {
-            throw new GatewayException($e->getMessage());
+            throw new LarapayException($e->getMessage());
         }
     }
 
