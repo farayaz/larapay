@@ -28,9 +28,9 @@ final class PardakhtNovin extends GatewayAbstract
     public function request(
         int $id,
         int $amount,
-        string $callbackUrl,
         string $nationalId,
-        string $mobile
+        string $mobile,
+        string $callbackUrl
     ): array {
         $url = $this->url . 'ref-payment2/RestServices/mts/generateTokenWithNoSign/';
         $params = [
@@ -56,7 +56,7 @@ final class PardakhtNovin extends GatewayAbstract
         ];
     }
 
-    public function redirect(int $id, string $token)
+    public function redirect(int $id, string $token, string $callbackUrl)
     {
         $action = $this->url . '_ipgw_/payment/';
         $fields = [
@@ -69,8 +69,10 @@ final class PardakhtNovin extends GatewayAbstract
     public function verify(
         int $id,
         int $amount,
+        string $nationalId,
+        string $mobile,
         string $token,
-        array $params = []
+        array $params
     ): array {
         $default = [
             'State' => null,

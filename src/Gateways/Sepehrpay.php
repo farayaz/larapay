@@ -26,9 +26,9 @@ final class Sepehrpay extends GatewayAbstract
     public function request(
         int $id,
         int $amount,
-        string $callbackUrl,
         string $nationalId,
-        string $mobile
+        string $mobile,
+        string $callbackUrl
     ): array {
         $url = $this->url . 'GetToken';
         $params = [
@@ -49,7 +49,7 @@ final class Sepehrpay extends GatewayAbstract
         ];
     }
 
-    public function redirect(int $id, string $token)
+    public function redirect(int $id, string $token, string $callbackUrl)
     {
         $action = 'https://mabna.shaparak.ir:8080';
         $fields = [
@@ -63,8 +63,10 @@ final class Sepehrpay extends GatewayAbstract
     public function verify(
         int $id,
         int $amount,
+        string $nationalId,
+        string $mobile,
         string $token,
-        array $params = []
+        array $params
     ): array {
         $default = [
             'respcode' => null,

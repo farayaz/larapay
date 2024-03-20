@@ -19,14 +19,21 @@ abstract class GatewayAbstract
     abstract public function request(
         int $id,
         int $amount,
-        string $callbackUrl,
         string $nationalId,
-        string $mobile
+        string $mobile,
+        string $callbackUrl
     ): array;
 
-    abstract public function verify(int $id, int $amount, string $token, array $params = []): array;
+    abstract public function verify(
+        int $id,
+        int $amount,
+        string $nationalId,
+        string $mobile,
+        string $token,
+        array $params
+    ): array;
 
-    abstract public function redirect(int $id, string $token);
+    abstract public function redirect(int $id, string $token, string $callbackUrl);
 
     protected function requirements()
     {

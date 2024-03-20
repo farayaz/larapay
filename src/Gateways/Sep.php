@@ -54,9 +54,9 @@ final class Sep extends GatewayAbstract
     public function request(
         int $id,
         int $amount,
-        string $callbackUrl,
         string $nationalId,
-        string $mobile
+        string $mobile,
+        string $callbackUrl
     ): array {
         $url = $this->url . 'OnlinePG/OnlinePG';
         $params = [
@@ -78,7 +78,7 @@ final class Sep extends GatewayAbstract
         ];
     }
 
-    public function redirect(int $id, string $token)
+    public function redirect(int $id, string $token, string $callbackUrl)
     {
         $action = $this->url . 'OnlinePG/OnlinePG';
         $fields = [
@@ -92,8 +92,10 @@ final class Sep extends GatewayAbstract
     public function verify(
         int $id,
         int $amount,
+        string $nationalId,
+        string $mobile,
         string $token,
-        array $params = []
+        array $params
     ): array {
         $default = [
             'MID' => null,
