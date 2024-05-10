@@ -76,6 +76,7 @@ final class TejaratBajet extends GatewayAbstract
         $data = [
             'otp' => $params['otp'],
             'amount' => $amount,
+            'description' => $id,
         ];
         $this->_request('POST', $url, $data, $headers);
 
