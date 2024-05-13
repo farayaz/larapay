@@ -98,7 +98,7 @@ final class MehrIran extends GatewayAbstract
         ];
     }
 
-    public function redirect($id, $token)
+    public function redirect(int $id, string $token, string $callbackUrl)
     {
         $action = $this->url . 'pay';
         $fields = [

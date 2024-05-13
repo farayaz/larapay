@@ -50,7 +50,7 @@ final class PayPing extends GatewayAbstract
         ];
     }
 
-    public function redirect($id, $token)
+    public function redirect(int $id, string $token, string $callbackUrl)
     {
         return Redirect::to($this->url . 'pay/gotoipg/' . $token);
     }
