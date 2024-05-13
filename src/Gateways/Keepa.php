@@ -64,7 +64,7 @@ final class Keepa extends GatewayAbstract
 
         $url = $this->url . 'verify_transaction';
         $data = [
-            'payment_token' => $token, ,
+            'payment_token' => $token,
             'reciept_number' => $params['reciept_number'],
         ];
         $result = $this->_request($url, $data);
