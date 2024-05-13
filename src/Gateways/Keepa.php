@@ -90,7 +90,7 @@ final class Keepa extends GatewayAbstract
 
     public function redirect(int $id, string $token, string $callbackUrl)
     {
-        $action = 'https://ipg.keepa.ir';
+        $action = 'https://ipg.kipaa.ir';
         $fields = [
             'payment_token' => $token,
         ];
