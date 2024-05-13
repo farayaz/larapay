@@ -55,7 +55,7 @@ final class Digipay extends GatewayAbstract
         ];
     }
 
-    public function redirect($id, $token)
+    public function redirect(int $id, string $token, string $callbackUrl)
     {
         return Redirect::to($this->url . 'purchases/ipg/pay/' . $token);
     }
