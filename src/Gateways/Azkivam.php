@@ -34,9 +34,6 @@ final class Azkivam extends GatewayAbstract
         '51' => 'ازکی‌وام: Request data is not valid',
         '59' => 'ازکی‌وام: Transaction not reversible',
         '60' => 'ازکی‌وام: Transaction must be in verified state',
-
-        'token-mismatch' => 'عدم تطبیق توکن بازگشتی',
-        'connection-exception' => 'خطا ارتباطی با سرویس دهنده',
     ];
 
     protected $requirements = ['merchant_id', 'api_key'];

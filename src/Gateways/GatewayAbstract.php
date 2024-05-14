@@ -42,8 +42,11 @@ abstract class GatewayAbstract
         }
     }
 
-    protected function translateStatus(int|string $code = null)
+    protected function translateStatus(int|string|null $code = null)
     {
+        $this->statuses['token-mismatch'] = 'عدم تطبیق توکن بازگشتی';
+        $this->statuses['connection-exception'] = 'خطا ارتباطی با سرویس دهنده';
+
         return $this->statuses[$code] ?? $code;
     }
 
