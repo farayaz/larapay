@@ -11,26 +11,27 @@ Larapay is a Laravel package for integrating Iranian payment gateways.
 
 ## Gateways | درگاه‌ها
 
-| Class             | Name (en)                                      | Name (fa)                    | Requirements                                         |
-| ----------------- | ---------------------------------------------- | ---------------------------- | ---------------------------------------------------- |
-| **Azkivam**       | [Azkivam](https://azkivam.com/)                | ازکی وام                     | `merchant_id`,`api_key`                              |
-| **BehPardakht**   | [Beh Pardakht Mellat](https://behpardakht.com) | به‌پرداخت ملت                 | `terminalId`, `username`, `password`                 |
-| **Digipay**       | [Digipay](https://www.mydigipay.com)           | دیجی‌پی                       | `username`, `password`, `client_id`, `client_secret` |
-| **IdPay**         | [IdPay](https://idpay.ir)                      | آیدی‌پی                       | `apiKey`, `sandbox`                                  |
-| **IranKish**      | [Iran Kish](https://www.irankish.com)          | ایران کیش                    | `terminalId`, `password`, `acceptorId`, `pubKey`     |
-| **Keepa**         | [Keepa - Kipaa](https://keepa.ir)              | کیپا                         | `token`                                              |
-| **MehrIran**      | [MehrIran](https://qmb.ir)                     | بانک مهر ایران               | `terminal_id`, `merchant_nid`, `encrypt_key`         |
-| **Omidpay**       | [Omidpay - Sayan Card](https://omidpayment.ir) | امید پی (سایان کارت)         | `user_id`, `password`                                |
-| **PardakhtNovin** | [Pardakht Novin](https://pna.co.ir)            | پرداخت نوین                  | `userId`, `password`, `terminalId`                   |
-| **Payir**         | [Pay.ir](https://www.pay.ir)                   | پی.آی‌آر                      | `api`                                                |
-| **PayPing**       | [PayPing](https://payping.ir)                  | پی پینگ                      | `token`                                              |
-| **Polam**         | [Polam(Poolam)](https://polam.io)              | پولام                        | `api_key`                                            |
-| **Sep**           | [Saman Electronic Payment](https://www.sep.ir) | پرداخت الکترونیک سامان (سپ)  | `terminalId`                                         |
-| **SepehrPay**     | [Sepehr Pay](https://www.sepehrpay.com)        | پرداخت الکترونیک سپهر (مبنا) | `terminalId`                                         |
-| **TejaratBajet**  | [Tejarat Bajet](https://mybajet.ir)            | بانک تجارت - باجت            | `client_id`, `client_secret`, `sandbox`              |
-| **ZarinPal**      | [Zarin Pal](https://www.zarinpal.com)          | زرین پال                     | `merchant_id`                                        |
-| **Zibal**         | [Zibal](https://zibal.ir)                      | زیبال                        | `merchant`                                           |
-| ...               |                                                |                              |                                                      |
+| Class               | Name (en)                                      | Name (fa)                    | Requirements                                          |
+| ------------------- | ---------------------------------------------- | ---------------------------- | ----------------------------------------------------- |
+| **Azkivam**         | [Azkivam](https://azkivam.com/)                | ازکی وام                     | `merchant_id`,`api_key`                               |
+| **BehPardakht**     | [Beh Pardakht Mellat](https://behpardakht.com) | به‌پرداخت ملت                 | `terminalId`, `username`, `password`                  |
+| **Digipay**         | [Digipay](https://www.mydigipay.com)           | دیجی‌پی                       | `username`, `password`, `client_id`, `client_secret`  |
+| **IdPay**           | [IdPay](https://idpay.ir)                      | آیدی‌پی                       | `apiKey`, `sandbox`                                   |
+| **IranKish**        | [Iran Kish](https://www.irankish.com)          | ایران کیش                    | `terminalId`, `password`, `acceptorId`, `pubKey`      |
+| **IsipaymentSamin** | [Isipayment Samin](https://isipayment.ir)      | ایزایران ثمین                | `merchant_code`, `merchant_password`, `terminal_code` |
+| **Keepa**           | [Keepa - Kipaa](https://keepa.ir)              | کیپا                         | `token`                                               |
+| **MehrIran**        | [MehrIran](https://qmb.ir)                     | بانک مهر ایران               | `terminal_id`, `merchant_nid`, `encrypt_key`          |
+| **Omidpay**         | [Omidpay - Sayan Card](https://omidpayment.ir) | امید پی (سایان کارت)         | `user_id`, `password`                                 |
+| **PardakhtNovin**   | [Pardakht Novin](https://pna.co.ir)            | پرداخت نوین                  | `userId`, `password`, `terminalId`                    |
+| **Payir**           | [Pay.ir](https://www.pay.ir)                   | پی.آی‌آر                      | `api`                                                 |
+| **PayPing**         | [PayPing](https://payping.ir)                  | پی پینگ                      | `token`                                               |
+| **Polam**           | [Polam(Poolam)](https://polam.io)              | پولام                        | `api_key`                                             |
+| **Sep**             | [Saman Electronic Payment](https://www.sep.ir) | پرداخت الکترونیک سامان (سپ)  | `terminalId`                                          |
+| **SepehrPay**       | [Sepehr Pay](https://www.sepehrpay.com)        | پرداخت الکترونیک سپهر (مبنا) | `terminalId`                                          |
+| **TejaratBajet**    | [Tejarat Bajet](https://mybajet.ir)            | بانک تجارت - باجت            | `client_id`, `client_secret`, `sandbox`               |
+| **ZarinPal**        | [Zarin Pal](https://www.zarinpal.com)          | زرین پال                     | `merchant_id`                                         |
+| **Zibal**           | [Zibal](https://zibal.ir)                      | زیبال                        | `merchant`                                            |
+| ...                 |                                                |                              |                                                       |
 
 If you don't find the gate you want, let us know or contribute to add it
 ****
