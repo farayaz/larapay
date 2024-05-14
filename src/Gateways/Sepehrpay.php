@@ -3,16 +3,16 @@
 namespace Farayaz\Larapay\Gateways;
 
 use Farayaz\Larapay\Exceptions\LarapayException;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\BadResponseException;
+use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Http\Client\RequestException;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\View;
 
 final class Sepehrpay extends GatewayAbstract
 {
-    private $url = 'https://mabna.shaparak.ir:8081/V1/PeymentApi/';
+    private $url = 'https://sepehr.shaparak.ir:8081/V1/PeymentApi/';
 
     protected $statuses = [
-        '0' => '0',
         '-1' => 'تراکنش پیدا نشد.',
         '-2' => 'عدم تطابق ip / تراکنش قبلا Reserve شده است.',
         '-3' => 'Exception خطای - عمومی خطای Total Error',
@@ -51,7 +51,7 @@ final class Sepehrpay extends GatewayAbstract
 
     public function redirect(int $id, string $token, string $callbackUrl)
     {
-        $action = 'https://mabna.shaparak.ir:8080';
+        $action = 'https://sepehr.shaparak.ir:8080';
         $fields = [
             'token' => $token,
             'terminalID' => $this->config['terminalId'],
@@ -114,25 +114,15 @@ final class Sepehrpay extends GatewayAbstract
 
     private function _request(string $url, array $data)
     {
-        $client = new Client;
-
         try {
-            $response = $client->request(
-                'POST',
-                $url,
-                [
-                    'headers' => [
-                        'Content-Type' => 'application/json',
-                        'Accept' => 'application/json',
-                    ],
-                    'json' => $data,
-                    'timeout' => 10,
-                ]
-            );
-
-            return json_decode($response->getBody(), true);
-        } catch (BadResponseException $e) {
+            return Http::timeout(10)
+                ->post($url, $data)
+                ->throw()
+                ->json();
+        } catch (RequestException $e) {
             throw new LarapayException($e->getMessage());
+        } catch (ConnectionException $e) {
+            throw new LarapayException($this->translateStatus('connection-exception'));
         }
     }
 }
