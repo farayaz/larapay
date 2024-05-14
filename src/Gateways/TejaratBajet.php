@@ -3,14 +3,17 @@
 namespace Farayaz\Larapay\Gateways;
 
 use Farayaz\Larapay\Exceptions\LarapayException;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\BadResponseException;
+use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\View;
 
 final class TejaratBajet extends GatewayAbstract
 {
     protected $statuses = [
+        'invalid_client' => 'invalid_client: خطای سرویس گیرنده',
+        'TrackerAlreadyUsed' => 'کد پیگیری تکراری',
     ];
 
     protected $requirements = [
@@ -31,7 +34,7 @@ final class TejaratBajet extends GatewayAbstract
         ];
 
         $url = $this->_url('/customers/' . $nationalId . '/balance');
-        $result = $this->_request('GET', $url, [], $headers);
+        $result = $this->_request('get', $url, [], $headers);
         if ($result['result']['balance'] < $amount) {
             throw new LarapayException('عدم موجودی کافی: ' . number_format($result['result']['balance']));
         }
@@ -41,7 +44,7 @@ final class TejaratBajet extends GatewayAbstract
             'amount' => $amount,
             'description' => $id,
         ];
-        $this->_request('POST', $url, $data, $headers);
+        $this->_request('post', $url, $data, $headers);
 
         return [
             'token' => $id,
@@ -78,11 +81,11 @@ final class TejaratBajet extends GatewayAbstract
             'amount' => $amount,
             'description' => $id,
         ];
-        $this->_request('POST', $url, $data, $headers);
+        $this->_request('post', $url, $data, $headers);
 
         // advice
         $url = $this->_url('/customers/' . $nationalId . '/purchases/advice?trackId=' . $id);
-        $result = $this->_request('POST', $url, [], $headers);
+        $result = $this->_request('post', $url, [], $headers);
 
         return [
             'result' => $result['message'],
@@ -105,7 +108,7 @@ final class TejaratBajet extends GatewayAbstract
                 'scope' => '',
             ];
 
-            $result = $this->_request('POST', $url, $data);
+            $result = $this->_request('post', $url, $data);
 
             return $result['result']['accessToken'];
         });
@@ -120,32 +123,19 @@ final class TejaratBajet extends GatewayAbstract
 
     private function _request($method, $url, array $data = [], array $headers = [])
     {
-        $client = new Client;
-
         try {
-            $response = $client->request(
-                $method,
-                $url,
-                [
-                    'headers' => [
-                        'Content-Type' => 'application/json',
-                        'Accept' => 'application/json',
-                        ...$headers,
-                    ],
-                    'json' => $data,
-                    'timeout' => 10,
-                ]
-            );
-
-            return json_decode($response->getBody(), true);
-        } catch (BadResponseException $e) {
-            $message = $e->getMessage();
-            if ($e->hasResponse()) {
-                $message = $e->getResponse()->getStatusCode() . ': ' . $e->getMessage();
-                $response = json_decode($e->getResponse()->getBody(), true);
-                $message = $response['detail'] ?? $response['title'] ?? $message;
-            }
+            return Http::timeout(10)
+                ->withHeaders($headers)
+                ->$method($url, $data)
+                ->throw()
+                ->json();
+        } catch (RequestException $e) {
+            $result = $e->response->json();
+            $message = $result['detail'] ?? $this->translateStatus($result['title']) ?? $e->getMessage();
+            $message = 'باجت: ' . $message;
             throw new LarapayException($message);
+        } catch (ConnectionException $e) {
+            throw new LarapayException($this->translateStatus('connection-exception'));
         }
     }
 }
