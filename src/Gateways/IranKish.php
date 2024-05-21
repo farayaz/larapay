@@ -3,8 +3,9 @@
 namespace Farayaz\Larapay\Gateways;
 
 use Farayaz\Larapay\Exceptions\LarapayException;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\BadResponseException;
+use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Http\Client\RequestException;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\View;
 
 final class IranKish extends GatewayAbstract
@@ -98,8 +99,8 @@ final class IranKish extends GatewayAbstract
                 'acceptorId' => $this->config['acceptorId'],
                 'amount' => $amount,
                 'billInfo' => null,
-                'paymentId' => $id,
-                'requestId' => $id,
+                'paymentId' => (string) $id,
+                'requestId' => uniqid(),
                 'requestTimestamp' => time(),
                 'revertUri' => $callbackUrl,
                 'terminalId' => $this->config['terminalId'],
@@ -174,26 +175,26 @@ final class IranKish extends GatewayAbstract
 
     private function _request(string $url, array $data)
     {
-        $config = ['curl' => [CURLOPT_SSL_CIPHER_LIST => 'DEFAULT@SECLEVEL=1']];
-        $client = new Client($config);
-
         try {
-            $response = $client->request(
-                'POST',
-                $url,
-                [
-                    'headers' => [
-                        'Content-Type' => 'application/json',
-                        'Accept' => 'application/json',
-                    ],
-                    'json' => $data,
-                    'timeout' => 10,
-                ]
-            );
-
-            return json_decode($response->getBody(), true);
-        } catch (BadResponseException $e) {
-            throw new LarapayException($e->getMessage());
+            return Http::timeout(10)
+                ->withOptions([
+                    'curl' => [CURLOPT_SSL_CIPHER_LIST => 'DEFAULT@SECLEVEL=1'],
+                ])
+                ->post($url, $data)
+                ->throw()
+                ->json();
+        } catch (RequestException $e) {
+            $message = $e->getMessage();
+            $result = $e->response->json();
+            if (isset($result['title'])) {
+                $message = $result['title'];
+            }
+            if (isset($result['errors'])) {
+                $message = implode(', ', array_merge(...array_values($result['errors'])));
+            }
+            throw new LarapayException($message);
+        } catch (ConnectionException $e) {
+            throw new LarapayException($this->translateStatus('connection-exception'));
         }
     }
 
