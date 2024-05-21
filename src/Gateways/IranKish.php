@@ -174,7 +174,8 @@ final class IranKish extends GatewayAbstract
 
     private function _request(string $url, array $data)
     {
-        $client = new Client;
+        $config = ['curl' => [CURLOPT_SSL_CIPHER_LIST => 'DEFAULT@SECLEVEL=1']];
+        $client = new Client($config);
 
         try {
             $response = $client->request(
