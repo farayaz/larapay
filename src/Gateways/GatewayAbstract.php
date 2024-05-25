@@ -49,7 +49,7 @@ abstract class GatewayAbstract
         $this->statuses['token-mismatch'] = 'عدم تطبیق توکن بازگشتی';
         $this->statuses['connection-exception'] = 'خطا ارتباطی با سرویس دهنده';
 
-        return $this->statuses[$code] ?? $code;
+        return $this->statuses[$code] ?? $code ?? '<null>';
     }
 
     public function fee(int $amount): int
