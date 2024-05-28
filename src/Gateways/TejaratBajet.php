@@ -36,7 +36,7 @@ final class TejaratBajet extends GatewayAbstract
         $url = '/customers/' . $nationalId . '/balance';
         $result = $this->_request('get', $url, [], $headers);
         if ($result['result']['balance'] < $amount) {
-            throw new LarapayException('عدم موجودی کافی: ' . number_format($result['result']['balance']));
+            throw new LarapayException('باجت: عدم موجودی کافی: ' . number_format($result['result']['balance']));
         }
 
         $url = '/customers/' . $nationalId . '/purchases/authorization?trackId=' . $id;
@@ -129,7 +129,7 @@ final class TejaratBajet extends GatewayAbstract
             if (isset($result['detail'])) {
                 $message = $result['detail'];
             }
-            throw new LarapayException($message);
+            throw new LarapayException('باجت: ' . $message);
         } catch (ConnectionException $e) {
             throw new LarapayException($this->translateStatus('connection-exception'));
         }
