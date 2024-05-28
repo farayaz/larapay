@@ -33,13 +33,13 @@ final class TejaratBajet extends GatewayAbstract
             'Authorization' => 'Bearer ' . $this->authenticate(),
         ];
 
-        $url = $this->_url('/customers/' . $nationalId . '/balance');
+        $url = '/customers/' . $nationalId . '/balance';
         $result = $this->_request('get', $url, [], $headers);
         if ($result['result']['balance'] < $amount) {
             throw new LarapayException('عدم موجودی کافی: ' . number_format($result['result']['balance']));
         }
 
-        $url = $this->_url('/customers/' . $nationalId . '/purchases/authorization?trackId=' . $id);
+        $url = '/customers/' . $nationalId . '/purchases/authorization?trackId=' . $id;
         $data = [
             'amount' => $amount,
             'description' => $id,
@@ -75,7 +75,7 @@ final class TejaratBajet extends GatewayAbstract
         ];
 
         // purchases
-        $url = $this->_url('/customers/' . $nationalId . '/purchases?trackId=' . $id);
+        $url = '/customers/' . $nationalId . '/purchases?trackId=' . $id;
         $data = [
             'otp' => $params['otp'],
             'amount' => $amount,
@@ -84,7 +84,7 @@ final class TejaratBajet extends GatewayAbstract
         $this->_request('post', $url, $data, $headers);
 
         // advice
-        $url = $this->_url('/customers/' . $nationalId . '/purchases/advice?trackId=' . $id);
+        $url = '/customers/' . $nationalId . '/purchases/advice?trackId=' . $id;
         $result = $this->_request('post', $url, [], $headers);
 
         return [
@@ -99,40 +99,36 @@ final class TejaratBajet extends GatewayAbstract
     public function authenticate()
     {
         return Cache::remember(__CLASS__ . ':token', 3500, function () {
-            $url = $this->_url('auth/token');
-
             $data = [
                 'client_id' => $this->config['client_id'],
                 'client_secret' => $this->config['client_secret'],
                 'grant_type' => 'client_credentials',
                 'scope' => '',
             ];
-
-            $result = $this->_request('post', $url, $data);
+            $result = $this->_request('post', 'auth/token', $data);
 
             return $result['result']['accessToken'];
         });
     }
 
-    private function _url($url)
-    {
-        return 'https://fct-api.stts.ir/api/'
-            . ($this->config['sandbox'] ? 'vNext/' : 'v1/')
-            . $url;
-    }
-
     private function _request($method, $url, array $data = [], array $headers = [])
     {
+        $fullUrl = 'https://fct-api.stts.ir/api/' . ($this->config['sandbox'] ? 'vNext/' : 'v1/') . $url;
         try {
             return Http::timeout(10)
                 ->withHeaders($headers)
-                ->$method($url, $data)
+                ->$method($fullUrl, $data)
                 ->throw()
                 ->json();
         } catch (RequestException $e) {
+            $message = $e->getMessage();
             $result = $e->response->json();
-            $message = $result['detail'] ?? $this->translateStatus($result['title']) ?? $e->getMessage();
-            $message = 'باجت: ' . $message;
+            if (isset($result['title'])) {
+                $message = $this->translateStatus($result['title']);
+            }
+            if (isset($result['detail'])) {
+                $message = $result['detail'];
+            }
             throw new LarapayException($message);
         } catch (ConnectionException $e) {
             throw new LarapayException($this->translateStatus('connection-exception'));
