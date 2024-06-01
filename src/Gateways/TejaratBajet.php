@@ -54,7 +54,7 @@ final class TejaratBajet extends GatewayAbstract
 
     public function redirect(int $id, string $token, string $callbackUrl)
     {
-        return View::make('larapay::tejarat-bajet', compact('callbackUrl'));
+        return View::make('larapay::otp', compact('callbackUrl'));
     }
 
     public function verify(

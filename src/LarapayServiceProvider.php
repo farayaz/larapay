@@ -20,7 +20,7 @@ class LarapayServiceProvider extends ServiceProvider
     {
         $this->loadViewsFrom(__DIR__ . '/../resources/views', 'larapay');
         // $this->publishes([
-        //     __DIR__ . '/../resources/views' => resource_path('views/vendor/courier'),
+        //     __DIR__ . '/../resources/views' => resource_path('views/vendor/larapay'),
         // ]);
     }
 }
