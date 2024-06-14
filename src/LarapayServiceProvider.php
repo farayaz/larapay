@@ -19,8 +19,8 @@ class LarapayServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->loadViewsFrom(__DIR__ . '/../resources/views', 'larapay');
-        // $this->publishes([
-        //     __DIR__ . '/../resources/views' => resource_path('views/vendor/larapay'),
-        // ]);
+        $this->publishes([
+            __DIR__ . '/../resources/views' => resource_path('views/vendor/larapay'),
+        ], 'larapay');
     }
 }
