@@ -142,6 +142,7 @@ final class IranKish extends GatewayAbstract
             'responseCode' => null,
             'retrievalReferenceNumber' => null,
             'systemTraceAuditNumber' => null,
+            'maskedPan' => null,
             'token' => null,
         ];
         $params = array_merge($default, $params);
@@ -160,12 +161,11 @@ final class IranKish extends GatewayAbstract
         $result = $this->_request($url, $data);
 
         if ($result['result']['responseCode'] != '00') {
-            throw new LarapayException($this->translateStatus($params['result']['responseCode']));
+            throw new LarapayException($this->translateStatus($result['result']['responseCode']));
         }
 
         return [
-            //TODO
-            // 'card'           => null,
+            'card' => $params['maskedPan'],
             'tracking_code' => $result['result']['systemTraceAuditNumber'],
             'reference_id' => $result['result']['retrievalReferenceNumber'],
             'result' => $result['result']['responseCode'],
