@@ -133,7 +133,7 @@ final class MehrIran extends GatewayAbstract
             throw new LarapayException($this->translateStatus('id-missmatch'));
         }
 
-        $url = $this->config['url'] . 'service/vpos/trxConfirm';
+        $url = $this->url . 'service/vpos/trxConfirm';
         $data = [
             'transaction-id' => $token,
             'operation' => 'confirm',
