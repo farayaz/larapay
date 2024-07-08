@@ -14,6 +14,8 @@ final class Keepa extends GatewayAbstract
     protected $statuses = [
         'amount-mismatch' => 'مغایرت مبلغ پرداختی',
         'token-mismatch' => 'عدم تطبیق توکن بازگشتی',
+        'verify-status-false' => 'تایید اولیه نا موفق',
+        'confirm-status-false' => 'تایید ثانویه نا موفق',
     ];
 
     protected $requirements = ['token'];
@@ -25,7 +27,7 @@ final class Keepa extends GatewayAbstract
         string $mobile,
         string $callbackUrl
     ): array {
-        $url = $this->url . '/request_payment_token';
+        $url = $this->url . 'request_payment_token';
         $params = [
             'Amount' => $amount,
             'CallBack_Url' => $callbackUrl,
@@ -50,41 +52,40 @@ final class Keepa extends GatewayAbstract
     ): array {
         $default = [
             'payment_token' => null,
-            'state' => null,
-            'msg' => null,
             'reciept_number' => null,
         ];
         $params = array_merge($default, $params);
-        if (! in_array($params['state'], [100, 101, 102, 103])) {
-            throw new LarapayException($this->translateStatus($params['state']));
-        }
+
         if ($params['payment_token'] != $token) {
             throw new LarapayException($this->translateStatus('token-mismatch'));
         }
 
-        $url = $this->url . 'verify_transaction';
         $data = [
             'payment_token' => $token,
             'reciept_number' => $params['reciept_number'],
         ];
+
+        $url = $this->url . 'verify_transaction';
         $result = $this->_request($url, $data);
-        if ($amount != $result['Content']['CreditAmount']) {
+        if ($result['Content']['Status'] != true) {
+            throw new LarapayException($this->translateStatus('verify-status-false'));
+        }
+        if ($amount != $result['Content']['Amount']) {
             throw new LarapayException($this->translateStatus('amount-mismatch'));
         }
 
         $url = $this->url . 'confirm_transaction';
-        $data = [
-            'payment_token' => $token,
-            'reciept_number' => $params['reciept_number'],
-        ];
         $result = $this->_request($url, $data);
+        if ($result['Content']['Status'] != true) {
+            throw new LarapayException($this->translateStatus('confirm-status-false'));
+        }
 
         return [
             'fee' => 0,
             'card' => null,
             'result' => $result['Status'],
-            'reference_id' => $result['track_id'],
-            'tracking_code' => $result['CallingID'],
+            'reference_id' => $result['ConfirmTransactionNumber'],
+            'tracking_code' => $params['reciept_number'],
         ];
     }
 
