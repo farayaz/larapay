@@ -51,7 +51,6 @@ final class RefahBeta extends GatewayAbstract
             'startDate' => Jalalian::now()->addMonths()->getEndDayOfMonth()->toCarbon()->toIso8601String(),
             'amount' => $amount,
             'numberOfInstallments' => $this->config['number_of_installments'],
-            'requestId' => $id,
         ];
         $result = $this->_request('post', $url, $data);
         if ($result['status'] != 200) {
@@ -89,7 +88,7 @@ final class RefahBeta extends GatewayAbstract
             'startDate' => Jalalian::now()->addMonths()->getEndDayOfMonth()->toCarbon()->toIso8601String(),
             'amount' => $amount,
             'numberOfInstallments' => $this->config['number_of_installments'],
-            'requestId' => $id,
+            'requestId' => (string) $id,
         ];
         $result = $this->_request('post', $url, $data);
         if ($result['status'] != 200) {
