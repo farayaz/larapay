@@ -12,13 +12,14 @@ use Illuminate\Support\Facades\View;
 final class TejaratBajet extends GatewayAbstract
 {
     protected $statuses = [
-        'invalid_client' => 'invalid_client: خطای سرویس گیرنده',
         'TrackerAlreadyUsed' => 'کد پیگیری تکراری',
     ];
 
     protected $requirements = [
         'client_id',
         'client_secret',
+        'username',
+        'password',
         'sandbox',
     ];
 
@@ -33,13 +34,13 @@ final class TejaratBajet extends GatewayAbstract
             'Authorization' => 'Bearer ' . $this->authenticate(),
         ];
 
-        $url = '/customers/' . $nationalId . '/balance';
+        $url = 'customers/' . $nationalId . '/balance';
         $result = $this->_request('get', $url, [], $headers);
         if ($result['result']['balance'] < $amount) {
-            throw new LarapayException('باجت: عدم موجودی کافی: ' . number_format($result['result']['balance']));
+            throw new LarapayException('باجت: عدم موجودی کافی. موجودی: ' . number_format($result['result']['balance']) . ' ریال');
         }
 
-        $url = '/customers/' . $nationalId . '/purchases/authorization?trackId=' . $id;
+        $url = 'customers/' . $nationalId . '/purchases/authorization?trackId=' . $id;
         $data = [
             'amount' => $amount,
             'description' => $id,
@@ -75,7 +76,7 @@ final class TejaratBajet extends GatewayAbstract
         ];
 
         // purchases
-        $url = '/customers/' . $nationalId . '/purchases?trackId=' . $id;
+        $url = 'customers/' . $nationalId . '/purchases?trackId=' . $id;
         $data = [
             'otp' => $params['otp'],
             'amount' => $amount,
@@ -84,7 +85,7 @@ final class TejaratBajet extends GatewayAbstract
         $this->_request('post', $url, $data, $headers);
 
         // advice
-        $url = '/customers/' . $nationalId . '/purchases/advice?trackId=' . $id;
+        $url = 'customers/' . $nationalId . '/purchases/advice?trackId=' . $id;
         $result = $this->_request('post', $url, [], $headers);
 
         return [
@@ -98,24 +99,35 @@ final class TejaratBajet extends GatewayAbstract
 
     public function authenticate()
     {
-        return Cache::remember(__CLASS__ . ':token', 3500, function () {
-            $data = [
-                'client_id' => $this->config['client_id'],
-                'client_secret' => $this->config['client_secret'],
-                'grant_type' => 'client_credentials',
-                'scope' => '',
-            ];
-            $result = $this->_request('post', 'auth/token', $data);
+        if (Cache::get(__METHOD__)) {
+            return Cache::get(__METHOD__);
+        }
+        $data = [
+            'client_id' => $this->config['client_id'],
+            'client_secret' => $this->config['client_secret'],
+            'grant_type' => 'password',
+            'username' => $this->config['username'],
+            'password' => $this->config['password'],
+        ];
+        $result = $this->_request('post', 'token', $data);
+        Cache::put(__METHOD__, $result['access_token'], $result['expires_in'] - 10);
 
-            return $result['result']['accessToken'];
-        });
+        return $result['access_token'];
     }
 
     private function _request($method, $url, array $data = [], array $headers = [])
     {
-        $fullUrl = 'https://fct-api.stts.ir/api/' . ($this->config['sandbox'] ? 'vNext/' : 'v1/') . $url;
+        $as = 'asForm';
+        $fullUrl = 'https://setplus.stts.ir/';
+        if ($url != 'token') {
+            $fullUrl .= 'facilitycustomer/api/v1/';
+            $as = 'asJson';
+        }
+        $fullUrl .= $url;
+
         try {
             return Http::timeout(10)
+                ->$as()
                 ->withHeaders($headers)
                 ->$method($fullUrl, $data)
                 ->throw()
@@ -123,6 +135,12 @@ final class TejaratBajet extends GatewayAbstract
         } catch (RequestException $e) {
             $message = $e->getMessage();
             $result = $e->response->json();
+            if (isset($result['error'])) {
+                $message = $this->translateStatus($result['error']);
+            }
+            if (isset($result['error_description'])) {
+                $message = $this->translateStatus($result['error_description']);
+            }
             if (isset($result['title'])) {
                 $message = $this->translateStatus($result['title']);
             }
