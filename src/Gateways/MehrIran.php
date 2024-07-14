@@ -128,7 +128,6 @@ final class MehrIran extends GatewayAbstract
         if ($params['resp-code'] != '00') {
             throw new LarapayException($this->translateStatus($params['resp-code']));
         }
-
         if ($params['transaction-id'] != $token) {
             throw new LarapayException($this->translateStatus('id-missmatch'));
         }
@@ -140,11 +139,10 @@ final class MehrIran extends GatewayAbstract
         ];
         $data['sign'] = $this->sign($data);
         try {
-            $result = $this->_request($url, $params);
+            $result = $this->_request($url, $data);
         } catch (Exception $e) {
             throw new LarapayException($e->getMessage());
         }
-
         if ($result['resp-code'] != '00') {
             throw new LarapayException($this->translateStatus($result['resp-code']));
         }
