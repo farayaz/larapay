@@ -86,7 +86,7 @@ final class TejaratBajet extends GatewayAbstract
 
         // advice
         $url = 'customers/' . $nationalId . '/purchases/advice?trackId=' . $id;
-        $result = $this->_request('post', $url, [], $headers);
+        $result = $this->_request('post', $url, [], $headers, 20);
 
         return [
             'result' => $result['message'],
@@ -115,7 +115,7 @@ final class TejaratBajet extends GatewayAbstract
         return $result['access_token'];
     }
 
-    private function _request($method, $url, array $data = [], array $headers = [])
+    private function _request($method, $url, array $data = [], array $headers = [], $timeout = 10)
     {
         $as = 'asForm';
         $fullUrl = 'https://setplus.stts.ir/';
@@ -126,7 +126,7 @@ final class TejaratBajet extends GatewayAbstract
         $fullUrl .= $url;
 
         try {
-            return Http::timeout(10)
+            return Http::timeout($timeout)
                 ->$as()
                 ->withHeaders($headers)
                 ->$method($fullUrl, $data)
