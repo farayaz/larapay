@@ -46,9 +46,13 @@ final class RefahBeta extends GatewayAbstract
         }
 
         $url = 'beta/1.0/credit/' . $nationalId . '/request';
+        $startDate = Jalalian::now();
+        if ($startDate->getDay() > 15) {
+            $startDate = $startDate->addMonths();
+        }
         $data = [
             'title' => 'transaction' . $id,
-            'startDate' => Jalalian::now()->addMonths()->getEndDayOfMonth()->toCarbon()->toIso8601String(),
+            'startDate' => $startDate->getEndDayOfMonth()->toCarbon()->toIso8601String(),
             'amount' => $amount,
             'numberOfInstallments' => $this->config['number_of_installments'],
         ];
@@ -82,10 +86,14 @@ final class RefahBeta extends GatewayAbstract
         $params = array_merge($default, $params);
 
         $url = 'beta/1.0/credit/' . $nationalId . '/consume';
+        $startDate = Jalalian::now();
+        if ($startDate->getDay() > 15) {
+            $startDate = $startDate->addMonths();
+        }
         $data = [
             'otp' => $params['otp'],
             'title' => 'transaction' . $id,
-            'startDate' => Jalalian::now()->addMonths()->getEndDayOfMonth()->toCarbon()->toIso8601String(),
+            'startDate' => $startDate->getEndDayOfMonth()->toCarbon()->toIso8601String(),
             'amount' => $amount,
             'numberOfInstallments' => $this->config['number_of_installments'],
             'requestId' => (string) $id,
