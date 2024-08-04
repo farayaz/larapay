@@ -10,8 +10,6 @@ use SoapFault;
 
 class BehPardakht extends GatewayAbstract
 {
-    protected $url = 'https://bpm.shaparak.ir/pgwchannel/services/pgw?wsdl';
-
     protected $statuses = [
         11 => 'شماره کارت نامعتبر است',
         12 => 'موجودی کافی نیست',
@@ -61,7 +59,7 @@ class BehPardakht extends GatewayAbstract
         'token-mismatch' => 'عدم تطبیق توکن',
     ];
 
-    protected $requirements = ['terminalId', 'username', 'password'];
+    protected $requirements = ['terminal_id', 'username', 'password', 'is_credit'];
 
     public function request(
         int $id,
@@ -70,24 +68,24 @@ class BehPardakht extends GatewayAbstract
         string $mobile,
         string $callbackUrl
     ): array {
+        $method = $this->config['is_credit'] ? 'bpVirtualPayRequest' : 'bpPayRequest';
         $params = [
-            'bpPayRequest' => [
-                'terminalId' => $this->config['terminalId'],
-                'userName' => $this->config['username'],
-                'userPassword' => $this->config['password'],
-                'orderId' => $id,
-                'amount' => $amount,
-                'localDate' => Date::now()->format('Ymd'),
-                'localTime' => Date::now()->format('His'),
-                'additionalData' => '',
-                'callBackUrl' => $callbackUrl,
-            ],
+            'terminalId' => $this->config['terminal_id'],
+            'userName' => $this->config['username'],
+            'userPassword' => $this->config['password'],
+            'orderId' => $id,
+            'amount' => $amount,
+            'localDate' => Date::now()->format('Ymd'),
+            'localTime' => Date::now()->format('His'),
+            'additionalData' => '',
+            'callBackUrl' => $callbackUrl,
+            'payerId' => 0,
         ];
 
         ini_set('default_socket_timeout', 10);
         try {
-            $soap = new SoapClient($this->url);
-            $response = $soap->__soapCall('bpPayRequest', $params);
+            $client = new SoapClient($this->_url('services/pgw?wsdl'));
+            $response = $client->$method($params);
         } catch (SoapFault $e) {
             throw new LarapayException($e->getMessage());
         }
@@ -105,7 +103,7 @@ class BehPardakht extends GatewayAbstract
 
     public function redirect(int $id, string $token, string $callbackUrl)
     {
-        $action = 'https://bpm.shaparak.ir/pgwchannel/startpay.mellat';
+        $action = $this->_url('startpay.mellat');
         $fields = [
             'RefId' => $token,
         ];
@@ -136,8 +134,8 @@ class BehPardakht extends GatewayAbstract
             throw new LarapayException($this->translateStatus($params['ResCode']));
         }
 
-        $tmp = [
-            'terminalId' => $this->config['terminalId'],
+        $data = [
+            'terminalId' => $this->config['terminal_id'],
             'userName' => $this->config['username'],
             'userPassword' => $this->config['password'],
             'orderId' => $id,
@@ -146,14 +144,14 @@ class BehPardakht extends GatewayAbstract
         ];
         ini_set('default_socket_timeout', 10);
         try {
-            $soap = new SoapClient($this->url);
-            $response = $soap->bpVerifyRequest($tmp);
+            $client = new SoapClient($this->_url('services/pgw?wsdl'));
+            $response = $client->bpVerifyRequest($data);
         } catch (SoapFault $e) {
             throw new LarapayException($e->getMessage());
         }
 
-        $tmp = [
-            'terminalId' => $this->config['terminalId'],
+        $data = [
+            'terminalId' => $this->config['terminal_id'],
             'userName' => $this->config['username'],
             'userPassword' => $this->config['password'],
             'orderId' => $id,
@@ -161,8 +159,7 @@ class BehPardakht extends GatewayAbstract
             'saleReferenceId' => $params['SaleReferenceId'],
         ];
         try {
-            $soap = new SoapClient($this->url);
-            $response = $soap->bpSettleRequest($tmp);
+            $response = $client->bpSettleRequest($data);
         } catch (SoapFault $e) {
             throw new LarapayException($e->getMessage());
         }
@@ -177,5 +174,12 @@ class BehPardakht extends GatewayAbstract
             ];
         }
         throw new LarapayException($this->translateStatus($response->return));
+    }
+
+    private function _url($path)
+    {
+        $channel = $this->config['is_credit'] ? 'pgwCreditchannel' : 'pgwchannel';
+
+        return 'https://bpm.shaparak.ir/' . $channel . '/' . $path;
     }
 }
