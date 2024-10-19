@@ -91,7 +91,7 @@ class Sadad extends GatewayAbstract
             'result' => '0',
             'card' => $params['PrimaryAccNo'],
             'tracking_code' => $result['SystemTraceNo'],
-            'reference_id' => $result['RetrievalRefNo'],
+            'reference_id' => $result['RetrivalRefNo'],
             'fee' => 0,
         ];
     }
