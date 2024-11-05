@@ -16,7 +16,13 @@ final class IsipaymentSamin extends GatewayAbstract
 
     protected $statuses = [];
 
-    protected $requirements = ['merchant_code', 'merchant_password', 'terminal_code'];
+    protected $requirements = [
+        'merchant_code',
+        'merchant_password',
+        'terminal_code',
+        'type',
+        'number_of_installment',
+    ];
 
     public function request(
         int $id,
@@ -31,8 +37,8 @@ final class IsipaymentSamin extends GatewayAbstract
             'PurchaseDate' => Carbon::now()->format('c'),
             'MerchantReferenceNumber' => $id,
             'ReturnURL' => $callbackUrl,
-            'Type' => 1,
-            'NumberOfInstallment' => 1,
+            'Type' => $this->config['type'],
+            'NumberOfInstallment' => $this->config['number_of_installment'],
         ];
 
         $result = $this->_request($url, $params);
