@@ -118,7 +118,7 @@ final class TejaratBajet extends GatewayAbstract
     private function _request($method, $url, array $data = [], array $headers = [], $timeout = 10)
     {
         $as = 'asForm';
-        $fullUrl = 'https://setplus.stts.ir/';
+        $fullUrl = 'https://smq.stts.ir/';
         if ($url != 'token') {
             $fullUrl .= 'facilitycustomer/api/v1/';
             $as = 'asJson';
