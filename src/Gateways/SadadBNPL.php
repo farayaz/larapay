@@ -79,7 +79,7 @@ class SadadBNPL extends GatewayAbstract
 
         $data = [
             'Token' => $params['Token'],
-            'SignData' => $this->encrypt_pkcs7($token),
+            'SignData' => $this->encrypt_pkcs7($params['Token']),
         ];
         $url = 'https://sadad.shaparak.ir/api/v0/BnplAdvice/Verify';
         $result = $this->_request($url, 'post', $data);
