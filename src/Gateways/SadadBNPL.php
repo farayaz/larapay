@@ -70,9 +70,6 @@ class SadadBNPL extends GatewayAbstract
             'ResCode' => null,
         ];
         $params = array_merge($default, $params);
-        if ($params['OrderId'] != $id) {
-            throw new LarapayException($this->translateStatus('id-mismatch'));
-        }
         if ($params['ResCode'] != 0) {
             throw new LarapayException($this->translateStatus($params['ResCode']));
         }
