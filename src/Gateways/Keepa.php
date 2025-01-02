@@ -3,8 +3,9 @@
 namespace Farayaz\Larapay\Gateways;
 
 use Farayaz\Larapay\Exceptions\LarapayException;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
+use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Http\Client\RequestException;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\View;
 
 final class Keepa extends GatewayAbstract
@@ -16,6 +17,19 @@ final class Keepa extends GatewayAbstract
         'token-mismatch' => 'عدم تطبیق توکن بازگشتی',
         'verify-status-false' => 'تایید اولیه نا موفق',
         'confirm-status-false' => 'تایید ثانویه نا موفق',
+
+        100 => 'تراکنش با موفقیت ایجاد شد.',
+        101 => 'خطا در ثبت تراکنش',
+        102 => 'انصراف کاربر در مراحل میانی پرداخت',
+        103 => 'بازگشت به سایت پذیرنده',
+
+        200 => 'عملیات با موفقیت انجام شد.',
+        404 => 'آدرس URL درخواستی شما وجود ندارد.',
+        405 => 'توکن نامعتبر است.',
+        406 => 'مقادیر ورودی قابل پردازش نیست.',
+        416 => 'مبلغ وارد شده نامعتبر است.',
+        500 => 'خطایی در سرور رخ داده است. لطفا بعدا تلاش کنید.',
+        503 => 'سرویس به صورت موقت در دسترس نمی‌باشد.',
     ];
 
     protected $requirements = ['token'];
@@ -34,7 +48,7 @@ final class Keepa extends GatewayAbstract
             'mobile' => $mobile,
             'Details' => $id,
         ];
-        $result = $this->_request($url, $params);
+        $result = $this->_request('post', $url, $params);
 
         return [
             'token' => $result['Content']['payment_token'],
@@ -53,11 +67,17 @@ final class Keepa extends GatewayAbstract
         $default = [
             'payment_token' => null,
             'reciept_number' => null,
+            'state' => null,
+            'msg' => null,
         ];
         $params = array_merge($default, $params);
 
         if ($params['payment_token'] != $token) {
             throw new LarapayException($this->translateStatus('token-mismatch'));
+        }
+
+        if ($params['state'] != 100) {
+            throw new LarapayException($params['state'] ?? $params['msg']);
         }
 
         $data = [
@@ -66,7 +86,7 @@ final class Keepa extends GatewayAbstract
         ];
 
         $url = $this->url . 'verify_transaction';
-        $result = $this->_request($url, $data);
+        $result = $this->_request('post', $url, $data);
         if ($result['Content']['Status'] != true) {
             throw new LarapayException($this->translateStatus('verify-status-false'));
         }
@@ -75,7 +95,7 @@ final class Keepa extends GatewayAbstract
         }
 
         $url = $this->url . 'confirm_transaction';
-        $result = $this->_request($url, $data);
+        $result = $this->_request('post', $url, $data);
         if ($result['Content']['Status'] != true) {
             throw new LarapayException($this->translateStatus('confirm-status-false'));
         }
@@ -84,7 +104,7 @@ final class Keepa extends GatewayAbstract
             'fee' => 0,
             'card' => null,
             'result' => $result['Status'],
-            'reference_id' => $result['ConfirmTransactionNumber'],
+            'reference_id' => $params['reciept_number'], // TODO change to ConfirmTransactionNumber
             'tracking_code' => $params['reciept_number'],
         ];
     }
@@ -99,25 +119,16 @@ final class Keepa extends GatewayAbstract
         return View::make('larapay::redirector', compact('action', 'fields'));
     }
 
-    private function _request(string $url, array $data)
+    private function _request($method, $url, array $data = [], array $headers = [], $timeout = 10)
     {
-        $client = new Client();
+        $headers['Authorization'] = 'Bearer ' . $this->config['token'];
         try {
-            $response = $client->request(
-                'POST',
-                $url,
-                [
-                    'headers' => [
-                        'Authorization' => 'Bearer ' . $this->config['token'],
-                        'Content-Type' => 'application/json',
-                        'Accept' => 'application/json',
-                    ],
-                    'json' => $data,
-                    'timeout' => 10,
-                ]
-            );
+            $result = Http::timeout($timeout)
+                ->withHeaders($headers)
+                ->$method($url, $data)
+                ->throw()
+                ->json();
 
-            $result = json_decode($response->getBody()->getContents(), true);
             if (! $result['Success']) {
                 $message = $this->translateStatus($result['Message'] ?? $result['Status']);
                 throw new LarapayException($message);
@@ -126,6 +137,8 @@ final class Keepa extends GatewayAbstract
             return $result;
         } catch (RequestException $e) {
             throw new LarapayException($e->getMessage());
+        } catch (ConnectionException $e) {
+            throw new LarapayException($this->translateStatus('connection-exception'));
         }
     }
 }
