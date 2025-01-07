@@ -176,7 +176,7 @@ class BehPardakht extends GatewayAbstract
         throw new LarapayException($this->translateStatus($response->return));
     }
 
-    private function _url($path)
+    protected function _url($path)
     {
         $channel = $this->config['is_credit'] ? 'pgwCreditchannel' : 'pgwchannel';
 
