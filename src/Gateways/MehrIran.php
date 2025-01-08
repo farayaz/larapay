@@ -2,14 +2,14 @@
 
 namespace Farayaz\Larapay\Gateways;
 
-use Exception;
 use Farayaz\Larapay\Exceptions\LarapayException;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\BadResponseException;
+use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Http\Client\RequestException;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\View;
 use Morilog\Jalali\Jalalian;
 
-final class MehrIran extends GatewayAbstract
+class MehrIran extends GatewayAbstract
 {
     protected $url = 'https://kalayeiranipg.qmb.ir/pg/';
 
@@ -82,15 +82,7 @@ final class MehrIran extends GatewayAbstract
         ];
         $params['sign'] = $this->sign($params);
 
-        try {
-            $result = $this->_request($url, $params);
-        } catch (Exception $e) {
-            throw new LarapayException($e->getMessage());
-        }
-
-        if ($result['resp-code'] != '00') {
-            throw new LarapayException($this->translateStatus($result['resp-code']));
-        }
+        $result = $this->_request('post', $url, $params);
 
         return [
             'token' => $result['transaction-id'],
@@ -138,14 +130,8 @@ final class MehrIran extends GatewayAbstract
             'operation' => 'confirm',
         ];
         $data['sign'] = $this->sign($data);
-        try {
-            $result = $this->_request($url, $data);
-        } catch (Exception $e) {
-            throw new LarapayException($e->getMessage());
-        }
-        if ($result['resp-code'] != '00') {
-            throw new LarapayException($this->translateStatus($result['resp-code']));
-        }
+
+        $result = $this->_request('post', $url, $data);
         if ($result['transaction-id'] != $token) {
             throw new LarapayException($this->translateStatus('token-missmatch'));
         }
@@ -159,31 +145,28 @@ final class MehrIran extends GatewayAbstract
         ];
     }
 
-    private function _request(string $url, array $data)
+    protected function _request($method, $url, array $data = [], array $headers = [], $timeout = 10)
     {
-        $client = new Client;
-
         try {
-            $response = $client->request(
-                'POST',
-                $url,
-                [
-                    'headers' => [
-                        'Content-Type' => 'application/json',
-                        'Accept' => 'application/json',
-                    ],
-                    'json' => $data,
-                    'timeout' => 10,
-                ]
-            );
+            $result = Http::timeout($timeout)
+                ->withHeaders($headers)
+                ->$method($url, $data)
+                ->throw()
+                ->json();
 
-            return json_decode($response->getBody(), true);
-        } catch (BadResponseException $e) {
+            if ($result['resp-code'] != '00') {
+                throw new LarapayException($this->translateStatus($result['resp-code']));
+            }
+
+            return $result;
+        } catch (RequestException $e) {
             throw new LarapayException($e->getMessage());
+        } catch (ConnectionException $e) {
+            throw new LarapayException($this->translateStatus('connection-exception'));
         }
     }
 
-    private function sign(array $params)
+    protected function sign(array $params)
     {
         return hash_hmac('sha256', implode('*', $params), hex2bin($this->config['encrypt_key']));
     }
