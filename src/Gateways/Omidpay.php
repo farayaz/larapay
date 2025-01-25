@@ -3,11 +3,12 @@
 namespace Farayaz\Larapay\Gateways;
 
 use Farayaz\Larapay\Exceptions\LarapayException;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\BadResponseException;
+use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Http\Client\RequestException;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\View;
 
-final class Omidpay extends GatewayAbstract
+class Omidpay extends GatewayAbstract
 {
     protected $url = 'https://ref.sayancard.ir/ref-payment/RestServices/mts/';
 
@@ -38,7 +39,7 @@ final class Omidpay extends GatewayAbstract
             'Amount' => $amount . '',
             'RedirectUrl' => $callbackUrl,
         ];
-        $result = $this->_request($url, $params);
+        $result = $this->_request('post', $url, $params);
 
         return [
             'token' => $result['Token'],
@@ -87,7 +88,7 @@ final class Omidpay extends GatewayAbstract
             'Token' => $token,
             'RefNum' => $params['RefNum'],
         ];
-        $result = $this->_request($url, $data);
+        $result = $this->_request('post', $url, $data);
 
         return [
             'fee' => 0,
@@ -98,31 +99,24 @@ final class Omidpay extends GatewayAbstract
         ];
     }
 
-    private function _request(string $url, array $data)
+    private function _request($method, $url, array $data = [], array $headers = [], $timeout = 10)
     {
-        $client = new Client;
         try {
-            $response = $client->request(
-                'POST',
-                $url,
-                [
-                    'headers' => [
-                        'Content-Type' => 'application/json',
-                        'Accept' => 'application/json',
-                    ],
-                    'json' => $data,
-                    'timeout' => 10,
-                ]
-            );
+            $result = Http::timeout($timeout)
+                ->withHeaders($headers)
+                ->$method($url, $data)
+                ->throw()
+                ->json();
 
-            $result = json_decode($response->getBody()->getContents(), true);
             if ($result['Result'] != 'erSucceed') {
                 throw new LarapayException($this->translateStatus($result['Result']));
             }
 
             return $result;
-        } catch (BadResponseException $e) {
+        } catch (RequestException $e) {
             throw new LarapayException($e->getMessage());
+        } catch (ConnectionException $e) {
+            throw new LarapayException($this->translateStatus('connection-exception'));
         }
     }
 }
