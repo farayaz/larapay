@@ -103,8 +103,8 @@ final class Keepa extends GatewayAbstract
         return [
             'fee' => 0,
             'card' => null,
-            'result' => $result['Status'],
-            'reference_id' => $params['reciept_number'], // TODO change to ConfirmTransactionNumber
+            'result' => 'OK',
+            'reference_id' => $result['Content']['ConfirmTransactionNumber'],
             'tracking_code' => $params['reciept_number'],
         ];
     }
