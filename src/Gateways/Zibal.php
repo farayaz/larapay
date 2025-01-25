@@ -3,8 +3,9 @@
 namespace Farayaz\Larapay\Gateways;
 
 use Farayaz\Larapay\Exceptions\LarapayException;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\BadResponseException;
+use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Http\Client\RequestException;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Redirect;
 
 final class Zibal extends GatewayAbstract
@@ -63,7 +64,7 @@ final class Zibal extends GatewayAbstract
             'sms' => null,
         ];
 
-        $result = $this->_request($url, $params);
+        $result = $this->_request('post', $url, $params);
 
         return [
             'token' => $result['trackId'],
@@ -104,7 +105,7 @@ final class Zibal extends GatewayAbstract
             'merchant' => $this->config['merchant'],
             'trackId' => $token,
         ];
-        $result = $this->_request($url, $data);
+        $result = $this->_request('post', $url, $data);
 
         return [
             'result' => $this->translateStatus($result['status']),
@@ -115,33 +116,24 @@ final class Zibal extends GatewayAbstract
         ];
     }
 
-    private function _request(string $url, array $data)
+    private function _request($method, $url, array $data = [], array $headers = [], $timeout = 10)
     {
-        $client = new Client;
-
         try {
-            $response = $client->request(
-                'POST',
-                $url,
-                [
-                    'headers' => [
-                        'Content-Type' => 'application/json',
-                        'Accept' => 'application/json',
-                    ],
-                    'json' => $data,
-                    'timeout' => 10,
-                ]
-            );
-
-            $result = json_decode($response->getBody(), true);
+            $result = Http::timeout($timeout)
+                ->withHeaders($headers)
+                ->$method($url, $data)
+                ->throw()
+                ->json();
 
             if ($result['result'] != 100) {
                 throw new LarapayException($this->translateStatus($result['result']));
             }
 
             return $result;
-        } catch (BadResponseException $e) {
+        } catch (RequestException $e) {
             throw new LarapayException($e->getMessage());
+        } catch (ConnectionException $e) {
+            throw new LarapayException($this->translateStatus('connection-exception'));
         }
     }
 }
