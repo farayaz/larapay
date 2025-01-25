@@ -3,8 +3,9 @@
 namespace Farayaz\Larapay\Gateways;
 
 use Farayaz\Larapay\Exceptions\LarapayException;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\BadResponseException;
+use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Http\Client\RequestException;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Redirect;
 
 final class ZarinPal extends GatewayAbstract
@@ -93,7 +94,7 @@ final class ZarinPal extends GatewayAbstract
             'amount' => $amount,
             'authority' => $token,
         ];
-        $result = $this->_request($url, $data);
+        $result = $this->_request('post', $url, $data);
 
         $fee = ($result['fee_type'] == 'Merchant' ? $result['fee'] : 0);
 
@@ -106,25 +107,14 @@ final class ZarinPal extends GatewayAbstract
         ];
     }
 
-    private function _request(string $url, array $data)
+    private function _request(string $method, string $url, array $data = [], array $headers = [], $timeout = 10)
     {
-        $client = new Client;
-
         try {
-            $response = $client->request(
-                'POST',
-                $url,
-                [
-                    'headers' => [
-                        'Content-Type' => 'application/json',
-                        'Accept' => 'application/json',
-                    ],
-                    'json' => $data,
-                    'timeout' => 10,
-                ]
-            );
-
-            $result = json_decode($response->getBody(), true);
+            $result = Http::timeout($timeout)
+                ->withHeaders($headers)
+                ->$method($url, $data)
+                ->throw()
+                ->json();
 
             if (! empty($result['errors'])) {
                 throw new LarapayException(
@@ -134,21 +124,20 @@ final class ZarinPal extends GatewayAbstract
 
             if ($result['data']['code'] != 100) {
                 $message = $result['data']['code'];
-                throw new LarapayException($message);
+                throw new LarapayException($this->translateStatus($message));
             }
 
             return $result['data'];
-        } catch (BadResponseException $e) {
+        } catch (RequestException $e) {
             $message = $e->getMessage();
-            if (
-                $e->hasResponse() && $e->getResponse()->getStatusCode() == 400
-            ) {
-                $result = json_decode($e->getResponse()->getBody(), true);
-                if (! empty($result['errors'])) {
-                    $message = $this->translateStatus($result['errors']['code']);
-                }
+            $result = $e->response->json();
+            if (! empty($result['errors'])) {
+                $message = $this->translateStatus($result['errors']['code']);
             }
+
             throw new LarapayException($message);
+        } catch (ConnectionException $e) {
+            throw new LarapayException($this->translateStatus('connection-exception'));
         }
     }
 }
