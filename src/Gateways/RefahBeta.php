@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\View;
 use Morilog\Jalali\Jalalian;
 
-final class RefahBeta extends GatewayAbstract
+class RefahBeta extends GatewayAbstract
 {
     protected $statuses = [
         'invalid_client' => 'invalid_client: خطای سرویس گیرنده',
