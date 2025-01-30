@@ -3,9 +3,10 @@
 namespace Farayaz\Larapay\Gateways;
 
 use Farayaz\Larapay\Exceptions\LarapayException;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\BadResponseException;
+use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Redirect;
 
 final class Digipay extends GatewayAbstract
@@ -42,7 +43,7 @@ final class Digipay extends GatewayAbstract
         $headers = [
             'Authorization' => 'Bearer ' . $this->authenticate(),
         ];
-        $result = $this->_request($url, $data, $headers);
+        $result = $this->_request('post', $url, $data, $headers);
 
         if (($result['result']['status'] ?? -1) != 0) {
             $message = $data['result']['message'] ?? 'unknown error';
@@ -89,7 +90,7 @@ final class Digipay extends GatewayAbstract
         $headers = [
             'Authorization' => 'Bearer ' . $this->authenticate(),
         ];
-        $result = $this->_request($url, [], $headers);
+        $result = $this->_request('post', $url, [], $headers);
 
         if (($result['result']['status'] ?? -1) != 0) {
             $message = $result['result']['message'] ?? 'unknown error';
@@ -121,42 +122,35 @@ final class Digipay extends GatewayAbstract
             'Authorization' => 'Basic ' . base64_encode($this->config['client_id'] . ':' . $this->config['client_secret']),
         ];
 
-        $result = $this->_request($url, $data, $headers);
+        $result = $this->_request('post', $url, $data, $headers);
 
         Cache::put(__CLASS__ . 'token', $result['access_token'], $result['expires_in'] - 10);
 
         return $result['access_token'];
     }
 
-    private function _request($url, $data, $headers = [])
+    private function _request(string $method, string $url, array $data = [], array $headers = [], $timeout = 10)
     {
-        $client = new Client;
-
         try {
-            $response = $client->request(
-                'POST',
-                $url,
-                [
-                    'headers' => [
-                        'Content-Type' => 'application/json',
-                        'Accept' => 'application/json',
-                        ...$headers,
-                    ],
-                    'json' => $data,
-                    'timeout' => 10,
-                ]
-            );
+            $result = Http::timeout($timeout)
+                ->withHeaders($headers)
+                ->$method($url, $data)
+                ->throw()
+                ->json();
 
-            return json_decode($response->getBody(), true);
-        } catch (BadResponseException $e) {
+            return $result;
+        } catch (RequestException $e) {
             $message = $e->getMessage();
-            if ($e->getResponse()?->getStatusCode() == 401) {
+            if ($e->response->status() == 401) {
                 $message = '401 Unauthorized';
-                if ($e->getRequest()->getUri()->getPath() == '/digipay/api/oauth/token') {
+                dd($e);
+                if ($e->request->getUri()->getPath() == '/digipay/api/oauth/token') {
                     $message = $this->translateStatus('401-authenticate');
                 }
             }
             throw new LarapayException($message);
+        } catch (ConnectionException $e) {
+            throw new LarapayException($this->translateStatus('connection-exception'));
         }
     }
 }

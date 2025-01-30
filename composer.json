@@ -29,12 +29,11 @@
   "prefer-stable": true,
   "require": {
     "php": "^8.1",
-    "illuminate/container": "^10.10.0|^11.0",
-    "illuminate/contracts": "^10.10.0|^11.0",
-    "illuminate/support": "^10.10.0|^11.0",
+    "illuminate/container": "^10.0|^11.0",
+    "illuminate/contracts": "^10.0|^11.0",
+    "illuminate/support": "^10.0|^11.0",
     "morilog/jalali": "3.*",
-    "illuminate/http": "^10.10.0|^11.0",
-    "guzzlehttp/guzzle": "^7.2"
+    "illuminate/http": "^10.0|^11.0"
   },
   "require-dev": {
     "laravel/pint": "^1.0"
@@ -44,7 +43,7 @@
   },
   "config": {
     "platform": {
-      "php": "8.2"
+      "php": "8.1"
     }
   }
 }

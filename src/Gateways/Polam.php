@@ -3,8 +3,9 @@
 namespace Farayaz\Larapay\Gateways;
 
 use Farayaz\Larapay\Exceptions\LarapayException;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\BadResponseException;
+use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Http\Client\RequestException;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Redirect;
 
 final class Polam extends GatewayAbstract
@@ -42,7 +43,7 @@ final class Polam extends GatewayAbstract
             'amount' => $amount,
             'return_url' => $callbackUrl,
         ];
-        $result = $this->_request($url, $params);
+        $result = $this->_request('post', $url, $params);
         if ($result['status'] != 1) {
             throw new LarapayException($this->translateStatus($result['errorCode']));
         }
@@ -79,7 +80,7 @@ final class Polam extends GatewayAbstract
         $data = [
             'api_key' => $this->config['api_key'],
         ];
-        $result = $this->_request($url, $data);
+        $result = $this->_request('post', $url, $data);
         if ($result['status'] != 1) {
             throw new LarapayException($this->translateStatus($result['errorCode']));
         }
@@ -93,30 +94,20 @@ final class Polam extends GatewayAbstract
         ];
     }
 
-    private function _request(string $url, array $data)
+    private function _request(string $method, string $url, array $data = [], array $headers = [], $timeout = 10)
     {
-        $client = new Client;
-
         try {
-            $response = $client->request(
-                'POST',
-                $url,
-                [
-                    'headers' => [
-                        'Content-Type' => 'application/json',
-                        'Accept' => 'application/json',
-                    ],
-                    'json' => $data,
-                    'timeout' => 10,
-                ]
-            );
-
-            $result = json_decode($response->getBody(), true);
+            $result = Http::timeout($timeout)
+                ->withHeaders($headers)
+                ->$method($url, $data)
+                ->throw()
+                ->json();
 
             return $result;
-        } catch (BadResponseException $e) {
-            $message = $e->getMessage();
-            throw new LarapayException($message);
+        } catch (RequestException $e) {
+            throw new LarapayException($e->getMessage());
+        } catch (ConnectionException $e) {
+            throw new LarapayException($this->translateStatus('connection-exception'));
         }
     }
 
