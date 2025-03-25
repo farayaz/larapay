@@ -44,6 +44,7 @@ abstract class GatewayAbstract
 
     protected function translateStatus(int|string|null $code = null)
     {
+        $this->statuses['failed'] = 'ناموفق';
         $this->statuses['id-mismatch'] = 'عدم تطبیق شناسه بازگشتی';
         $this->statuses['amount-mismatch'] = 'عدم تطبیق مبلغ بازگشتی';
         $this->statuses['token-mismatch'] = 'عدم تطبیق توکن بازگشتی';
