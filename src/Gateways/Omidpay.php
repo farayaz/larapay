@@ -79,6 +79,16 @@ class Omidpay extends GatewayAbstract
             throw new LarapayException($this->translateStatus('token-mismatch'));
         }
 
+        $url = $this->url . 'inquiryMerchantToken/';
+        $data = [
+            'WSContext' => [
+                'UserId' => $this->config['user_id'],
+                'Password' => $this->config['password'],
+            ],
+            'Token' => $token,
+        ];
+        $result1 = $this->_request('post', $url, $data);
+
         $url = $this->url . 'verifyMerchantTrans/';
         $data = [
             'WSContext' => [
@@ -88,14 +98,14 @@ class Omidpay extends GatewayAbstract
             'Token' => $token,
             'RefNum' => $params['RefNum'],
         ];
-        $result = $this->_request('post', $url, $data);
+        $result2 = $this->_request('post', $url, $data);
 
         return [
             'fee' => 0,
-            'card' => null,
-            'result' => $result['Result'],
-            'reference_id' => $result['RefNum'],
-            'tracking_code' => $result['RefNum'],
+            'card' => str_replace('********', '******', $result1['MaskPan']),
+            'result' => $result2['Result'],
+            'reference_id' => $result2['RefNum'],
+            'tracking_code' => $result1['Rrn'],
         ];
     }
 

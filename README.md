@@ -16,6 +16,7 @@ Larapay is a Laravel package for integrating Iranian payment gateways.
 | **Azkivam**         | [Azkivam](https://azkivam.com/)                | ازکی وام                     | `merchant_id`,`api_key`                                                                |
 | **BehPardakht**     | [Beh Pardakht Mellat](https://behpardakht.com) | به‌پرداخت ملت                 | `terminal_id`, `username`, `password`, `is_credit`                                     |
 | **Digipay**         | [Digipay](https://www.mydigipay.com)           | دیجی‌پی                       | `username`, `password`, `client_id`, `client_secret`                                   |
+| **FanavaCard**      | [FanavaCard](https://fanavacard.ir)            | فن‌آوا کارت                   | `user_id`, `password`                                                                  |
 | **IdPay**           | [IdPay](https://idpay.ir)                      | آیدی‌پی                       | `apiKey`, `sandbox`                                                                    |
 | **IranKish**        | [Iran Kish](https://www.irankish.com)          | ایران کیش                    | `terminalId`, `password`, `acceptorId`, `pubKey`                                       |
 | **IsipaymentSamin** | [Isipayment Samin](https://isipayment.ir)      | ایزایران ثمین                | `merchant_code`, `merchant_password`, `terminal_code`, `type`, `number_of_installment` |
