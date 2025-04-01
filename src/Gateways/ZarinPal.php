@@ -8,7 +8,7 @@ use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Redirect;
 
-final class ZarinPal extends GatewayAbstract
+class ZarinPal extends GatewayAbstract
 {
     protected $statuses = [
         -9 => 'خطای اعتبار سنجی',
@@ -46,14 +46,14 @@ final class ZarinPal extends GatewayAbstract
         string $callbackUrl
     ): array {
         $url = 'https://api.zarinpal.com/pg/v4/payment/request.json';
-        $params = [
+        $data = [
             'merchant_id' => $this->config['merchant_id'],
             'amount' => $amount,
             'description' => $id . '-' . $amount,
             'callback_url' => $callbackUrl,
         ];
 
-        $result = $this->_request($url, $params);
+        $result = $this->_request('post', $url, $data);
         $fee = ($result['fee_type'] == 'Merchant' ? $result['fee'] : 0);
 
         return [

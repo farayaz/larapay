@@ -8,7 +8,7 @@ use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\View;
 
-final class PardakhtNovin extends GatewayAbstract
+class PardakhtNovin extends GatewayAbstract
 {
     protected $url = 'https://pna.shaparak.ir/';
 

@@ -10,7 +10,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Redirect;
 
-final class IsipaymentSamin extends GatewayAbstract
+class IsipaymentSamin extends GatewayAbstract
 {
     private $url = 'https://ipg.isipayment.ir/';
 

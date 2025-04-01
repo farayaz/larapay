@@ -8,7 +8,7 @@ use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\View;
 
-final class IranKish extends GatewayAbstract
+class IranKish extends GatewayAbstract
 {
     protected $url = 'https://ikc.shaparak.ir/';
 

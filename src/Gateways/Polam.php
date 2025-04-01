@@ -8,7 +8,7 @@ use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Redirect;
 
-final class Polam extends GatewayAbstract
+class Polam extends GatewayAbstract
 {
     protected $url = 'https://polam.io/invoice/';
 

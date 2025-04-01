@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\View;
 
-final class TejaratBajet extends GatewayAbstract
+class TejaratBajet extends GatewayAbstract
 {
     protected $statuses = [
         'TrackerAlreadyUsed' => 'کد پیگیری تکراری',

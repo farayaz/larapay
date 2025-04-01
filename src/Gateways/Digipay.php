@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Redirect;
 
-final class Digipay extends GatewayAbstract
+class Digipay extends GatewayAbstract
 {
     protected $url = 'https://api.mydigipay.com/digipay/api/';
 

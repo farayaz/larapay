@@ -4,7 +4,7 @@ namespace Farayaz\Larapay;
 
 use Farayaz\Larapay\Exceptions\LarapayException;
 
-final class Larapay
+class Larapay
 {
     protected $gateway;
 

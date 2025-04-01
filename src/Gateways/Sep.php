@@ -8,7 +8,7 @@ use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\View;
 
-final class Sep extends GatewayAbstract
+class Sep extends GatewayAbstract
 {
     protected $url = 'https://sep.shaparak.ir/';
 

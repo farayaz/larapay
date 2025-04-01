@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Redirect;
 
-final class SnappPay extends GatewayAbstract
+class SnappPay extends GatewayAbstract
 {
     private $url = 'https://api.snapppay.ir/';
 
