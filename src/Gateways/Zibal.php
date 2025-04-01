@@ -8,7 +8,7 @@ use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Redirect;
 
-final class Zibal extends GatewayAbstract
+class Zibal extends GatewayAbstract
 {
     protected $url = 'https://gateway.zibal.ir/';
 

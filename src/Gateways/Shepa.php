@@ -8,7 +8,7 @@ use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Redirect;
 
-final class Shepa extends GatewayAbstract
+class Shepa extends GatewayAbstract
 {
     protected $statuses = [
         'failed' => 'ناموفق',

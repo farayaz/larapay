@@ -7,7 +7,7 @@ use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Redirect;
 
-final class Azkivam extends GatewayAbstract
+class Azkivam extends GatewayAbstract
 {
     protected $url = 'https://api.azkivam.com';
 

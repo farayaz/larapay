@@ -8,7 +8,7 @@ use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Redirect;
 
-final class IdPay extends GatewayAbstract
+class IdPay extends GatewayAbstract
 {
     protected $url = 'https://api.idpay.ir';
 

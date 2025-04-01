@@ -8,7 +8,7 @@ use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\View;
 
-final class Sepehrpay extends GatewayAbstract
+class Sepehrpay extends GatewayAbstract
 {
     private $url = 'https://sepehr.shaparak.ir:8081/V1/PeymentApi/';
 

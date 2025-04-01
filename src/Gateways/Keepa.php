@@ -8,7 +8,7 @@ use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\View;
 
-final class Keepa extends GatewayAbstract
+class Keepa extends GatewayAbstract
 {
     protected $url = 'https://api.kipaa.ir/ipg/v1/supplier/';
 

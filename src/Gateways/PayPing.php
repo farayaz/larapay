@@ -9,7 +9,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Redirect;
 
-final class PayPing extends GatewayAbstract
+class PayPing extends GatewayAbstract
 {
     protected $url = 'https://api.payping.ir/v2/';
 

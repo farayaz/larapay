@@ -8,7 +8,7 @@ use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Redirect;
 
-final class Payir extends GatewayAbstract
+class Payir extends GatewayAbstract
 {
     protected $url = 'https://pay.ir/pg/';
 
