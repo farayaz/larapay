@@ -37,7 +37,7 @@ abstract class GatewayAbstract
 
     protected function requirements()
     {
-        if (! Arr::has($this->config, $this->requirements)) {
+        if ($this->requirements && ! Arr::has($this->config, $this->requirements)) {
             throw new LarapayException(implode(', ', $this->requirements) . ' is required.');
         }
     }
