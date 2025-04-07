@@ -19,6 +19,7 @@ Larapay is a Laravel package for integrating Iranian payment gateways.
 | **Digipay**          | [Digipay](https://www.mydigipay.com)           | دیجی‌پی                       | `username`, `password`, `client_id`, `client_secret`                                   |
 | **FanavaCard**       | [FanavaCard](https://fanavacard.ir)            | فن‌آوا کارت                   | `user_id`, `password`                                                                  |
 | **IdPay**            | [IdPay](https://idpay.ir)                      | آیدی‌پی                       | `apiKey`, `sandbox`                                                                    |
+| **IranDargah**       | [IranDargah](https://irandargah.com)           | ایران درگاه                  | `merchant_id`, `sandbox`                                                               |
 | **IranKish**         | [Iran Kish](https://www.irankish.com)          | ایران کیش                    | `terminalId`, `password`, `acceptorId`, `pubKey`                                       |
 | **IsipaymentSamin**  | [Isipayment Samin](https://isipayment.ir)      | ایزایران ثمین                | `merchant_code`, `merchant_password`, `terminal_code`, `type`, `number_of_installment` |
 | **Keepa**            | [Keepa - Kipaa](https://keepa.ir)              | کیپا                         | `token`                                                                                |
@@ -38,7 +39,7 @@ Larapay is a Laravel package for integrating Iranian payment gateways.
 | **Shepa**            | [Shepa](https://shepa.com)                     | شپا                          | `api`                                                                                  |
 | **SnappPay**         | [SnappPay](https://snapppay.ir)                | اسنپ‌پی                       | `username`, `password`, `client_id`, `client_secret`                                   |
 | **TejaratBajet**     | [Tejarat Bajet](https://mybajet.ir)            | بانک تجارت - باجت            | `client_id`, `client_secret`, `sandbox`                                                |
-| :test_tube: **Test** | Test                                           | تست                          |                                                                                        |
+| :test_tube: **Test** | **Test**                                       | **تست**                      | برای تست                                                                               |
 | **Vandar**           | [Vandar](https://vandar.io)                    | وندار                        | `api_key`                                                                              |
 | **ZarinPal**         | [Zarin Pal](https://www.zarinpal.com)          | زرین پال                     | `merchant_id`                                                                          |
 | **Zibal**            | [Zibal](https://zibal.ir)                      | زیبال                        | `merchant`                                                                             |
