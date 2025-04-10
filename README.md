@@ -25,6 +25,7 @@ Larapay is a Laravel package for integrating Iranian payment gateways.
 | **IsipaymentSamin**  | [Isipayment Samin](https://isipayment.ir)      | ایزایران ثمین                | `merchant_code`, `merchant_password`, `terminal_code`, `type`, `number_of_installment` |
 | **Keepa**            | [Keepa - Kipaa](https://keepa.ir)              | کیپا                         | `token`                                                                                |
 | **MehrIran**         | [MehrIran](https://qmb.ir)                     | بانک مهر ایران               | `terminal_id`, `merchant_nid`, `encrypt_key`                                           |
+| **NextPay**          | [NextPay](https://nextpay.org)                 | نکست پی                      | `api_key`                                                                              |
 | **Omidpay**          | [Omidpay - Sayan Card](https://omidpayment.ir) | امید پی (سایان کارت)         | `user_id`, `password`                                                                  |
 | **PardakhtNovin**    | [Pardakht Novin](https://pna.co.ir)            | پرداخت نوین                  | `userId`, `password`, `terminalId`                                                     |
 | **Payir**            | [Pay.ir](https://www.pay.ir)                   | پی.آی‌آر                      | `api`                                                                                  |
