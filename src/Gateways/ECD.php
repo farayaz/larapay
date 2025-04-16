@@ -15,7 +15,7 @@ class ECD extends GatewayAbstract
 
     protected $statuses = [];
 
-    protected $requirements = ['terminal_number', 'key'];
+    protected $requirements = ['terminal_number', 'hash_key'];
 
     public function request(
         int $id,
@@ -32,7 +32,7 @@ class ECD extends GatewayAbstract
             'Time' => Date::now()->format('H:m'),
             'RedirectURL' => $callbackUrl,
         ];
-        $data['CheckSum'] = sha1(implode('', array_values($data)) . $this->config['key']);
+        $data['CheckSum'] = sha1(implode('', array_values($data)) . $this->config['hash_key']);
         $data['Language'] = 'fa';
 
         $result = $this->_request('PayRequest', $data);
