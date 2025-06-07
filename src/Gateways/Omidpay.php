@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\View;
 
 class Omidpay extends GatewayAbstract
 {
-    protected $url = 'https://ref.sayancard.ir/ref-payment/RestServices/mts/';
+    protected $url = 'https://ref.omidpayment.ir/ref-payment/RestServices/mts/';
 
     protected $statuses = [
         'erAAS_InvalidUseridOrPass' => 'نام کاربری یا رمز عبور نامعتبر',
