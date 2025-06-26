@@ -45,9 +45,6 @@ class Sep extends GatewayAbstract
         '-116' => 'رسید دیجیتالی نامعتبر میباشد',
         '-117' => 'ارسال توکن یا شناسه خرید برای استعلام الزامی است',
         '-118' => 'قبضی با این مشخصات یافت نشد.',
-
-        'token-mismatch' => 'مغایرت توکن بازگشتی',
-        'amount-mismatch' => 'مغایرت مبلغ پرداختی',
     ];
 
     protected $requirements = ['terminalId'];
@@ -123,11 +120,11 @@ class Sep extends GatewayAbstract
         $url = $this->url . 'verifyTxnRandomSessionkey/ipg/VerifyTransaction';
         $data = [
             'RefNum' => $params['RefNum'],
-            'TerminalNumber' => $id,
+            'TerminalNumber' => $this->config['terminalId'],
         ];
         $result = $this->_request('post', $url, $data);
 
-        if ($result['ResultCode'] == 0) {
+        if ($result['ResultCode'] != 0) {
             throw new LarapayException($this->translateStatus($result['ResultCode']));
         }
 
