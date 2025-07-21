@@ -51,6 +51,44 @@ class Larapay
         return $this->gateway->redirect($id, $token, $callbackUrl);
     }
 
+    /**
+     * Check if gateway supports a specific capability
+     */
+    public function supports(string $capability): bool
+    {
+        $this->_check();
+
+        return $this->gateway->supports($capability);
+    }
+
+    /**
+     * Refund a transaction (only for supported gateways)
+     */
+    public function refund(int $id, int $amount, string $referenceId, string $reason = '')
+    {
+        $this->_check();
+
+        if (! $this->gateway->supportsRefund()) {
+            throw new LarapayException('Gateway does not support refunds');
+        }
+
+        return $this->gateway->refund($id, $amount, $referenceId, $reason);
+    }
+
+    /**
+     * Bulk check transaction statuses (only for supported gateways)
+     */
+    public function bulkCheck(callable $successCallback, callable $unsuccessCallback): void
+    {
+        $this->_check();
+
+        if (! $this->gateway->supportsBulkCheck()) {
+            throw new LarapayException('Gateway does not support bulk check');
+        }
+
+        $this->gateway->bulkCheck($successCallback, $unsuccessCallback);
+    }
+
     private function _check()
     {
         if (empty($this->gateway)) {
