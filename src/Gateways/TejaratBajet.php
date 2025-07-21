@@ -94,7 +94,7 @@ class TejaratBajet extends GatewayAbstract implements BulkCheckableInterface
     {
         $list = [];
         for ($i = 1; $i <= 2; $i++) {
-            $result = $this->_request('get', 'customers/purchases?PageNumber=' . $i);
+            $result = $this->_request('get', 'customers/purchases', ['PageNumber' => $i, 'pageSize' => 50]);
             $list = array_merge($list, $result['result']);
         }
 
