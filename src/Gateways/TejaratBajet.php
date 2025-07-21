@@ -3,13 +3,14 @@
 namespace Farayaz\Larapay\Gateways;
 
 use Farayaz\Larapay\Exceptions\LarapayException;
+use Farayaz\Larapay\Interfaces\BulkCheckableInterface;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\View;
 
-class TejaratBajet extends GatewayAbstract
+class TejaratBajet extends GatewayAbstract implements BulkCheckableInterface
 {
     protected $statuses = [
         'TrackerAlreadyUsed' => 'کد پیگیری تکراری',
@@ -30,12 +31,8 @@ class TejaratBajet extends GatewayAbstract
         string $mobile,
         string $callbackUrl
     ): array {
-        $headers = [
-            'Authorization' => 'Bearer ' . $this->authenticate(),
-        ];
-
         $url = 'customers/' . $nationalId . '/balance';
-        $result = $this->_request('get', $url, [], $headers);
+        $result = $this->_request('get', $url);
         if ($result['result']['balance'] < $amount) {
             throw new LarapayException('باجت: عدم موجودی کافی. موجودی: ' . number_format($result['result']['balance']) . ' ریال');
         }
@@ -45,7 +42,7 @@ class TejaratBajet extends GatewayAbstract
             'amount' => $amount,
             'description' => $id,
         ];
-        $this->_request('post', $url, $data, $headers);
+        $this->_request('post', $url, $data);
 
         return [
             'token' => $id,
@@ -71,10 +68,6 @@ class TejaratBajet extends GatewayAbstract
         ];
         $params = array_merge($default, $params);
 
-        $headers = [
-            'Authorization' => 'Bearer ' . $this->authenticate(),
-        ];
-
         // purchases
         $url = 'customers/' . $nationalId . '/purchases?trackId=' . $id;
         $data = [
@@ -82,11 +75,11 @@ class TejaratBajet extends GatewayAbstract
             'amount' => $amount,
             'description' => $id,
         ];
-        $this->_request('post', $url, $data, $headers);
+        $this->_request('post', $url, $data);
 
         // advice
         $url = 'customers/' . $nationalId . '/purchases/advice?trackId=' . $id;
-        $result = $this->_request('post', $url, [], $headers, 20);
+        $result = $this->_request('post', $url);
 
         return [
             'result' => $result['message'],
@@ -95,6 +88,34 @@ class TejaratBajet extends GatewayAbstract
             'reference_id' => $result['result']['referenceNumber'],
             'fee' => 0,
         ];
+    }
+
+    public function bulkCheck(callable $successCallback, callable $unsuccessCallback): void
+    {
+        $list = [];
+        for ($i = 1; $i <= 2; $i++) {
+            $result = $this->_request('get', 'customers/purchases?PageNumber=' . $i);
+            $list = array_merge($list, $result['result']);
+        }
+
+        foreach ($list as $item) {
+            $id = $item['trackId'];
+            if ($item['status'] == 'ADVICED') {
+                $successCallback(
+                    $id,
+                    [
+                        'result' => $item['status'],
+                        'card' => null,
+                        'tracking_code' => $item['referenceNumber'],
+                        'reference_id' => $item['referenceNumber'],
+                        'amount' => $item['amount'],
+                        'fee' => 0,
+                    ]
+                );
+            } elseif ($item['status'] == 'REVERSED') {
+                $unsuccessCallback($id);
+            }
+        }
     }
 
     public function authenticate()
@@ -122,6 +143,7 @@ class TejaratBajet extends GatewayAbstract
         if ($url != 'token') {
             $fullUrl .= 'facilitycustomer/api/v1/';
             $as = 'asJson';
+            $headers['Authorization'] = 'Bearer ' . $this->authenticate();
         }
         $fullUrl .= $url;
 

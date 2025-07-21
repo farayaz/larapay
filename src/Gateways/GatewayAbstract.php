@@ -63,4 +63,32 @@ abstract class GatewayAbstract
 
         return $fee;
     }
+
+    /**
+     * Check if gateway supports refunds
+     */
+    public function supportsRefund(): bool
+    {
+        return $this instanceof \Farayaz\Larapay\Interfaces\RefundableInterface;
+    }
+
+    /**
+     * Check if gateway supports bulk checking
+     */
+    public function supportsBulkCheck(): bool
+    {
+        return $this instanceof \Farayaz\Larapay\Interfaces\BulkCheckableInterface;
+    }
+
+    /**
+     * Check if gateway supports a specific capability
+     */
+    public function supports(string $capability): bool
+    {
+        return match ($capability) {
+            'refund' => $this->supportsRefund(),
+            'bulk_check' => $this->supportsBulkCheck(),
+            default => false,
+        };
+    }
 }
