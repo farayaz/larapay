@@ -106,8 +106,8 @@ class TejaratBajet extends GatewayAbstract implements BulkCheckableInterface
                     [
                         'result' => $item['status'],
                         'card' => null,
-                        'tracking_code' => $item['referenceNumber'],
-                        'reference_id' => $item['referenceNumber'],
+                        'tracking_code' => $item['referenceNumber'] ?? null,
+                        'reference_id' => $item['referenceNumber'] ?? null,
                         'amount' => $item['amount'],
                         'fee' => 0,
                     ]
