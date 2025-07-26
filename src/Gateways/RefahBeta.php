@@ -160,7 +160,7 @@ class RefahBeta extends GatewayAbstract
             }
             throw new LarapayException('بتا رفاه: ' . $message);
         } catch (ConnectionException $e) {
-            throw new LarapayException($this->translateStatus('connection-exception'));
+            throw new LarapayException($this->translateStatus('connection-exception'), LarapayException::CODE_CONNECTION_EXCEPTION);
         }
     }
 }
