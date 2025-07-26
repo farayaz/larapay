@@ -7,5 +7,5 @@ use Exception;
 // TODO add code
 class LarapayException extends Exception
 {
-    //
+    const CODE_CONNECTION_EXCEPTION = 5000;
 }
