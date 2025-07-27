@@ -3,6 +3,7 @@
 namespace Farayaz\Larapay\Gateways;
 
 use Farayaz\Larapay\Exceptions\LarapayException;
+use Farayaz\Larapay\Interfaces\BulkCheckableInterface;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Cache;
@@ -10,7 +11,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\View;
 use Morilog\Jalali\Jalalian;
 
-class RefahBeta extends GatewayAbstract
+class RefahBeta extends GatewayAbstract implements BulkCheckableInterface
 {
     protected $statuses = [
         'invalid_client' => 'invalid_client: خطای سرویس گیرنده',
@@ -98,7 +99,7 @@ class RefahBeta extends GatewayAbstract
             'numberOfInstallments' => $this->config['number_of_installments'],
             'requestId' => (string) $id,
         ];
-        $result = $this->_request('post', $url, $data);
+        $result = $this->_request('post', $url, $data, [], 20);
         if ($result['status'] != 200) {
             throw new LarapayException($result['message']);
         }
@@ -110,6 +111,35 @@ class RefahBeta extends GatewayAbstract
             'reference_id' => $result['data'],
             'fee' => 0,
         ];
+    }
+
+    public function bulkCheck(callable $successCallback, callable $unsuccessCallback): void
+    {
+        $result = $this->_request('get', 'beta/1.0/order/' . Jalalian::now()->format('Ym') . '/all', [], [], 30);
+        $items = collect($result['data']['data'])->sortByDesc('id');
+        foreach ($items->take(50) as $item) {
+            if (! str_starts_with($item['title'], 'transaction')) {
+                continue;
+            }
+            $id = str_replace(['transaction', '(حذف شده)'], '', $item['title']);
+
+            if (! str_contains($item['title'], '(حذف شده)')) {
+                $successCallback(
+                    $id,
+                    [
+                        'result' => 'successed',
+                        'card' => null,
+                        'tracking_code' => $item['id'],
+                        'reference_id' => $item['id'],
+                        'amount' => (int) $item['amount'],
+                        'fee' => 0,
+                    ]
+                );
+            } else {
+                $unsuccessCallback($id);
+            }
+
+        }
     }
 
     private function authenticate()
@@ -130,7 +160,7 @@ class RefahBeta extends GatewayAbstract
         return $result['access_token'];
     }
 
-    private function _request($method, $url, array $data = [], array $headers = [])
+    private function _request($method, $url, array $data = [], array $headers = [], $timeout = 10)
     {
         $fullUrl = 'https://api.rb24.ir/' . $url;
         $as = 'asJson';
@@ -143,7 +173,7 @@ class RefahBeta extends GatewayAbstract
         }
 
         try {
-            return Http::timeout(10)
+            return Http::timeout($timeout)
                 ->$as()
                 ->withHeaders($headers)
                 ->$method($fullUrl, $data)
