@@ -122,8 +122,11 @@ class RefahBeta extends GatewayAbstract implements BulkCheckableInterface
                 continue;
             }
             $id = str_replace(['transaction', '(حذف شده)'], '', $item['title']);
-
-            if (! str_contains($item['title'], '(حذف شده)')) {
+            $result = $this->_request('get', 'beta/1.0/order/' . $item['id'] . '/installments');
+            $deletedsRecords = collect($result['data']['data'])->filter(function ($item) {
+                return $item['isDeleted'];
+            });
+            if ($deletedsRecords->count() == 0) {
                 $successCallback(
                     $id,
                     [
@@ -135,10 +138,9 @@ class RefahBeta extends GatewayAbstract implements BulkCheckableInterface
                         'fee' => 0,
                     ]
                 );
-            } else {
+            } elseif ($deletedsRecords->count() == $result['data']['totalRecords']) {
                 $unsuccessCallback($id);
             }
-
         }
     }
 
