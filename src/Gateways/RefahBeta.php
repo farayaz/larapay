@@ -33,7 +33,6 @@ class RefahBeta extends GatewayAbstract implements BulkCheckableInterface
         string $mobile,
         string $callbackUrl
     ): array {
-
         $url = 'beta/1.0/credit/' . $nationalId . '/inquiry';
         $result = $this->_request('post', $url);
         if ($result['status'] != 200) {
@@ -99,7 +98,7 @@ class RefahBeta extends GatewayAbstract implements BulkCheckableInterface
             'numberOfInstallments' => $this->config['number_of_installments'],
             'requestId' => (string) $id,
         ];
-        $result = $this->_request('post', $url, $data, [], 20);
+        $result = $this->_request('post', $url, $data, [], 5);
         if ($result['status'] != 200) {
             throw new LarapayException($result['message']);
         }
@@ -162,7 +161,7 @@ class RefahBeta extends GatewayAbstract implements BulkCheckableInterface
         return $result['access_token'];
     }
 
-    private function _request($method, $url, array $data = [], array $headers = [], $timeout = 10)
+    private function _request($method, $url, array $data = [], array $headers = [], $timeout = 5)
     {
         $fullUrl = 'https://api.rb24.ir/' . $url;
         $as = 'asJson';
