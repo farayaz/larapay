@@ -79,7 +79,8 @@ class NextPay extends GatewayAbstract
         int $amount,
         string $nationalId,
         string $mobile,
-        string $callbackUrl
+        string $callbackUrl,
+        array $allowedCards = []
     ): array {
         $params = [
             'api_key' => $this->config['api_key'],

@@ -85,7 +85,8 @@ class IranKish extends GatewayAbstract
         int $amount,
         string $nationalId,
         string $mobile,
-        string $callbackUrl
+        string $callbackUrl,
+        array $allowedCards = []
     ): array {
         $url = $this->url . 'api/v3/tokenization/make';
         $encrypted = $this->_encrypt(

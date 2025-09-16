@@ -24,11 +24,12 @@ class Larapay
         int $amount,
         string $nationalId,
         string $mobile,
-        string $callbackUrl
+        string $callbackUrl,
+        array $allowedCards = []
     ) {
         $this->_check();
 
-        return $this->gateway->request($id, $amount, $nationalId, $mobile, $callbackUrl);
+        return $this->gateway->request($id, $amount, $nationalId, $mobile, $callbackUrl, $allowedCards);
     }
 
     public function verify(

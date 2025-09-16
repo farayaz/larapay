@@ -25,7 +25,8 @@ class Omidpay extends GatewayAbstract
         int $amount,
         string $nationalId,
         string $mobile,
-        string $callbackUrl
+        string $callbackUrl,
+        array $allowedCards = []
     ): array {
         $url = $this->url . 'generateTokenWithNoSign/';
         $params = [

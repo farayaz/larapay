@@ -31,7 +31,8 @@ class PardakhtNovin extends GatewayAbstract
         int $amount,
         string $nationalId,
         string $mobile,
-        string $callbackUrl
+        string $callbackUrl,
+        array $allowedCards = []
     ): array {
         $url = $this->url . 'ref-payment2/RestServices/mts/generateTokenWithNoSign/';
         $params = [

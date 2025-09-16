@@ -20,7 +20,8 @@ class PEC extends GatewayAbstract
         int $amount,
         string $nationalId,
         string $mobile,
-        string $callbackUrl
+        string $callbackUrl,
+        array $allowedCards = []
     ): array {
         ini_set('default_socket_timeout', 10);
         $data = [

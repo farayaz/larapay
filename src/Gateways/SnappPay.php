@@ -30,7 +30,8 @@ class SnappPay extends GatewayAbstract
         int $amount,
         string $nationalId,
         string $mobile,
-        string $callbackUrl
+        string $callbackUrl,
+        array $allowedCards = []
     ): array {
         $result = $this->_request('get', 'api/online/offer/v1/eligible', ['amount' => $amount]);
         if (! $result['response']['eligible']) {

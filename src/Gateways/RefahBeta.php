@@ -31,7 +31,8 @@ class RefahBeta extends GatewayAbstract implements BulkCheckableInterface
         int $amount,
         string $nationalId,
         string $mobile,
-        string $callbackUrl
+        string $callbackUrl,
+        array $allowedCards = []
     ): array {
         $url = 'beta/1.0/credit/' . $nationalId . '/inquiry';
         $result = $this->_request('post', $url);

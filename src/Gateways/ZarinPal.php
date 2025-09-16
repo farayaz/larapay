@@ -43,7 +43,8 @@ class ZarinPal extends GatewayAbstract
         int $amount,
         string $nationalId,
         string $mobile,
-        string $callbackUrl
+        string $callbackUrl,
+        array $allowedCards = []
     ): array {
         $url = 'https://api.zarinpal.com/pg/v4/payment/request.json';
         $data = [

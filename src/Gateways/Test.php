@@ -11,8 +11,14 @@ class Test extends GatewayAbstract
 
     protected $requirements = [];
 
-    public function request(int $id, int $amount, string $nationalId, string $mobile, string $callbackUrl): array
-    {
+    public function request(
+        int $id,
+        int $amount,
+        string $nationalId,
+        string $mobile,
+        string $callbackUrl,
+        array $allowedCards = []
+    ): array {
         return [
             'token' => 'token',
             'fee' => 0,

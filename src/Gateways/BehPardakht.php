@@ -66,7 +66,8 @@ class BehPardakht extends GatewayAbstract
         int $amount,
         string $nationalId,
         string $mobile,
-        string $callbackUrl
+        string $callbackUrl,
+        array $allowedCards = []
     ): array {
         $method = $this->config['is_credit'] ? 'bpVirtualPayRequest' : 'bpPayRequest';
         $params = [

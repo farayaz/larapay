@@ -89,6 +89,9 @@ $id = 1230; // transaction id | شماره تراکنش
 $callbackUrl = route('api.transactions.verify', $id);
 $nationalId = '1234567890';
 $mobile = '09131234567';
+$allowedCards = [ // شماره کارت‌های مجاز (در صورت پشتیبانی درگاه)
+    '6037991199500590'
+];
 
 try {
     $result = Larapay::gateway($gatewayClass, $gatewayConfig)
@@ -97,7 +100,8 @@ try {
             amount: $amount,
             callbackUrl: $callbackUrl,
             nationalId: $nationalId,
-            mobile: $mobile
+            mobile: $mobile,
+            // allowedCards: $allowedCards,
         );
 } catch (LarapayException $e) {
     throw $e;

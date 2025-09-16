@@ -29,7 +29,8 @@ class Bitpay extends GatewayAbstract
         int $amount,
         string $nationalId,
         string $mobile,
-        string $callbackUrl
+        string $callbackUrl,
+        array $allowedCards = []
     ): array {
         $params = [
             'api' => $this->config['api'],

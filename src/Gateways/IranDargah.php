@@ -43,7 +43,8 @@ class IranDargah extends GatewayAbstract
         int $amount,
         string $nationalId,
         string $mobile,
-        string $callbackUrl
+        string $callbackUrl,
+        array $allowedCards = []
     ): array {
         $params = [
             'amount' => $amount,

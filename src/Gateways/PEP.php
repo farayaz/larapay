@@ -27,7 +27,8 @@ class PEP extends GatewayAbstract
         int $amount,
         string $nationalId,
         string $mobile,
-        string $callbackUrl
+        string $callbackUrl,
+        array $allowedCards = []
     ): array {
         $data = [
             'amount' => $amount,
