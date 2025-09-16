@@ -63,6 +63,7 @@ class Sep extends GatewayAbstract
             'ResNum' => $id,
             'Amount' => $amount,
             'RedirectUrl' => $callbackUrl,
+            'CellNumber' => $mobile,
         ];
         $result = $this->_request('post', $url, $params);
 
