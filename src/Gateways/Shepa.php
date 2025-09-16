@@ -21,7 +21,8 @@ class Shepa extends GatewayAbstract
         int $amount,
         string $nationalId,
         string $mobile,
-        string $callbackUrl
+        string $callbackUrl,
+        array $allowedCards = []
     ): array {
         $url = $this->_url('api/v1/token');
         $params = [

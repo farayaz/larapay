@@ -30,7 +30,8 @@ class Digipay extends GatewayAbstract
         int $amount,
         string $nationalId,
         string $mobile,
-        string $callbackUrl
+        string $callbackUrl,
+        array $allowedCards = []
     ): array {
         $url = $this->url . 'businesses/ticket?type=0';
         $data = [

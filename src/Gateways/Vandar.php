@@ -23,7 +23,8 @@ class Vandar extends GatewayAbstract
         int $amount,
         string $nationalId,
         string $mobile,
-        string $callbackUrl
+        string $callbackUrl,
+        array $allowedCards = []
     ): array {
         $data = [
             'api_key' => $this->config['api_key'],

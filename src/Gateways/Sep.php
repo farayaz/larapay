@@ -54,7 +54,8 @@ class Sep extends GatewayAbstract
         int $amount,
         string $nationalId,
         string $mobile,
-        string $callbackUrl
+        string $callbackUrl,
+        array $allowedCards = []
     ): array {
         $url = $this->url . 'OnlinePG/OnlinePG';
         $params = [
@@ -65,6 +66,9 @@ class Sep extends GatewayAbstract
             'RedirectUrl' => $callbackUrl,
             'CellNumber' => $mobile,
         ];
+        if (! empty($allowedCards)) {
+            $params['HashedCardNumber'] = implode('|', array_map('md5', array_slice($allowedCards, 0, 10)));
+        }
         $result = $this->_request('post', $url, $params);
 
         if ($result['status'] != 1) {

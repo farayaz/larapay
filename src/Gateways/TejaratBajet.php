@@ -29,7 +29,8 @@ class TejaratBajet extends GatewayAbstract implements BulkCheckableInterface
         int $amount,
         string $nationalId,
         string $mobile,
-        string $callbackUrl
+        string $callbackUrl,
+        array $allowedCards = []
     ): array {
         $url = 'customers/' . $nationalId . '/balance';
         $result = $this->_request('get', $url);

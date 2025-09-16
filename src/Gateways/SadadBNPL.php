@@ -24,7 +24,8 @@ class SadadBNPL extends GatewayAbstract
         int $amount,
         string $nationalId,
         string $mobile,
-        string $callbackUrl
+        string $callbackUrl,
+        array $allowedCards = []
     ): array {
         $data = [
             'TerminalId' => $this->config['terminal_id'],

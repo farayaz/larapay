@@ -22,7 +22,8 @@ class ECD extends GatewayAbstract
         int $amount,
         string $nationalId,
         string $mobile,
-        string $callbackUrl
+        string $callbackUrl,
+        array $allowedCards = []
     ): array {
         $data = [
             'TerminalNumber' => $this->config['terminal_number'],
