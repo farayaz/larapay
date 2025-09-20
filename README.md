@@ -41,6 +41,7 @@ Larapay is a Laravel package for integrating Iranian payment gateways.
 | **SepehrPay**        | [Sepehr Pay](https://www.sepehrpay.com)        | پرداخت الکترونیک سپهر (مبنا) | `terminalId`                                                                           |
 | **Shepa**            | [Shepa](https://shepa.com)                     | شپا                          | `api`                                                                                  |
 | **SnappPay**         | [SnappPay](https://snapppay.ir)                | اسنپ‌پی                       | `username`, `password`, `client_id`, `client_secret`                                   |
+| **TabaPay**          | [TabaPay](https://tabapay.ir)                  | تاباپی                       | `token`                                                                                |
 | **TejaratBajet**     | [Tejarat Bajet](https://mybajet.ir)            | بانک تجارت - باجت            | `client_id`, `client_secret`, `sandbox`                                                |
 | :test_tube: **Test** | **Test**                                       | **تست**                      | برای تست                                                                               |
 | **Vandar**           | [Vandar](https://vandar.io)                    | وندار                        | `api_key`                                                                              |
