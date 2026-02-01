@@ -50,7 +50,7 @@ class Omidpay extends GatewayAbstract
 
     public function redirect(int $id, string $token, string $callbackUrl)
     {
-        $action = 'https://say.shaparak.ir/_ipgw_/MainTemplate/payment/';
+        $action = 'https://omid.shaparak.ir/_ipgw_/MainTemplate/payment/';
         $fields = [
             'token' => $token,
             'language' => 'fa',
