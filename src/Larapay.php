@@ -93,7 +93,7 @@ class Larapay
     private function _check()
     {
         if (empty($this->gateway)) {
-            throw new LarapayException(__METHOD__ . __LINE__);
+            throw new LarapayException('Gateway not selected. Call gateway() first.');
         }
     }
 }
