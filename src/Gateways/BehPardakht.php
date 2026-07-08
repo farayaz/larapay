@@ -35,8 +35,8 @@ class BehPardakht extends GatewayAbstract
         35 => 'تاریخ نامعتبر است',
         41 => 'شماره درخواست تکراری است',
         42 => 'تراکنش Sale یافت نشد',
-        43 => 'قبلا درخواست Verfiy داده شده است',
-        44 => 'درخواست Verfiy یافت نشد',
+        43 => 'قبلا درخواست Verify داده شده است',
+        44 => 'درخواست Verify یافت نشد',
         45 => 'تراکنش Settle شده است',
         46 => 'تراکنش Settle نشده است',
         47 => 'تراکنش Settle یافت نشد',
@@ -127,7 +127,7 @@ class BehPardakht extends GatewayAbstract
         $params = array_merge($default, $params);
 
         if ($params['RefId'] != $token) {
-            throw new LarapayException('token-mismatch');
+            throw new LarapayException($this->translateStatus('token-mismatch'));
         }
         if ($params['ResCode'] != '0') {
             throw new LarapayException($this->translateStatus($params['ResCode']));
