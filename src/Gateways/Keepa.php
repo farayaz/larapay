@@ -13,8 +13,6 @@ class Keepa extends GatewayAbstract
     protected $url = 'https://api.kipaa.ir/ipg/v1/supplier/';
 
     protected $statuses = [
-        'amount-mismatch' => 'مغایرت مبلغ پرداختی',
-        'token-mismatch' => 'عدم تطبیق توکن بازگشتی',
         'verify-status-false' => 'تایید اولیه نا موفق',
         'confirm-status-false' => 'تایید ثانویه نا موفق',
 

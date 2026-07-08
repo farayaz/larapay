@@ -14,9 +14,6 @@ class MehrIran extends GatewayAbstract
     protected $url = 'https://kalayeiranipg.qmb.ir/pg/';
 
     protected $statuses = [
-        'id-mismatch' => 'عدم تطبیق شناسه بازگشتی',
-        'token-mismatch' => 'عدم تطبیق توکن',
-
         '03' => 'طرح اقساطی پذیرنده با کارت منطبق نیست.',
         '06' => 'بروز خطای سیستمی',
         '12' => 'تراکنش نامعتبر است.',

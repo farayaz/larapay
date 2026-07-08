@@ -68,9 +68,6 @@ class IranKish extends GatewayAbstract
         928 => 'مبلغ مبادله شده نا معتبر می باشد(Tokenization)',
         929 => 'شناسه پرداخت ارائه شده با توجه به الگوریتم متناظر نا معتبر می باشد(Tokenization)',
         930 => 'کد ملی ارائه شده نا معتبر می باشد(Tokenization)',
-
-        'token-mismatch' => 'مغایرت توکن بازگشتی',
-        'amount-mismatch' => 'مغایرت مبلغ پرداختی',
     ];
 
     protected $requirements = [

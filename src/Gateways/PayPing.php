@@ -20,8 +20,6 @@ class PayPing extends GatewayAbstract
         'http-401' => '401 - عدم دسترسی',
         'http-403' => '403 - دسترسی غیر مجاز',
         'http-404' => '404 - آیتم درخواستی مورد نظر موجود نمی‌باشد',
-        'id-mismatch' => 'عدم تطبیق شناسه برگشتی',
-        'token-mismatch' => 'عدم تطبیق توکن برگشتی',
     ];
 
     protected $requirements = [

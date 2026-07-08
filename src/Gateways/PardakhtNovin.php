@@ -16,8 +16,6 @@ class PardakhtNovin extends GatewayAbstract
         'Canceled By User' => 'لغو شده توسط مشتری',
         'erAAS_InvalidUseridOrPass' => 'کد کاربری یا رمز عبور صحیح نیست',
         'erMts_InvalidUseridOrPass' => 'رمز یا کد کاربری معتبر نمی‌باشد',
-
-        'token-mismatch' => 'مغایرت توکن بازگشتی',
     ];
 
     protected $requirements = [

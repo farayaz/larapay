@@ -14,7 +14,6 @@ class Digipay extends GatewayAbstract
     protected $url = 'https://api.mydigipay.com/digipay/api/';
 
     protected $statuses = [
-        'id-mismatch' => 'عدم تطبیق شناسه برگشتی',
         '401-authenticate' => 'اطلاعات ورود اشتباه است',
     ];
 

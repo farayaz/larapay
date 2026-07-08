@@ -25,8 +25,6 @@ class IdPay extends GatewayAbstract
         '100' => 'پرداخت تایید شده است.',
         '101' => 'پرداخت قبلا تایید شده است.',
         '200' => 'به دریافت کننده واریز شد.',
-
-        'token-mismatch' => 'عدم تطبیق توکن بازگشتی',
     ];
 
     protected $requirements = ['apiKey', 'sandbox'];

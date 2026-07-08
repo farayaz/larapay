@@ -10,9 +10,7 @@ use Illuminate\Support\Facades\Redirect;
 
 class Shepa extends GatewayAbstract
 {
-    protected $statuses = [
-        'failed' => 'ناموفق',
-    ];
+    protected $statuses = [];
 
     protected $requirements = ['api'];
 

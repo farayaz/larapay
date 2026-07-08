@@ -14,8 +14,6 @@ class Omidpay extends GatewayAbstract
 
     protected $statuses = [
         'erAAS_InvalidUseridOrPass' => 'نام کاربری یا رمز عبور نامعتبر',
-
-        'token-mismatch' => 'عدم تطبیق توکن بازگشتی',
     ];
 
     protected $requirements = ['user_id', 'password'];

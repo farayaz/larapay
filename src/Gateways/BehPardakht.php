@@ -55,8 +55,6 @@ class BehPardakht extends GatewayAbstract
         54 => 'تراکنش مرجع موجود نیست',
         55 => 'تراکنش نامعتبر است',
         61 => 'خطا در واریز',
-
-        'token-mismatch' => 'عدم تطبیق توکن',
     ];
 
     protected $requirements = ['terminal_id', 'username', 'password', 'is_credit'];

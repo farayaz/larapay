@@ -37,8 +37,6 @@ class Zibal extends GatewayAbstract
         '201' => 'قبلا تایید شده',
         '202' => 'سفارش پرداخت نشده یا ناموفق بوده است.',
         '203' => 'trackId نامعتبر می‌باشد.',
-
-        'token-mismatch' => 'عدم تطبیق توکن',
     ];
 
     protected $requirements = ['merchant'];
