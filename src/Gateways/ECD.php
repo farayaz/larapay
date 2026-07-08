@@ -30,7 +30,7 @@ class ECD extends GatewayAbstract
             'BuyID' => $id,
             'Amount' => $amount,
             'Date' => Date::now()->format('Y/m/d'),
-            'Time' => Date::now()->format('H:m'),
+            'Time' => Date::now()->format('H:i'),
             'RedirectURL' => $callbackUrl,
         ];
         $data['CheckSum'] = sha1(implode('', array_values($data)) . $this->config['hash_key']);
@@ -80,7 +80,7 @@ class ECD extends GatewayAbstract
         if ($params['Token'] != $token) {
             throw new LarapayException($this->translateStatus('token-mismatch'));
         }
-        if ($params['BuyID'] != $token) {
+        if ($params['BuyID'] != $id) {
             throw new LarapayException($this->translateStatus('id-mismatch'));
         }
         if ($params['Amount'] != $amount) {
