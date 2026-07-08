@@ -100,14 +100,14 @@ class PEC extends GatewayAbstract
         }
         $result = $response->ConfirmPaymentResult;
 
-        if ($result->Status != 0 || $result->RNN <= 0) {
+        if ($result->Status != 0 || $result->RRN <= 0) {
             throw new LarapayException($this->translateStatus($result->Status));
         }
 
         return [
             'card' => $result->CardNumberMasked,
-            'tracking_code' => $result->RNN,
-            'reference_id' => $result->RNN,
+            'tracking_code' => $result->RRN,
+            'reference_id' => $result->RRN,
             'result' => $result->Status,
             'fee' => 0,
         ];
