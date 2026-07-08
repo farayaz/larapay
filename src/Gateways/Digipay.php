@@ -46,7 +46,7 @@ class Digipay extends GatewayAbstract
         $result = $this->_request('post', $url, $data, $headers);
 
         if (($result['result']['status'] ?? -1) != 0) {
-            $message = $data['result']['message'] ?? 'unknown error';
+            $message = $result['result']['message'] ?? 'unknown error';
             throw new LarapayException($message);
         }
 
@@ -143,7 +143,6 @@ class Digipay extends GatewayAbstract
             $message = $e->getMessage();
             if ($e->response->status() == 401) {
                 $message = '401 Unauthorized';
-                dd($e);
                 if ($e->request->getUri()->getPath() == '/digipay/api/oauth/token') {
                     $message = $this->translateStatus('401-authenticate');
                 }
