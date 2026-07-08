@@ -78,7 +78,7 @@ class SnappPay extends GatewayAbstract
         ];
         $params = array_merge($default, $params);
 
-        if ($params['id'] != $id) {
+        if ($params['transactionId'] != $id) {
             throw new LarapayException($this->translateStatus('id-mismatch'));
         }
         if ($params['amount'] != $amount) {
