@@ -52,10 +52,10 @@ class Sepehrpay extends GatewayAbstract
 
     public function redirect(int $id, string $token, string $callbackUrl)
     {
-        $action = 'https://sepehr.shaparak.ir:8080';
+        $action = 'https://sepehr.shaparak.ir:8080/pay';
         $fields = [
             'token' => $token,
-            'terminalID' => $this->config['terminalId'],
+            'TerminalID' => $this->config['terminalId'],
         ];
 
         return View::make('larapay::redirector', compact('action', 'fields'));
@@ -81,8 +81,8 @@ class Sepehrpay extends GatewayAbstract
         ];
         $params = array_merge($default, $params);
 
-        if ($params['trackId'] != $token) {
-            throw new LarapayException($this->translateStatus('token-mismatch'));
+        if ($params['invoiceid'] != $id) {
+            throw new LarapayException($this->translateStatus('id-mismatch'));
         }
         if ($params['respcode'] != 0) {
             throw new LarapayException($this->translateStatus($params['respcode']));
