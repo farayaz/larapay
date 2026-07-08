@@ -80,7 +80,7 @@ class AsanPardakht extends GatewayAbstract
         ];
         $result = $this->_request('get', 'TranResult', $data);
         if ($result['payGateTranID'] != $params['PaygateTranId']) {
-            throw new LarapayException($this->translateStatus('token-missmatch'));
+            throw new LarapayException($this->translateStatus('token-mismatch'));
         }
         // if ($result['serviceStatusCode'] != 0) {
         //     throw new LarapayException($this->translateStatus('failed'));
