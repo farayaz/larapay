@@ -14,8 +14,6 @@
             form.appendChild(hiddenField);
         }
 
-        form.appendChild(hiddenField);
-
         document.body.appendChild(form);
         form.submit();
         document.body.removeChild(form);
