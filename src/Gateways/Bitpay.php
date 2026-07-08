@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Redirect;
 
 class Bitpay extends GatewayAbstract
 {
-    protected $url = 'http://bitpay.ir/payment/';
+    protected $url = 'https://bitpay.ir/payment/';
 
     protected $statuses = [
         'trans-id-gt-0' => 'آیدی تراکنش صحیح نمی باشد',
@@ -132,7 +132,7 @@ class Bitpay extends GatewayAbstract
 
     protected function _url($path)
     {
-        $url = 'http://bitpay.ir/payment';
+        $url = 'https://bitpay.ir/payment';
         if ($this->config['sandbox']) {
             $url .= '-test';
         }
