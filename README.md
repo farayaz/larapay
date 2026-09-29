@@ -55,6 +55,7 @@ Each gateway has its own required parameters. See the [Gateways table](#gateways
 | **IranDargah**       | [IranDargah](https://irandargah.com)           | ایران درگاه                  | `merchant_id`, `sandbox`                                                               | —          |
 | **IranKish**         | [Iran Kish](https://www.irankish.com)          | ایران کیش                    | `terminalId`, `password`, `acceptorId`, `pubKey`                                       | —          |
 | **IsipaymentSamin**  | [Isipayment Samin](https://isipayment.ir)      | ایزایران ثمین                | `merchant_code`, `merchant_password`, `terminal_code`, `type`, `number_of_installment` | —          |
+| **JetPay**           | [JetPay](https://mybajet.ir/)                  | جت‌پی                        | `username`, `password`, `terminal_id`, `credit_id`                                     | —          |
 | **Keepa**            | [Keepa - Kipaa](https://keepa.ir)              | کیپا                         | `token`                                                                                | —          |
 | **MehrIran**         | [MehrIran](https://qmb.ir)                     | بانک مهر ایران               | `terminal_id`, `merchant_nid`, `encrypt_key`                                           | —          |
 | **NextPay**          | [NextPay](https://nextpay.org)                 | نکست پی                      | `api_key`                                                                              | —          |
