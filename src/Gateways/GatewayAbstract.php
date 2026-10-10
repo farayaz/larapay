@@ -3,6 +3,9 @@
 namespace Farayaz\Larapay\Gateways;
 
 use Farayaz\Larapay\Exceptions\LarapayException;
+use Farayaz\Larapay\Interfaces\BulkCheckableInterface;
+use Farayaz\Larapay\Interfaces\RefundableInterface;
+use Farayaz\Larapay\Interfaces\TransactionListableInterface;
 use Illuminate\Support\Arr;
 
 abstract class GatewayAbstract
@@ -70,7 +73,7 @@ abstract class GatewayAbstract
      */
     public function supportsRefund(): bool
     {
-        return $this instanceof \Farayaz\Larapay\Interfaces\RefundableInterface;
+        return $this instanceof RefundableInterface;
     }
 
     /**
@@ -78,7 +81,15 @@ abstract class GatewayAbstract
      */
     public function supportsBulkCheck(): bool
     {
-        return $this instanceof \Farayaz\Larapay\Interfaces\BulkCheckableInterface;
+        return $this instanceof BulkCheckableInterface;
+    }
+
+    /**
+     * Check if gateway supports listing transactions
+     */
+    public function supportsTransactionList(): bool
+    {
+        return $this instanceof TransactionListableInterface;
     }
 
     /**
@@ -89,6 +100,7 @@ abstract class GatewayAbstract
         return match ($capability) {
             'refund' => $this->supportsRefund(),
             'bulk_check' => $this->supportsBulkCheck(),
+            'transaction_list' => $this->supportsTransactionList(),
             default => false,
         };
     }

@@ -2,6 +2,9 @@
 
 namespace Farayaz\Larapay;
 
+use Farayaz\Larapay\Data\TransactionListResult;
+use Farayaz\Larapay\Data\TransactionQuery;
+use Farayaz\Larapay\Enums\TransactionFilter;
 use Farayaz\Larapay\Exceptions\LarapayException;
 
 class Larapay
@@ -88,6 +91,36 @@ class Larapay
         }
 
         $this->gateway->bulkCheck($successCallback, $unsuccessCallback);
+    }
+
+    /**
+     * Get a paginated transaction list from a supported gateway.
+     */
+    public function listTransactions(?TransactionQuery $query = null): TransactionListResult
+    {
+        $this->_check();
+
+        if (! $this->gateway->supportsTransactionList()) {
+            throw new LarapayException('Gateway does not support transaction lists');
+        }
+
+        return $this->gateway->listTransactions($query ?? new TransactionQuery);
+    }
+
+    /**
+     * Get the transaction filters supported by the selected gateway.
+     *
+     * @return list<TransactionFilter>
+     */
+    public function supportedTransactionFilters(): array
+    {
+        $this->_check();
+
+        if (! $this->gateway->supportsTransactionList()) {
+            return [];
+        }
+
+        return $this->gateway->supportedTransactionFilters();
     }
 
     private function _check()
