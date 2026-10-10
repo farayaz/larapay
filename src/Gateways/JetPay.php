@@ -2,14 +2,23 @@
 
 namespace Farayaz\Larapay\Gateways;
 
+use DateTimeImmutable;
+use Farayaz\Larapay\Data\GatewayTransaction;
+use Farayaz\Larapay\Data\TransactionIdentity;
+use Farayaz\Larapay\Data\TransactionListResult;
+use Farayaz\Larapay\Data\TransactionQuery;
+use Farayaz\Larapay\Enums\TransactionFilter;
+use Farayaz\Larapay\Enums\TransactionStatus;
 use Farayaz\Larapay\Exceptions\LarapayException;
+use Farayaz\Larapay\Interfaces\TransactionListableInterface;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\View;
+use Throwable;
 
-class JetPay extends GatewayAbstract
+class JetPay extends GatewayAbstract implements TransactionListableInterface
 {
     private const BASE_URL = 'https://jetpay.mybajet.ir/api/v1/credit-consumption/';
 
@@ -112,6 +121,121 @@ class JetPay extends GatewayAbstract
             'reference_id' => $referenceNumber,
             'fee' => 0,
         ];
+    }
+
+    public function listTransactions(TransactionQuery $query): TransactionListResult
+    {
+        $this->validateTransactionQuery($query);
+
+        $result = $this->requestApi('get', 'transaction-list', array_filter([
+            'page' => $query->page,
+            'size' => $query->size,
+            'fromDate' => $query->fromDate?->format('Y-m-d'),
+            'toDate' => $query->toDate?->format('Y-m-d'),
+            'totalAmount' => $query->amount,
+            'nationalCode' => $query->nationalId,
+        ], fn (mixed $value): bool => $value !== null && $value !== ''));
+
+        $items = [];
+        $list = is_array($result['list'] ?? null) ? $result['list'] : [];
+        foreach ($list as $item) {
+            if (! is_array($item)) {
+                continue;
+            }
+
+            $requestId = $this->requiredString($item['requestId'] ?? null, 'شناسه درخواست تراکنش دریافت نشد');
+            $referenceNumber = $this->nullableString($item['referenceNumber'] ?? null);
+            $rawStatus = $this->nullableString($item['status'] ?? null) ?? '';
+
+            $items[] = new GatewayTransaction(
+                identity: new TransactionIdentity(
+                    token: $requestId,
+                    referenceId: $referenceNumber,
+                ),
+                status: $this->normalizeTransactionStatus($rawStatus),
+                amount: is_numeric($item['totalAmount'] ?? null) ? (int) $item['totalAmount'] : null,
+                rawStatus: $rawStatus,
+                nationalId: $this->nullableString($item['nationalCode'] ?? null),
+                createdAt: $this->parseDate($item['createdAt'] ?? null),
+                raw: $item,
+            );
+        }
+
+        return new TransactionListResult(
+            items: $items,
+            total: is_numeric($result['total'] ?? null) ? (int) $result['total'] : count($items),
+            page: $query->page,
+            size: $query->size,
+        );
+    }
+
+    /**
+     * @return list<TransactionFilter>
+     */
+    public function supportedTransactionFilters(): array
+    {
+        return [
+            TransactionFilter::DateRange,
+            TransactionFilter::NationalId,
+            TransactionFilter::Amount,
+            // TODO: Re-enable when JetPay fixes transaction status filtering.
+        ];
+    }
+
+    private function validateTransactionQuery(TransactionQuery $query): void
+    {
+        if ($query->cardNumber !== null) {
+            throw new LarapayException('جت‌پی: جستجوی تراکنش بر اساس شماره کارت پشتیبانی نمی‌شود.');
+        }
+
+        if ($query->status !== null) {
+            throw new LarapayException('جت‌پی: فیلتر وضعیت تراکنش موقتاً در دسترس نیست.');
+        }
+
+        if (
+            $query->fromDate !== null
+            && $query->toDate !== null
+            && ($query->toDate->getTimestamp() - $query->fromDate->getTimestamp()) > (31 * 86_400)
+        ) {
+            throw new LarapayException('جت‌پی: بازه دریافت لیست تراکنش‌ها نمی‌تواند بیشتر از یک ماه باشد.');
+        }
+    }
+
+    private function normalizeTransactionStatus(string $status): TransactionStatus
+    {
+        return match (strtoupper(trim($status))) {
+            'SUCCESS', 'CONFIRMED', 'COMPLETED', 'تایید شده', 'تأیید شده', 'موفق' => TransactionStatus::Success,
+            'FAILED', 'ناموفق' => TransactionStatus::Failed,
+            'PROCESSING', 'PENDING', 'RETRY', 'در حال پردازش' => TransactionStatus::Pending,
+            'REFUND_SUCCESS', 'REFUNDED', 'مسترد شده' => TransactionStatus::Refunded,
+            'REFUND_FAILED', 'استرداد ناموفق' => TransactionStatus::RefundFailed,
+            default => TransactionStatus::Unknown,
+        };
+    }
+
+    private function nullableString(mixed $value): ?string
+    {
+        if (! is_string($value) && ! is_int($value)) {
+            return null;
+        }
+
+        $value = trim((string) $value);
+
+        return $value === '' ? null : $value;
+    }
+
+    private function parseDate(mixed $value): ?DateTimeImmutable
+    {
+        $value = $this->nullableString($value);
+        if ($value === null) {
+            return null;
+        }
+
+        try {
+            return new DateTimeImmutable($value);
+        } catch (Throwable) {
+            return null;
+        }
     }
 
     private function waitForStatus(string $referenceNumber, string $step, string $expectedStatus): void

@@ -55,7 +55,7 @@ Each gateway has its own required parameters. See the [Gateways table](#gateways
 | **IranDargah**       | [IranDargah](https://irandargah.com)           | ایران درگاه                  | `merchant_id`, `sandbox`                                                               | —          |
 | **IranKish**         | [Iran Kish](https://www.irankish.com)          | ایران کیش                    | `terminalId`, `password`, `acceptorId`, `pubKey`                                       | —          |
 | **IsipaymentSamin**  | [Isipayment Samin](https://isipayment.ir)      | ایزایران ثمین                | `merchant_code`, `merchant_password`, `terminal_code`, `type`, `number_of_installment` | —          |
-| **JetPay**           | [JetPay](https://mybajet.ir/)                  | جت‌پی                        | `username`, `password`, `terminal_id`, `credit_id`                                     | —          |
+| **JetPay**           | [JetPay](https://mybajet.ir/)                  | جت‌پی                        | `username`, `password`, `terminal_id`, `credit_id`                                     | Transaction List |
 | **Keepa**            | [Keepa - Kipaa](https://keepa.ir)              | کیپا                         | `token`                                                                                | —          |
 | **MehrIran**         | [MehrIran](https://qmb.ir)                     | بانک مهر ایران               | `terminal_id`, `merchant_nid`, `encrypt_key`                                           | —          |
 | **NextPay**          | [NextPay](https://nextpay.org)                 | نکست پی                      | `api_key`                                                                              | —          |
@@ -81,7 +81,7 @@ Each gateway has its own required parameters. See the [Gateways table](#gateways
 | **ZarinPal**         | [Zarin Pal](https://www.zarinpal.com)          | زرین پال                     | `merchant_id`                                                                          | —          |
 | **Zibal**            | [Zibal](https://zibal.ir)                      | زیبال                        | `merchant`                                                                             | —          |
 
-> **Features**: `Bulk Check` = supports bulk transaction status checking.
+> **Features**: `Bulk Check` = supports bulk transaction status checking. `Transaction List` = supports transaction lists and filters.
 
 اگر درگاه مورد نظر خود را پیدا نکردید، به ما اطلاع دهید یا در اضافه کردن آن مشارکت کنید.
 
@@ -308,6 +308,29 @@ try {
 }
 ```
 
+### Transaction List | لیست تراکنش‌ها
+
+```php
+use DateTimeImmutable;
+use Farayaz\Larapay\Data\TransactionQuery;
+
+$gateway = Larapay::gateway('JetPay', $config);
+
+$page = $gateway->listTransactions(new TransactionQuery(
+    page: 1,
+    size: 50,
+    fromDate: new DateTimeImmutable('2026-05-01'),
+    toDate: new DateTimeImmutable('2026-05-31'),
+    nationalId: '1234567890',
+));
+
+foreach ($page->items as $transaction) {
+    // JetPay identity:
+    // $transaction->identity->token === JetPay requestId
+    // $transaction->identity->referenceId === JetPay referenceNumber
+}
+```
+
 ### Check Gateway Capabilities | بررسی قابلیت‌های درگاه
 
 ```php
@@ -319,6 +342,10 @@ if ($gateway->supports('refund')) {
 
 if ($gateway->supports('bulk_check')) {
     // Gateway supports bulk check
+}
+
+if ($gateway->supports('transaction_list')) {
+    // Gateway supports transaction lists
 }
 ```
 
