@@ -49,8 +49,7 @@ class JetPay extends GatewayAbstract implements TransactionListableInterface
 
         $requestId = $this->requiredString($balance['requestId'] ?? null, 'شناسه درخواست دریافت نشد');
         $creditId = (string) $this->config['credit_id'];
-        $credits = collect($balance['credits'] ?? []);
-        $credit = $credits->first(
+        $credit = collect($balance['credits'] ?? [])->first(
             fn ($credit) => (string) ($credit['credit_info']['credit_id'] ?? '') === $creditId
         );
 
@@ -134,6 +133,18 @@ class JetPay extends GatewayAbstract implements TransactionListableInterface
             'toDate' => $query->toDate?->format('Y-m-d'),
             'totalAmount' => $query->amount,
             'nationalCode' => $query->nationalId,
+            'status' => $query->status instanceof TransactionStatus
+                ? match ($query->status) {
+                    TransactionStatus::Success => 'SUCCESS',
+                    TransactionStatus::Failed => 'FAILED',
+                    TransactionStatus::Pending => 'PROCESSING',
+                    TransactionStatus::Refunded => 'REFUND_SUCCESS',
+                    TransactionStatus::RefundFailed => 'REFUND_FAILED',
+                    TransactionStatus::Unknown => throw new LarapayException(
+                        'جت‌پی: فیلتر وضعیت نامشخص پشتیبانی نمی‌شود.'
+                    ),
+                }
+                : $query->status,
         ], fn (mixed $value): bool => $value !== null && $value !== ''));
 
         $items = [];
@@ -178,7 +189,7 @@ class JetPay extends GatewayAbstract implements TransactionListableInterface
             TransactionFilter::DateRange,
             TransactionFilter::NationalId,
             TransactionFilter::Amount,
-            // TODO: Re-enable when JetPay fixes transaction status filtering.
+            TransactionFilter::Status,
         ];
     }
 
@@ -188,8 +199,11 @@ class JetPay extends GatewayAbstract implements TransactionListableInterface
             throw new LarapayException('جت‌پی: جستجوی تراکنش بر اساس شماره کارت پشتیبانی نمی‌شود.');
         }
 
-        if ($query->status !== null) {
-            throw new LarapayException('جت‌پی: فیلتر وضعیت تراکنش موقتاً در دسترس نیست.');
+        if (
+            $query->status === TransactionStatus::Unknown
+            || (is_string($query->status) && strtoupper(trim($query->status)) === 'UNKNOWN')
+        ) {
+            throw new LarapayException('جت‌پی: فیلتر وضعیت نامشخص پشتیبانی نمی‌شود.');
         }
 
         if (
