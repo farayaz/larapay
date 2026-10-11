@@ -61,7 +61,6 @@ Each gateway has its own required parameters. See the [Gateways table](#gateways
 | **NextPay**          | [NextPay](https://nextpay.org)                 | نکست پی                      | `api_key`                                                                              | —          |
 | **Omidpay**          | [Omidpay - Sayan Card](https://omidpayment.ir) | امید پی (سایان کارت)         | `user_id`, `password`                                                                  | —          |
 | **PardakhtNovin**    | [Pardakht Novin](https://pna.co.ir)            | پرداخت نوین                  | `userId`, `password`, `terminalId`                                                     | —          |
-| **Payir**            | [Pay.ir](https://www.pay.ir)                   | پی.آی‌آر                      | `api`                                                                                  | —          |
 | **PayPing**          | [PayPing](https://payping.ir)                  | پی پینگ                      | `token`                                                                                | —          |
 | **PEC**              | [PEC](https://pec.ir)                          | تجارت الکترونیک پارسیان      | `login_account`                                                                        | —          |
 | **PEP**              | [PEP](https://pep.co.ir)                       | پرداخت الکترونیک پاسارگاد    | `username`, `password`, `terminal_number`                                              | —          |
