@@ -144,7 +144,7 @@ class JetPay extends GatewayAbstract implements TransactionListableInterface
                         'جت‌پی: فیلتر وضعیت نامشخص پشتیبانی نمی‌شود.'
                     ),
                 }
-                : $query->status,
+                : (is_string($query->status) ? strtoupper(trim($query->status)) : null),
         ], fn (mixed $value): bool => $value !== null && $value !== ''));
 
         $items = [];
