@@ -133,18 +133,16 @@ class JetPay extends GatewayAbstract implements TransactionListableInterface
             'toDate' => $query->toDate?->format('Y-m-d'),
             'totalAmount' => $query->amount,
             'nationalCode' => $query->nationalId,
-            'status' => $query->status instanceof TransactionStatus
-                ? match ($query->status) {
-                    TransactionStatus::Success => 'SUCCESS',
-                    TransactionStatus::Failed => 'FAILED',
-                    TransactionStatus::Pending => 'PROCESSING',
-                    TransactionStatus::Refunded => 'REFUND_SUCCESS',
-                    TransactionStatus::RefundFailed => 'REFUND_FAILED',
-                    TransactionStatus::Unknown => throw new LarapayException(
-                        'جت‌پی: فیلتر وضعیت نامشخص پشتیبانی نمی‌شود.'
-                    ),
-                }
-                : (is_string($query->status) ? strtoupper(trim($query->status)) : null),
+            'status' => $query->status === null ? null : match (strtoupper(trim(
+                $query->status instanceof TransactionStatus ? $query->status->value : $query->status
+            ))) {
+                'COMPLETED', 'SUCCESS' => 'SUCCESS',
+                'FAILED' => 'FAILED',
+                'PENDING', 'PROCESSING' => 'PROCESSING',
+                'REFUNDED', 'REFUND_SUCCESS' => 'REFUND_SUCCESS',
+                'REFUND_FAILED' => 'REFUND_FAILED',
+                default => throw new LarapayException('جت‌پی: فیلتر وضعیت پشتیبانی نمی‌شود.'),
+            },
         ], fn (mixed $value): bool => $value !== null && $value !== ''));
 
         $items = [];
@@ -218,11 +216,11 @@ class JetPay extends GatewayAbstract implements TransactionListableInterface
     private function normalizeTransactionStatus(string $status): TransactionStatus
     {
         return match (strtoupper(trim($status))) {
-            'SUCCESS', 'CONFIRMED', 'COMPLETED', 'تایید شده', 'تأیید شده', 'خرید تایید شده', 'خرید تأیید شده', 'موفق' => TransactionStatus::Success,
+            'SUCCESS', 'CONFIRMED', 'COMPLETED', 'تایید شده', 'تأیید شده', 'خرید تایید شده', 'خرید تأیید شده', 'موفق' => TransactionStatus::Completed,
             'FAILED', 'ناموفق', 'خرید ناموفق' => TransactionStatus::Failed,
+            'REFUND_FAILED', 'استرداد ناموفق' => TransactionStatus::Unknown,
             'PROCESSING', 'PENDING', 'RETRY', 'در حال پردازش', 'ارسال کد' => TransactionStatus::Pending,
             'REFUND_SUCCESS', 'REFUNDED', 'مسترد شده' => TransactionStatus::Refunded,
-            'REFUND_FAILED', 'استرداد ناموفق' => TransactionStatus::RefundFailed,
             default => TransactionStatus::Unknown,
         };
     }
