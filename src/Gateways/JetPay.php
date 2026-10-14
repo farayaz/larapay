@@ -218,9 +218,9 @@ class JetPay extends GatewayAbstract implements TransactionListableInterface
     private function normalizeTransactionStatus(string $status): TransactionStatus
     {
         return match (strtoupper(trim($status))) {
-            'SUCCESS', 'CONFIRMED', 'COMPLETED', 'تایید شده', 'تأیید شده', 'موفق' => TransactionStatus::Success,
-            'FAILED', 'ناموفق' => TransactionStatus::Failed,
-            'PROCESSING', 'PENDING', 'RETRY', 'در حال پردازش' => TransactionStatus::Pending,
+            'SUCCESS', 'CONFIRMED', 'COMPLETED', 'تایید شده', 'تأیید شده', 'خرید تایید شده', 'خرید تأیید شده', 'موفق' => TransactionStatus::Success,
+            'FAILED', 'ناموفق', 'خرید ناموفق' => TransactionStatus::Failed,
+            'PROCESSING', 'PENDING', 'RETRY', 'در حال پردازش', 'ارسال کد' => TransactionStatus::Pending,
             'REFUND_SUCCESS', 'REFUNDED', 'مسترد شده' => TransactionStatus::Refunded,
             'REFUND_FAILED', 'استرداد ناموفق' => TransactionStatus::RefundFailed,
             default => TransactionStatus::Unknown,
