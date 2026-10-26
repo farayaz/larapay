@@ -10,6 +10,7 @@ use Farayaz\Larapay\Data\TransactionQuery;
 use Farayaz\Larapay\Enums\TransactionFilter;
 use Farayaz\Larapay\Enums\TransactionStatus;
 use Farayaz\Larapay\Exceptions\LarapayException;
+use Farayaz\Larapay\Interfaces\BulkCheckableInterface;
 use Farayaz\Larapay\Interfaces\TransactionListableInterface;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\RequestException;
@@ -18,7 +19,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\View;
 use Throwable;
 
-class JetPay extends GatewayAbstract implements TransactionListableInterface
+class JetPay extends GatewayAbstract implements BulkCheckableInterface, TransactionListableInterface
 {
     private const BASE_URL = 'https://jetpay.mybajet.ir/api/v1/credit-consumption/';
 
@@ -143,7 +144,7 @@ class JetPay extends GatewayAbstract implements TransactionListableInterface
                 'REFUND_FAILED' => 'REFUND_FAILED',
                 default => throw new LarapayException('جت‌پی: فیلتر وضعیت پشتیبانی نمی‌شود.'),
             },
-        ], fn (mixed $value): bool => $value !== null && $value !== ''));
+        ], fn (mixed $value): bool => $value !== null && $value !== ''), timeout: 30);
 
         $items = [];
         $list = is_array($result['list'] ?? null) ? $result['list'] : [];
@@ -176,6 +177,38 @@ class JetPay extends GatewayAbstract implements TransactionListableInterface
             page: $query->page,
             size: $query->size,
         );
+    }
+
+    public function bulkCheck(callable $successCallback, callable $unsuccessCallback): void
+    {
+        $query = new TransactionQuery(
+            size: 10,
+            fromDate: new DateTimeImmutable('-30 days'),
+            toDate: new DateTimeImmutable,
+        );
+        $processed = 0;
+
+        do {
+            $page = $this->listTransactions($query);
+            $processed += count($page->items);
+
+            foreach ($page->items as $transaction) {
+                if ($transaction->status === TransactionStatus::Completed) {
+                    $successCallback($transaction->identity, [
+                        'result' => $transaction->rawStatus,
+                        'card' => null,
+                        'tracking_code' => $transaction->identity->referenceId,
+                        'reference_id' => $transaction->identity->referenceId,
+                        'amount' => $transaction->amount,
+                        'fee' => 0,
+                    ]);
+                } elseif (in_array($transaction->status, [TransactionStatus::Failed, TransactionStatus::Refunded], true)) {
+                    $unsuccessCallback($transaction->identity);
+                }
+            }
+
+            $query = $query->forPage($query->page + 1);
+        } while ($page->items !== [] && $processed < $page->total);
     }
 
     /**
@@ -220,7 +253,7 @@ class JetPay extends GatewayAbstract implements TransactionListableInterface
             'FAILED', 'ناموفق', 'خرید ناموفق' => TransactionStatus::Failed,
             'REFUND_FAILED', 'استرداد ناموفق' => TransactionStatus::Unknown,
             'PROCESSING', 'PENDING', 'RETRY', 'در حال پردازش', 'ارسال کد' => TransactionStatus::Pending,
-            'REFUND_SUCCESS', 'REFUNDED', 'مسترد شده' => TransactionStatus::Refunded,
+            'REFUND_SUCCESS', 'REFUNDED', 'مسترد شده', 'برگشت خورده' => TransactionStatus::Refunded,
             default => TransactionStatus::Unknown,
         };
     }
