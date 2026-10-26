@@ -2,6 +2,7 @@
 
 namespace Farayaz\Larapay\Gateways;
 
+use Farayaz\Larapay\Data\TransactionIdentity;
 use Farayaz\Larapay\Exceptions\LarapayException;
 use Farayaz\Larapay\Interfaces\BulkCheckableInterface;
 use Illuminate\Http\Client\ConnectionException;
@@ -128,7 +129,7 @@ class RefahBeta extends GatewayAbstract implements BulkCheckableInterface
             });
             if ($deletedsRecords->count() == 0) {
                 $successCallback(
-                    $id,
+                    new TransactionIdentity(id: $id),
                     [
                         'result' => 'successed',
                         'card' => null,
@@ -139,7 +140,7 @@ class RefahBeta extends GatewayAbstract implements BulkCheckableInterface
                     ]
                 );
             } elseif ($deletedsRecords->count() == $result['data']['totalRecords']) {
-                $unsuccessCallback($id);
+                $unsuccessCallback(new TransactionIdentity(id: $id));
             }
         }
     }

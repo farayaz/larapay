@@ -44,41 +44,41 @@ Each gateway has its own required parameters. See the [Gateways table](#gateways
 
 | Class                | Name (en)                                      | Name (fa)                    | Requirements                                                                           | Features   |
 | -------------------- | ---------------------------------------------- | ---------------------------- | -------------------------------------------------------------------------------------- | ---------- |
-| **AsanPardakht**     | [AsanPardakht](https://asanpardakht.ir)        | آسان پرداخت (آپ)             | `username`, `password`, `merchant_configuration_id`                                    | —          |
-| **Azkivam**          | [Azkivam](https://azkivam.com/)                | ازکی وام                     | `merchant_id`, `api_key`                                                               | —          |
-| **BehPardakht**      | [Beh Pardakht Mellat](https://behpardakht.com) | به‌پرداخت ملت                 | `terminal_id`, `username`, `password`, `is_credit`                                     | —          |
-| **Bitpay**           | [Bitpay](https://bitpay.ir/)                   | بیت پی                       | `api`, `sandbox`                                                                       | —          |
-| **Digipay**          | [Digipay](https://www.mydigipay.com)           | دیجی‌پی                       | `username`, `password`, `client_id`, `client_secret`                                   | —          |
-| **ECD**              | [Electronic Card Damavand](https://ecd-co.ir)  | پرداخت الکترونیک دماوند      | `terminal_number`, `hash_key`                                                          | —          |
-| **FanavaCard**       | [FanavaCard](https://fanavacard.ir)            | فن‌آوا کارت                   | `user_id`, `password`                                                                  | —          |
-| **IdPay**            | [IdPay](https://idpay.ir)                      | آیدی‌پی                       | `apiKey`, `sandbox`                                                                    | —          |
-| **IranDargah**       | [IranDargah](https://irandargah.com)           | ایران درگاه                  | `merchant_id`, `sandbox`                                                               | —          |
-| **IranKish**         | [Iran Kish](https://www.irankish.com)          | ایران کیش                    | `terminalId`, `password`, `acceptorId`, `pubKey`                                       | —          |
-| **IsipaymentSamin**  | [Isipayment Samin](https://isipayment.ir)      | ایزایران ثمین                | `merchant_code`, `merchant_password`, `terminal_code`, `type`, `number_of_installment` | —          |
-| **JetPay**           | [JetPay](https://mybajet.ir/)                  | جت‌پی                        | `username`, `password`, `terminal_id`, `credit_id`                                     | Transaction List |
-| **Keepa**            | [Keepa - Kipaa](https://keepa.ir)              | کیپا                         | `token`                                                                                | —          |
-| **MehrIran**         | [MehrIran](https://qmb.ir)                     | بانک مهر ایران               | `terminal_id`, `merchant_nid`, `encrypt_key`                                           | —          |
-| **NextPay**          | [NextPay](https://nextpay.org)                 | نکست پی                      | `api_key`                                                                              | —          |
-| **Omidpay**          | [Omidpay - Sayan Card](https://omidpayment.ir) | امید پی (سایان کارت)         | `user_id`, `password`                                                                  | —          |
-| **PardakhtNovin**    | [Pardakht Novin](https://pna.co.ir)            | پرداخت نوین                  | `userId`, `password`, `terminalId`                                                     | —          |
-| **PayPing**          | [PayPing](https://payping.ir)                  | پی پینگ                      | `token`                                                                                | —          |
-| **PEC**              | [PEC](https://pec.ir)                          | تجارت الکترونیک پارسیان      | `login_account`                                                                        | —          |
-| **PEP**              | [PEP](https://pep.co.ir)                       | پرداخت الکترونیک پاسارگاد    | `username`, `password`, `terminal_number`                                              | —          |
-| **Polam**            | [Polam (Poolam)](https://polam.io)             | پولام                        | `api_key`                                                                              | —          |
+| **AsanPardakht**     | [AsanPardakht](https://asanpardakht.ir)        | آسان پرداخت (آپ)             | `username`, `password`, `merchant_configuration_id`                                    | -          |
+| **Azkivam**          | [Azkivam](https://azkivam.com/)                | ازکی وام                     | `merchant_id`, `api_key`                                                               | -          |
+| **BehPardakht**      | [Beh Pardakht Mellat](https://behpardakht.com) | به‌پرداخت ملت                 | `terminal_id`, `username`, `password`, `is_credit`                                     | -          |
+| **Bitpay**           | [Bitpay](https://bitpay.ir/)                   | بیت پی                       | `api`, `sandbox`                                                                       | -          |
+| **Digipay**          | [Digipay](https://www.mydigipay.com)           | دیجی‌پی                       | `username`, `password`, `client_id`, `client_secret`                                   | -          |
+| **ECD**              | [Electronic Card Damavand](https://ecd-co.ir)  | پرداخت الکترونیک دماوند      | `terminal_number`, `hash_key`                                                          | -          |
+| **FanavaCard**       | [FanavaCard](https://fanavacard.ir)            | فن‌آوا کارت                   | `user_id`, `password`                                                                  | -          |
+| **IdPay**            | [IdPay](https://idpay.ir)                      | آیدی‌پی                       | `apiKey`, `sandbox`                                                                    | -          |
+| **IranDargah**       | [IranDargah](https://irandargah.com)           | ایران درگاه                  | `merchant_id`, `sandbox`                                                               | -          |
+| **IranKish**         | [Iran Kish](https://www.irankish.com)          | ایران کیش                    | `terminalId`, `password`, `acceptorId`, `pubKey`                                       | -          |
+| **IsipaymentSamin**  | [Isipayment Samin](https://isipayment.ir)      | ایزایران ثمین                | `merchant_code`, `merchant_password`, `terminal_code`, `type`, `number_of_installment` | -          |
+| **JetPay**           | [JetPay](https://mybajet.ir/)                  | جت‌پی                        | `username`, `password`, `terminal_id`, `credit_id`                                     | Bulk Check, Transaction List |
+| **Keepa**            | [Keepa - Kipaa](https://keepa.ir)              | کیپا                         | `token`                                                                                | -          |
+| **MehrIran**         | [MehrIran](https://qmb.ir)                     | بانک مهر ایران               | `terminal_id`, `merchant_nid`, `encrypt_key`                                           | -          |
+| **NextPay**          | [NextPay](https://nextpay.org)                 | نکست پی                      | `api_key`                                                                              | -          |
+| **Omidpay**          | [Omidpay - Sayan Card](https://omidpayment.ir) | امید پی (سایان کارت)         | `user_id`, `password`                                                                  | -          |
+| **PardakhtNovin**    | [Pardakht Novin](https://pna.co.ir)            | پرداخت نوین                  | `userId`, `password`, `terminalId`                                                     | -          |
+| **PayPing**          | [PayPing](https://payping.ir)                  | پی پینگ                      | `token`                                                                                | -          |
+| **PEC**              | [PEC](https://pec.ir)                          | تجارت الکترونیک پارسیان      | `login_account`                                                                        | -          |
+| **PEP**              | [PEP](https://pep.co.ir)                       | پرداخت الکترونیک پاسارگاد    | `username`, `password`, `terminal_number`                                              | -          |
+| **Polam**            | [Polam (Poolam)](https://polam.io)             | پولام                        | `api_key`                                                                              | -          |
 | **RefahBeta**        | [Refah Beta](https://beta.refah-bank.ir)       | بانک رفاه بتا                | `client_id`, `client_secret`, `api_key`, `number_of_installments`                      | Bulk Check |
-| **Sadad**            | [Sadad](https://sadadpsp.ir)                   | پرداخت الکترونیک سداد (ملی)  | `terminal_id`, `merchant_id`, `key`                                                    | —          |
-| **SadadBNPL**        | [SadadBNPL](https://sadadpsp.ir)               | سداد BNPL                    | `terminal_id`, `merchant_id`, `key`                                                    | —          |
-| **Sep**              | [Saman Electronic Payment](https://www.sep.ir) | پرداخت الکترونیک سامان (سپ)  | `terminalId`                                                                           | —          |
-| **Sepal**            | [Sepal](https://sepal.ir)                      | سپال                         | `api_key`                                                                              | —          |
-| **SepehrPay**        | [Sepehr Pay](https://www.sepehrpay.com)        | پرداخت الکترونیک سپهر (مبنا) | `terminalId`                                                                           | —          |
-| **Shepa**            | [Shepa](https://shepa.com)                     | شپا                          | `api`                                                                                  | —          |
-| **SnappPay**         | [SnappPay](https://snapppay.ir)                | اسنپ‌پی                       | `username`, `password`, `client_id`, `client_secret`                                   | —          |
-| **TabaPay**          | [TabaPay](https://tabapay.ir)                  | تاباپی                       | `token`                                                                                | —          |
+| **Sadad**            | [Sadad](https://sadadpsp.ir)                   | پرداخت الکترونیک سداد (ملی)  | `terminal_id`, `merchant_id`, `key`                                                    | -          |
+| **SadadBNPL**        | [SadadBNPL](https://sadadpsp.ir)               | سداد BNPL                    | `terminal_id`, `merchant_id`, `key`                                                    | -          |
+| **Sep**              | [Saman Electronic Payment](https://www.sep.ir) | پرداخت الکترونیک سامان (سپ)  | `terminalId`                                                                           | -          |
+| **Sepal**            | [Sepal](https://sepal.ir)                      | سپال                         | `api_key`                                                                              | -          |
+| **SepehrPay**        | [Sepehr Pay](https://www.sepehrpay.com)        | پرداخت الکترونیک سپهر (مبنا) | `terminalId`                                                                           | -          |
+| **Shepa**            | [Shepa](https://shepa.com)                     | شپا                          | `api`                                                                                  | -          |
+| **SnappPay**         | [SnappPay](https://snapppay.ir)                | اسنپ‌پی                       | `username`, `password`, `client_id`, `client_secret`                                   | -          |
+| **TabaPay**          | [TabaPay](https://tabapay.ir)                  | تاباپی                       | `token`                                                                                | -          |
 | **TejaratBajet**     | [Tejarat Bajet](https://mybajet.ir)            | بانک تجارت - باجت            | `client_id`, `client_secret`, `sandbox`                                                | Bulk Check |
-| :test_tube: **Test** | **Test**                                       | **تست**                      | —                                                                                      | —          |
-| **Vandar**           | [Vandar](https://vandar.io)                    | وندار                        | `api_key`                                                                              | —          |
-| **ZarinPal**         | [Zarin Pal](https://www.zarinpal.com)          | زرین پال                     | `merchant_id`                                                                          | —          |
-| **Zibal**            | [Zibal](https://zibal.ir)                      | زیبال                        | `merchant`                                                                             | —          |
+| :test_tube: **Test** | **Test**                                       | **تست**                      | -                                                                                      | -          |
+| **Vandar**           | [Vandar](https://vandar.io)                    | وندار                        | `api_key`                                                                              | -          |
+| **ZarinPal**         | [Zarin Pal](https://www.zarinpal.com)          | زرین پال                     | `merchant_id`                                                                          | -          |
+| **Zibal**            | [Zibal](https://zibal.ir)                      | زیبال                        | `merchant`                                                                             | -          |
 
 > **Features**: `Bulk Check` = supports bulk transaction status checking. `Transaction List` = supports transaction lists and filters.
 
@@ -225,7 +225,7 @@ class PaymentController extends Controller
             return back()->with('error', $e->getMessage());
         }
 
-        // Store $result['token'], $result['fee'], $id in session/db
+        // Store the payment details for verification.
         session(['payment_token' => $result['token'], 'payment_id' => $id, 'amount' => $amount]);
 
         return Larapay::gateway($this->gateway, $this->config)
@@ -294,18 +294,20 @@ Only available on gateways that implement `BulkCheckableInterface`.
 try {
     Larapay::gateway($gateway, $config)
         ->bulkCheck(
-            successCallback: function ($id, $data) {
-                // Transaction $id is successful
+            successCallback: function (\Farayaz\Larapay\Data\TransactionIdentity $identity, array $data) {
+                // Find the local transaction by $identity->id or gateway + $identity->token.
                 // $data contains: result, card, tracking_code, reference_id, amount, fee
             },
-            unsuccessCallback: function ($id) {
-                // Transaction $id failed
+            unsuccessCallback: function (\Farayaz\Larapay\Data\TransactionIdentity $identity) {
+                // Find the local transaction and mark it failed.
             },
         );
 } catch (LarapayException $e) {
     // handle error
 }
 ```
+
+JetPay checks the last 30 days: failed and refunded transactions trigger `unsuccessCallback`; pending and unknown statuses are skipped.
 
 ### Transaction List | لیست تراکنش‌ها
 
@@ -324,9 +326,10 @@ $page = $gateway->listTransactions(new TransactionQuery(
 ));
 
 foreach ($page->items as $transaction) {
-    // JetPay identity:
-    // $transaction->identity->token === JetPay requestId
-    // $transaction->identity->referenceId === JetPay referenceNumber
+    $token = $transaction->identity->token;
+    $referenceId = $transaction->identity->referenceId;
+    $status = $transaction->status;
+    $amount = $transaction->amount;
 }
 ```
 

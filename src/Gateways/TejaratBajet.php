@@ -2,6 +2,7 @@
 
 namespace Farayaz\Larapay\Gateways;
 
+use Farayaz\Larapay\Data\TransactionIdentity;
 use Farayaz\Larapay\Exceptions\LarapayException;
 use Farayaz\Larapay\Interfaces\BulkCheckableInterface;
 use Illuminate\Http\Client\ConnectionException;
@@ -103,7 +104,7 @@ class TejaratBajet extends GatewayAbstract implements BulkCheckableInterface
             $id = $item['trackId'];
             if ($item['status'] == 'ADVICED') {
                 $successCallback(
-                    $id,
+                    new TransactionIdentity(id: $id),
                     [
                         'result' => $item['status'],
                         'card' => null,
@@ -114,7 +115,7 @@ class TejaratBajet extends GatewayAbstract implements BulkCheckableInterface
                     ]
                 );
             } elseif ($item['status'] == 'REVERSED') {
-                $unsuccessCallback($id);
+                $unsuccessCallback(new TransactionIdentity(id: $id));
             }
         }
     }
