@@ -23,7 +23,7 @@ class Larapay
     }
 
     public function request(
-        int $id,
+        int|string $id,
         int $amount,
         string $nationalId,
         string $mobile,
@@ -36,7 +36,7 @@ class Larapay
     }
 
     public function verify(
-        int $id,
+        int|string $id,
         int $amount,
         string $nationalId,
         string $mobile,
@@ -48,7 +48,7 @@ class Larapay
         return $this->gateway->verify($id, $amount, $nationalId, $mobile, $token, $params);
     }
 
-    public function redirect(int $id, string $token, string $callbackUrl)
+    public function redirect(int|string $id, string $token, string $callbackUrl)
     {
         $this->_check();
 
